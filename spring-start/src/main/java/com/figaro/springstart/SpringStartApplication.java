@@ -13,7 +13,7 @@ public class SpringStartApplication {
 
 	@RequestMapping("/")
 	String home() {
-		return "Trading Plattform Database API";
+		return "Trading Plattform Database API modified";
 	}
 	
 	public static void main(String[] args) {
