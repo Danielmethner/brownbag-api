@@ -8,16 +8,19 @@
 			org.hibernate.dialect.MySQL8Dialect
 		</property>
 		<property name="hibernate.connection.url">
-			jdbc:mysql://localhost:3306/brownbag?useTimezone=true&amp;serverTimezone=UTC
+			<!-- jdbc:mysql://localhost:3306/brownbag?useTimezone=true&amp;serverTimezone=UTC -->
+			jdbc:mysql://66369.m.tld.pl:3306/baza66369_daniel?useTimezone=true&amp;serverTimezone=UTC
 		</property>
 		<!-- root -->
 		<property name="hibernate.connection.username">
-			root
+			<!-- root -->
+			a66369_daniel
 		</property>
 		<property name="hibernate.connection.password">
-			mysql
+			<!-- mysql -->
+			1KdfJjIQwm
 		</property>
-		<property name="hibernate.hbm2ddl.auto">create</property> 
+		<property name="hibernate.hbm2ddl.auto">create</property>
 		<property name="show_sql">true</property>
 
 	</session-factory>
