@@ -14,7 +14,7 @@ import com.brownbag_api.model.demo.Demo;
 @RestController
 @EnableAutoConfiguration
 @SpringBootApplication
-public class SpringStartApplication  extends SpringBootServletInitializer{
+public class SpringStartApplication {
 
 	@RequestMapping("/")
 	String home() {
