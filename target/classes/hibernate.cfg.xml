@@ -1,0 +1,27 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<!DOCTYPE hibernate-configuration SYSTEM 
+"http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+
+		<property name="hibernate.dialect">
+			org.hibernate.dialect.MySQL8Dialect
+		</property>
+		<property name="hibernate.connection.url">
+			<!-- jdbc:mysql://localhost:3306/brownbag?useTimezone=true&amp;serverTimezone=UTC -->
+			jdbc:mysql://66369.m.tld.pl:3306/baza66369_daniel?useTimezone=true&amp;serverTimezone=UTC
+		</property>
+		<!-- root -->
+		<property name="hibernate.connection.username">
+			<!-- root -->
+			a66369_daniel
+		</property>
+		<property name="hibernate.connection.password">
+			<!-- mysql -->
+			1KdfJjIQwm
+		</property>
+		<property name="hibernate.hbm2ddl.auto">create</property>
+		<property name="show_sql">true</property>
+
+	</session-factory>
+</hibernate-configuration>
