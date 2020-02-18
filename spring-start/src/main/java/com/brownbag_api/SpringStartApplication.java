@@ -24,9 +24,9 @@ public class SpringStartApplication {
 		DB.connect();
 		DB.openSession();
 		Demo.createDemoData();
-		DB.closeSession();
+//		DB.closeSession();
 
-//		SpringApplication.run(SpringStartApplication.class, args);
+		SpringApplication.run(SpringStartApplication.class, args);
 	}
 
 }

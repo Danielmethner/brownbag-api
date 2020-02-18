@@ -36,7 +36,7 @@ public class DB {
 			factory = config.configure().buildSessionFactory();
 
 		} catch (Throwable ex) {
-			DB.log("DB.connect(): Failed to create sessionFactory object." + ex);
+//			DB.log("DB.connect(): Failed to create sessionFactory object." + ex);
 			throw new ExceptionInInitializerError(ex);
 		}
 		return true;
