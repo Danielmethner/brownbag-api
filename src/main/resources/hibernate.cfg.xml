@@ -17,7 +17,7 @@
 		<!-- 1KdfJjIQwm -->
 		<!-- </property> -->
 
-		<property name="hibernate.connection.url">jdbc:mysql://sgpro8.fcomet.com:3306/brownbag-api?useTimezone=true&amp;serverTimezone=UTC</property>
+		<property name="hibernate.connection.url">jdbc:mysql://sgpro8.fcomet.com:3306/brownbag_api?useTimezone=true&amp;serverTimezone=UTC</property>
 		<property name="hibernate.connection.username">brownbag_heroku_api</property>
 		<property name="hibernate.connection.password">qcKIRr9rK6fW</property>
 		<property name="hibernate.hbm2ddl.auto">create</property>
