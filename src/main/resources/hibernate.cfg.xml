@@ -17,16 +17,9 @@
 		<!-- 1KdfJjIQwm -->
 		<!-- </property> -->
 
-		<property name="hibernate.connection.url">
-			jdbc:mysql://sgpro8.fcomet.com:3306/brownbag-api?useTimezone=true&amp;serverTimezone=UTC
-		</property>
-		<property name="hibernate.connection.username">
-			brownbag_admin01101992
-		</property>
-		<property name="hibernate.connection.password">
-			avq#UAT414
-		</property>
-		
+		<property name="hibernate.connection.url">jdbc:mysql://sgpro8.fcomet.com:3306/brownbag-api?useTimezone=true&amp;serverTimezone=UTC</property>
+		<property name="hibernate.connection.username">brownbag_admin01101992</property>
+		<property name="hibernate.connection.password">avq#UAT414</property>
 		<property name="hibernate.hbm2ddl.auto">create</property>
 		<property name="show_sql">true</property>
 
