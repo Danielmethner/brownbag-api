@@ -18,13 +18,13 @@
 		<!-- </property> -->
 
 		<property name="hibernate.connection.url">
-			jdbc:mysql://localhost:3306/brownbag?useTimezone=true&amp;serverTimezone=UTC
+			jdbc:mysql://sgpro8.fcomet.com:3306/brownbag-api?useTimezone=true&amp;serverTimezone=UTC
 		</property>
 		<property name="hibernate.connection.username">
-			root
+			brownbag_admin01101992
 		</property>
 		<property name="hibernate.connection.password">
-			mysql
+			avq#UAT414
 		</property>
 		
 		<property name="hibernate.hbm2ddl.auto">create</property>
