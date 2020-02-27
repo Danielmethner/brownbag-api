@@ -14,5 +14,7 @@ public class Demo {
 	
 	public static void createDemoData() {
 		createDemoDataUser("First User");
+		createDemoDataUser("Second User");
+		createDemoDataUser("Third User");
 	}
 }
