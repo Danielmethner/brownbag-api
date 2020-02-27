@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.brownbag_api.database.DB;
 import com.brownbag_api.model.demo.Demo;
 
-
 @RestController
 @EnableAutoConfiguration
 @SpringBootApplication
@@ -18,14 +17,15 @@ public class SpringStartApplication {
 
 	@RequestMapping("/")
 	String home() {
-		return "Trading Plattform Database API modified";
+		return "Brownbag API";
 	}
-	
+
 	public static void main(String[] args) {
+
 		DB.connect();
 		DB.openSession();
 		Demo.createDemoData();
-//		DB.closeSession();
+		DB.closeSession();
 
 		SpringApplication.run(SpringStartApplication.class, args);
 	}

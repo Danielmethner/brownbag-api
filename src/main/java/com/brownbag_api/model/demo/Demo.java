@@ -5,10 +5,14 @@ import com.brownbag_api.model.User;
 
 public class Demo {
 
-	public static void createDemoData() {
-		User user = new User("DemoUser");
+	public static void createDemoDataUser(String userName) {
+		User user = new User(userName);
 		DB.beginTrx();
 		DB.saveEntity(user);
 		DB.commitTrx();
+	}
+	
+	public static void createDemoData() {
+		createDemoDataUser("First User");
 	}
 }
