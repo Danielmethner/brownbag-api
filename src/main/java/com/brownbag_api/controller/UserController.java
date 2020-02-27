@@ -7,6 +7,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.query.Query;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,4 +60,13 @@ public class UserController {
 		
 	}
 
+	@CrossOrigin
+	@PostMapping(path = "/user/save/", consumes = "application/json", produces = "application/json")
+	public User addOrd(@RequestBody User user) {
+		DB.openSession();
+		Long id = (Long) DB.s.save(user);
+		user.setId(id);
+		DB.closeSession();
+		return user;
+	}
 }
