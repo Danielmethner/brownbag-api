@@ -15,24 +15,33 @@ import javax.validation.constraints.NotNull;
 public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Long id;
 
-	
 	@NotNull
 	@Column(name = "NAME")
 	private String name;
 
+	@NotNull
+	@Column(name = "PASSWORD")
+	private String password;
+
 	public User() {
 	}
-	
+
+	public User(Long id, @NotNull String name, @NotNull String password) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.password = password;
+	}
+
 	public User(String name) {
 		setName(name);
 	}
-
 
 	public Long getId() {
 		return id;
@@ -54,5 +63,18 @@ public class User implements Serializable {
 		return serialVersionUID;
 	}
 
+	public String getPassword() {
+		return password;
+	}
 
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	@Override
+	public String toString() {
+		return "User [id=" + id + ", name=" + name + ", password=" + password + "]";
+	}
+
+	
 }
