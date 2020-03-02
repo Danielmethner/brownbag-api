@@ -1,11 +1,11 @@
 package com.brownbag_api.model.demo;
 
-import com.brownbag_api.model.User;
+
 
 public class Demo {
 
 	public static void createDemoDataUser(String userName) {
-		User user = new User(userName);
+//		User user = new User(userName);
 
 	}
 	
