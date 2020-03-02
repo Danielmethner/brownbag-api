@@ -70,7 +70,6 @@ public class AuthController {
 		return ResponseEntity.ok(new JwtResponse(jwt, 
 												 userDetails.getId(), 
 												 userDetails.getUsername(), 
-												 userDetails.getEmail(), 
 												 roles));
 	}
 
@@ -84,7 +83,6 @@ public class AuthController {
 
 		// Create new user's account
 		User user = new User(signUpRequest.getUsername(), 
-							 signUpRequest.getEmail(),
 							 encoder.encode(signUpRequest.getPassword()));
 
 		Set<String> strRoles = signUpRequest.getRole();
@@ -121,5 +119,9 @@ public class AuthController {
 		userRepo.save(user);
 
 		return ResponseEntity.ok(new MsgResponse("User registered successfully!"));
+	}
+	
+	public void addRole(Role role) {
+		roleRepo.save(role);
 	}
 }

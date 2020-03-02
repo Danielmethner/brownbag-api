@@ -11,4 +11,6 @@ import com.brownbag_api.security.model.Role;
 @Repository
 public interface RoleRepo extends JpaRepository<Role, Long> {
 	Optional<Role> findByName(ERole name);
+
+	boolean existsByName(ERole eRole);
 }
