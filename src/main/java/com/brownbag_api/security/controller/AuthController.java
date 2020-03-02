@@ -74,19 +74,23 @@ public class AuthController {
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) { 
+
 		if (userRepo.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity
 					.badRequest()
 					.body(new MsgResponse("Error: Username is already taken!"));
 		}
 
+
 		// Create new user's account
 		User user = new User(signUpRequest.getUsername(), 
 							 encoder.encode(signUpRequest.getPassword()));
 
+
 		Set<String> strRoles = signUpRequest.getRole();
 		Set<Role> roles = new HashSet<>();
+
 
 		if (strRoles == null) {
 			Role userRole = roleRepo.findByName(ERole.ROLE_USER)
@@ -94,6 +98,7 @@ public class AuthController {
 			roles.add(userRole);
 		} else {
 			strRoles.forEach(role -> {
+				
 				switch (role) {
 				case "admin":
 					Role adminRole = roleRepo.findByName(ERole.ROLE_ADMIN)
@@ -117,11 +122,7 @@ public class AuthController {
 
 		user.setRoles(roles);
 		userRepo.save(user);
-
 		return ResponseEntity.ok(new MsgResponse("User registered successfully!"));
 	}
 	
-	public void addRole(Role role) {
-		roleRepo.save(role);
-	}
 }
