@@ -1,6 +1,5 @@
 package com.brownbag_api.security.controller;
 
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +32,6 @@ import com.brownbag_api.security.repo.RoleRepo;
 import com.brownbag_api.security.repo.UserRepo;
 import com.brownbag_api.security.svc.UserDetailsImpl;
 
-
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/auth")
@@ -61,36 +59,26 @@ public class AuthController {
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtils.generateJwtToken(authentication);
-		
-		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();		
-		List<String> roles = userDetails.getAuthorities().stream()
-				.map(item -> item.getAuthority())
+
+		UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+		List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 				.collect(Collectors.toList());
 
-		return ResponseEntity.ok(new JwtResponse(jwt, 
-												 userDetails.getId(), 
-												 userDetails.getUsername(), 
-												 roles));
+		return ResponseEntity.ok(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles));
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) { 
+	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 
 		if (userRepo.existsByUsername(signUpRequest.getUsername())) {
-			return ResponseEntity
-					.badRequest()
-					.body(new MsgResponse("Error: Username is already taken!"));
+			return ResponseEntity.badRequest().body(new MsgResponse("Error: Username is already taken!"));
 		}
 
-
 		// Create new user's account
-		User user = new User(signUpRequest.getUsername(), 
-							 encoder.encode(signUpRequest.getPassword()));
-
+		User user = new User(signUpRequest.getUsername(), encoder.encode(signUpRequest.getPassword()));
 
 		Set<String> strRoles = signUpRequest.getRole();
 		Set<Role> roles = new HashSet<>();
-
 
 		if (strRoles == null) {
 			Role userRole = roleRepo.findByName(ERole.ROLE_USER)
@@ -98,7 +86,7 @@ public class AuthController {
 			roles.add(userRole);
 		} else {
 			strRoles.forEach(role -> {
-				
+
 				switch (role) {
 				case "admin":
 					Role adminRole = roleRepo.findByName(ERole.ROLE_ADMIN)
@@ -124,5 +112,5 @@ public class AuthController {
 		userRepo.save(user);
 		return ResponseEntity.ok(new MsgResponse("User registered successfully!"));
 	}
-	
+
 }
