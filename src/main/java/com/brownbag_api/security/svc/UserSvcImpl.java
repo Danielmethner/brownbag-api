@@ -21,6 +21,8 @@ import com.brownbag_api.security.repo.UserRepo;
 
 @Service
 public class UserSvcImpl implements UserSvc {
+	
+	@Autowired
 	UserRepo userRepo;
 	
 	@Autowired
