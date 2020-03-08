@@ -81,28 +81,28 @@ public class AuthController {
 		Set<Role> roles = new HashSet<>();
 
 		if (strRoles == null) {
-			Role userRole = roleRepo.findByName(ERole.ROLE_USER)
+			Role userRole = roleRepo.findByName(ERole.ROLE_TRADER)
 					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
 			roles.add(userRole);
 		} else {
 			strRoles.forEach(role -> {
 
 				switch (role) {
-				case "admin":
-					Role adminRole = roleRepo.findByName(ERole.ROLE_ADMIN)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+				case "broker":
+					Role adminRole = roleRepo.findByName(ERole.ROLE_BROKER).orElseThrow(
+							() -> new RuntimeException("Error: Role " + ERole.ROLE_BROKER + " could not be found."));
 					roles.add(adminRole);
 
 					break;
-				case "mod":
-					Role modRole = roleRepo.findByName(ERole.ROLE_MODERATOR)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+				case "trader":
+					Role modRole = roleRepo.findByName(ERole.ROLE_TRADER)
+							.orElseThrow(() -> new RuntimeException("Error: Role  " + ERole.ROLE_TRADER + " is not found."));
 					roles.add(modRole);
 
 					break;
 				default:
-					Role userRole = roleRepo.findByName(ERole.ROLE_USER)
-							.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+					Role userRole = roleRepo.findByName(ERole.ROLE_TRADER)
+							.orElseThrow(() -> new RuntimeException("Error: Role " + ERole.ROLE_TRADER + " is not found."));
 					roles.add(userRole);
 				}
 			});

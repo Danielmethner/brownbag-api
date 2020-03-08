@@ -31,9 +31,8 @@ public class InitDataLoaderSec {
 	}
 
 	public void createRoles() {
-		createRole(ERole.ROLE_ADMIN);
-		createRole(ERole.ROLE_MODERATOR);
-		createRole(ERole.ROLE_USER);
+		createRole(ERole.ROLE_BROKER);
+		createRole(ERole.ROLE_TRADER);
 	}
 	
 	public void createUser(String userName, String password, ERole eRole) {
@@ -43,7 +42,7 @@ public class InitDataLoaderSec {
 	}
 	
 	public void createUsers() {
-		createUser("user1", "password", ERole.ROLE_ADMIN);
-		
+		createUser("broker", "broker", ERole.ROLE_BROKER);
+		createUser("trader1", "trader1", ERole.ROLE_TRADER);
 	}
 }
