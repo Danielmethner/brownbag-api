@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.User;
 import com.brownbag_api.security.jwt.JwtUtils;
 import com.brownbag_api.security.model.ERole;
 import com.brownbag_api.security.model.Role;
-import com.brownbag_api.security.model.User;
 import com.brownbag_api.security.payload.request.LoginRequest;
 import com.brownbag_api.security.payload.request.SignupRequest;
 import com.brownbag_api.security.payload.response.JwtResponse;
@@ -75,7 +75,7 @@ public class AuthController {
 		}
 
 		// Create new user's account
-		User user = new User(signUpRequest.getUsername(), encoder.encode(signUpRequest.getPassword()));
+		User user = new User(signUpRequest.getUsername(),signUpRequest.getUsername(), encoder.encode(signUpRequest.getPassword()));
 
 		Set<String> strRoles = signUpRequest.getRole();
 		Set<Role> roles = new HashSet<>();

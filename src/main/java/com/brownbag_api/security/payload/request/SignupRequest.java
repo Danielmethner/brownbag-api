@@ -3,7 +3,8 @@ package com.brownbag_api.security.payload.request;
 
 import java.util.Set;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
  
 public class SignupRequest {
     @NotBlank

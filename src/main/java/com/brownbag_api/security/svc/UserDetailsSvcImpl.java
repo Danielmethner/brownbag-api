@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.brownbag_api.security.model.User;
+import com.brownbag_api.model.User;
 import com.brownbag_api.security.repo.UserRepo;
 
 

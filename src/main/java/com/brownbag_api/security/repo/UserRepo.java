@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.brownbag_api.security.model.User;
+import com.brownbag_api.model.User;
 
 @Repository
 public interface UserRepo extends JpaRepository<User, Long> {

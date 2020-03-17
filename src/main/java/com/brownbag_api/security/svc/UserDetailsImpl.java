@@ -9,8 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.brownbag_api.security.model.User;
+import com.brownbag_api.model.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 public class UserDetailsImpl implements UserDetails {
 	private static final long serialVersionUID = 1L;
@@ -19,16 +20,18 @@ public class UserDetailsImpl implements UserDetails {
 
 	private String username;
 
+	private String name;
 
 	@JsonIgnore
 	private String password;
 
 	private Collection<? extends GrantedAuthority> authorities;
 
-	public UserDetailsImpl(Long id, String username, String password,
+	public UserDetailsImpl(Long id, String username, String name, String password,
 			Collection<? extends GrantedAuthority> authorities) {
 		this.id = id;
 		this.username = username;
+		this.name = name;
 		this.password = password;
 		this.authorities = authorities;
 	}
@@ -37,7 +40,7 @@ public class UserDetailsImpl implements UserDetails {
 		List<GrantedAuthority> authorities = user.getRoles().stream()
 				.map(role -> new SimpleGrantedAuthority(role.getName().name())).collect(Collectors.toList());
 
-		return new UserDetailsImpl(user.getId(), user.getUsername(), user.getPassword(), authorities);
+		return new UserDetailsImpl(user.getId(), user.getUsername(), user.getName(), user.getPassword(), authorities);
 	}
 
 	@Override
@@ -58,6 +61,11 @@ public class UserDetailsImpl implements UserDetails {
 	public String getUsername() {
 		return username;
 	}
+	
+	public String getName() {
+		return name;
+	}
+	
 
 	@Override
 	public boolean isAccountNonExpired() {

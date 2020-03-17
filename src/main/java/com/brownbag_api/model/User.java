@@ -1,6 +1,7 @@
-package com.brownbag_api.security.model;
+package com.brownbag_api.model;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -11,10 +12,18 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.brownbag_api.security.model.Role;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "USER", uniqueConstraints = { @UniqueConstraint(columnNames = "username") })
@@ -24,8 +33,11 @@ public class User {
 	private Long id;
 
 	@NotBlank
-	@Size(max = 20)
+	@Size(max = 50)
 	private String username;
+
+	@Size(max = 50)
+	private String name;
 
 	@NotBlank
 	@Size(max = 120)
@@ -35,11 +47,22 @@ public class User {
 	@JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
 	private Set<Role> roles = new HashSet<>();
 
+	@OneToMany(mappedBy = "issuer")
+	@MapKey(name = "issuer")
+	@JsonManagedReference
+	public List<Asset> assets;
+
+	@OneToMany(mappedBy = "user")
+	@MapKey(name = "user")
+	@JsonBackReference
+	public List<Order> orders;
+
 	public User() {
 	}
 
-	public User(String username, String password) {
+	public User(String username, String name, String password) {
 		this.username = username;
+		this.name = name;
 		this.password = password;
 	}
 
@@ -59,6 +82,14 @@ public class User {
 		this.username = username;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -74,4 +105,13 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
+
+	public List<Asset> getAssets() {
+		return assets;
+	}
+
+	public void setAssets(List<Asset> assets) {
+		this.assets = assets;
+	}
+
 }

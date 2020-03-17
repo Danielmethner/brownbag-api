@@ -39,6 +39,7 @@ public class SpringStartApplication {
 	public CommandLineRunner createModelData(InitDataLoader loader) {
 		return args -> {
 			loader.createAssets();
+			loader.createOrders();
 		};
 	}
 
