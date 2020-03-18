@@ -114,8 +114,9 @@ public class InitDataLoader {
 	public void createUsers() {
 		// BROKER
 		createUser(EUser.U_BROKER, ERole.ROLE_BROKER);
-		// TRADER
+		// TRADERS
 		createUser(EUser.U_TRADER_1, ERole.ROLE_TRADER);
+		createUser(EUser.U_TRADER_2, ERole.ROLE_TRADER);
 	}
 
 	private void createOrder(EDirection eDirection, Asset asset, int qty, double price, @NotNull User user,
@@ -141,9 +142,12 @@ public class InitDataLoader {
 	}
 
 	private void createPositions() {
-		Asset cash = assetRepo.findByName(EAsset.DEUTSCHE_BANK.getName());
-		User userTrader = userRepo.findByUsername(EUser.U_TRADER_1.toString());
-		createPosition(20000, 10, cash, userTrader);
+		Asset deutscheBank = assetRepo.findByName(EAsset.DEUTSCHE_BANK.getName());
+		User userTrader1 = userRepo.findByUsername(EUser.U_TRADER_1.toString());
+		createPosition(20000, 10, deutscheBank, userTrader1);
+		User userTrader2 = userRepo.findByUsername(EUser.U_TRADER_2.toString());
+		createPosition(34000, 10, deutscheBank, userTrader2);
+		
 	}
 
 	public void createDemoData() {
