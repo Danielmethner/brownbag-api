@@ -12,6 +12,8 @@ import com.brownbag_api.model.User;
 
 @Repository
 public interface PosRepo extends JpaRepository<Position, Long> {
+
+	List<Position> findByPosUser(User user);
 	
 
 }

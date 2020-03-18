@@ -1,5 +1,6 @@
 package com.brownbag_api.model;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,7 +27,12 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "USER", uniqueConstraints = { @UniqueConstraint(columnNames = "username") })
-public class User {
+public class User implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4442311010636937427L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -46,20 +52,10 @@ public class User {
 	@JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
 	private Set<Role> roles = new HashSet<>();
 
-	@OneToMany(mappedBy = "issuer")
-	@MapKey(name = "issuer")
-	@JsonManagedReference
-	public List<Asset> assets;
-
 	@OneToMany(mappedBy = "user")
 	@MapKey(name = "user")
 	@JsonBackReference
 	public List<Order> orders;
-
-	@OneToMany(mappedBy = "user")
-	@MapKey(name = "user")
-	@JsonBackReference
-	public List<Position> positions;
 
 	public User() {
 	}
@@ -110,20 +106,8 @@ public class User {
 		this.roles = roles;
 	}
 
-	public List<Asset> getAssets() {
-		return assets;
-	}
-
-	public void setAssets(List<Asset> assets) {
-		this.assets = assets;
-	}
-
 	public List<Order> getOrders() {
 		return orders;
 	}
-	
-	public List<Position> getPositions() {
-		return positions;
-	}
-	
+
 }

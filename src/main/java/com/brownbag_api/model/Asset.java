@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,7 +35,7 @@ public class Asset implements Serializable {
 	private boolean isShare = true;
 	
 	@NotNull
-	@ManyToOne(targetEntity = User.class)
+	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
 	@JoinColumn(name = "ISSUER_ID")
 	@JsonBackReference
 	private User issuer;

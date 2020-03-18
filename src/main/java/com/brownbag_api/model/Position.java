@@ -1,5 +1,6 @@
 package com.brownbag_api.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -14,11 +15,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "POSITION")
-public class Position {
+public class Position implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +43,8 @@ public class Position {
 	@NotNull
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "USER_ID")
-	private User user;
+	@JsonBackReference
+	private User posUser;
 
 	public Position() {
 	}
@@ -52,7 +55,7 @@ public class Position {
 		this.priceAvg = priceAvg;
 		this.qty = qty;
 		this.asset = asset;
-		this.user = user;
+		this.posUser = user;
 	}
 
 	public double getPriceAvg() {
@@ -72,11 +75,11 @@ public class Position {
 	}
 
 	public User getUser() {
-		return user;
+		return posUser;
 	}
 
 	public void setUser(User user) {
-		this.user = user;
+		this.posUser = user;
 	}
 
 	public Long getId() {

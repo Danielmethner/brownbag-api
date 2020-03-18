@@ -66,7 +66,7 @@ public class InitDataLoader {
 		createRole(ERole.ROLE_TRADER);
 		createRole(ERole.ROLE_ISSUER);
 	}
-	
+
 	private void createOrderStatus(EOrderStatus eOrderStatus) {
 		OrderStatus orderStatus = new OrderStatus(eOrderStatus.getName(), eOrderStatus.getIntlId());
 		orderStatusRepo.save(orderStatus);
@@ -136,29 +136,22 @@ public class InitDataLoader {
 		createOrder(EDirection.BUY, govBond, 120, 200, userTrader, orderStatus);
 	}
 
-//	private void createPosition(@NotNull Asset cash, @NotNull User user) {
-//		int qty = 20000;
-//		double priceAvg = 1;
-//		posSvc.createPosition(qty, user, cash, priceAvg);
-//	}
-//	
-//	private void createPositions() {
-//		Asset cash = assetRepo.findByName(EAsset.CASH.getName());
-//		
-//		User userTrader = userRepo.findByUsername(EUser.U_TRADER_1.toString())
-//				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + EUser.U_TRADER_1));
-//		
-//		createPosition(cash, userTrader);
-//		
-//	}
+	private void createPosition(int qty, double priceAvg, @NotNull Asset cash, @NotNull User user) {
+		posSvc.createPosition(qty, user, cash, priceAvg);
+	}
+
+	private void createPositions() {
+		Asset cash = assetRepo.findByName(EAsset.DEUTSCHE_BANK.getName());
+		User userTrader = userRepo.findByUsername(EUser.U_TRADER_1.toString());
+		createPosition(20000, 10, cash, userTrader);
+	}
 
 	public void createDemoData() {
-		
 		createIssuerUsers();
 		createAssets();
 		createUsers();
 		createOrders();
-//		createPositions();
+		createPositions();
 	}
 
 }

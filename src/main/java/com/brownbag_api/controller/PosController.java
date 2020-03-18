@@ -27,12 +27,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.Order;
-import com.brownbag_api.model.OrderStatus;
+import com.brownbag_api.model.Position;
 import com.brownbag_api.model.User;
-import com.brownbag_api.model.data.EOrderStatus;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.OrderRepo;
-import com.brownbag_api.repo.OrderStatusRepo;
+import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.security.payload.request.LoginRequest;
 import com.brownbag_api.security.payload.response.JwtResponse;
 import com.brownbag_api.security.repo.UserRepo;
@@ -41,51 +40,29 @@ import com.brownbag_api.service.OrderSvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/order")
-public class OrderController {
+@RequestMapping("/api/pos")
+public class PosController {
 
 	@Autowired
-	private AssetRepo assetRepo;
-	
-	@Autowired
-	private OrderRepo orderRepo;
-	
-	@Autowired
-	private OrderStatusRepo orderStatusRepo;
-	
-	@Autowired
-	private OrderSvc orderSvc;
-	
+	private PosRepo posRepo;
+
 	@Autowired
 	UserRepo userRepo;
 
 	@GetMapping("/all")
-	public List<Order> getAll() {
-		return orderRepo.findAll();
+	public List<Position> getAll() {
+		return posRepo.findAll();
 	}
 
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
 	@ResponseBody
-	public List<Order> getByUser(Authentication authentication) {
+	public List<Position> getByUser(Authentication authentication) {
 
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 		User user = userRepo.findById(userDetailsImpl.getId())
 				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
-		List<Order> orders = orderRepo.findByUser(user);
-		return orders;
+		List<Position> positions = posRepo.findByPosUser(user);
+		return positions ;
 	}
-	
-	@PostMapping(value = "/place", consumes="application/json")
-	public ResponseEntity<?> authenticateUser(@RequestBody Order order, Authentication authentication) {
-		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-		User user = userRepo.findById(userDetailsImpl.getId())
-				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
-		order.setUser(user);
-		OrderStatus orderStatus = orderStatusRepo.findByIntlId(EOrderStatus.NEW.intlId);
-		order.setOrderStatus(orderStatus);
-		orderSvc.place(order);
-		return ResponseEntity.ok("Order has been placed successfully!");
-	}
-
 
 }
