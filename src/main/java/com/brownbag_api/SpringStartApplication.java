@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.data.InitDataLoader;
-import com.brownbag_api.security.model.data.InitDataLoaderSec;
 
 @RestController
 @EnableAutoConfiguration
@@ -28,18 +27,10 @@ public class SpringStartApplication {
 	}
 
 	@Bean
-	public CommandLineRunner createSecData(InitDataLoaderSec loader) {
-		return args -> {
-			loader.createRoles();
-			loader.createUsers();
-		};
-	}
-
-	@Bean
 	public CommandLineRunner createModelData(InitDataLoader loader) {
 		return args -> {
-			loader.createAssets();
-			loader.createOrders();
+			loader.createParamData();
+			loader.createDemoData();
 		};
 	}
 

@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 
+import com.brownbag_api.model.ERole;
 import com.brownbag_api.model.User;
 
 public interface UserSvc {
@@ -12,4 +13,6 @@ public interface UserSvc {
 	ResponseEntity<?> registerUser(String userName, String password, Set<String> strRoles);
 
 	ResponseEntity<?> registerUser(String userName, String name, String password, Set<String> eRoles);
+
+	boolean hasRole(User user, ERole eRole);
 }

@@ -20,8 +20,7 @@ public class UserDetailsSvcImpl implements UserDetailsService {
 	@Override
 	@Transactional
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepo.findByUsername(username)
-				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+		User user = userRepo.findByUsername(username);
 
 		return UserDetailsImpl.build(user);
 	}

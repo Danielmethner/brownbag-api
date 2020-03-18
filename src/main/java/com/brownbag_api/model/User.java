@@ -21,7 +21,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.brownbag_api.security.model.Role;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -56,6 +55,11 @@ public class User {
 	@MapKey(name = "user")
 	@JsonBackReference
 	public List<Order> orders;
+
+	@OneToMany(mappedBy = "user")
+	@MapKey(name = "user")
+	@JsonBackReference
+	public List<Position> positions;
 
 	public User() {
 	}
@@ -114,4 +118,12 @@ public class User {
 		this.assets = assets;
 	}
 
+	public List<Order> getOrders() {
+		return orders;
+	}
+	
+	public List<Position> getPositions() {
+		return positions;
+	}
+	
 }

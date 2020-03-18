@@ -20,10 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.ERole;
+import com.brownbag_api.model.Role;
 import com.brownbag_api.model.User;
 import com.brownbag_api.security.jwt.JwtUtils;
-import com.brownbag_api.security.model.ERole;
-import com.brownbag_api.security.model.Role;
 import com.brownbag_api.security.payload.request.LoginRequest;
 import com.brownbag_api.security.payload.request.SignupRequest;
 import com.brownbag_api.security.payload.response.JwtResponse;
@@ -31,6 +31,8 @@ import com.brownbag_api.security.payload.response.MsgResponse;
 import com.brownbag_api.security.repo.RoleRepo;
 import com.brownbag_api.security.repo.UserRepo;
 import com.brownbag_api.security.svc.UserDetailsImpl;
+import com.brownbag_api.security.svc.UserSvcImpl;
+import com.brownbag_api.service.OrderSvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -50,6 +52,9 @@ public class AuthController {
 
 	@Autowired
 	JwtUtils jwtUtils;
+	
+	@Autowired
+	private UserSvcImpl userSvcImpl;
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -69,48 +74,7 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-
-		if (userRepo.existsByUsername(signUpRequest.getUsername())) {
-			return ResponseEntity.badRequest().body(new MsgResponse("Error: Username is already taken!"));
-		}
-
-		// Create new user's account
-		User user = new User(signUpRequest.getUsername(),signUpRequest.getUsername(), encoder.encode(signUpRequest.getPassword()));
-
-		Set<String> strRoles = signUpRequest.getRole();
-		Set<Role> roles = new HashSet<>();
-
-		if (strRoles == null) {
-			Role userRole = roleRepo.findByName(ERole.ROLE_TRADER)
-					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-			roles.add(userRole);
-		} else {
-			strRoles.forEach(role -> {
-
-				switch (role) {
-				case "broker":
-					Role adminRole = roleRepo.findByName(ERole.ROLE_BROKER).orElseThrow(
-							() -> new RuntimeException("Error: Role " + ERole.ROLE_BROKER + " could not be found."));
-					roles.add(adminRole);
-
-					break;
-				case "trader":
-					Role modRole = roleRepo.findByName(ERole.ROLE_TRADER)
-							.orElseThrow(() -> new RuntimeException("Error: Role  " + ERole.ROLE_TRADER + " is not found."));
-					roles.add(modRole);
-
-					break;
-				default:
-					Role userRole = roleRepo.findByName(ERole.ROLE_TRADER)
-							.orElseThrow(() -> new RuntimeException("Error: Role " + ERole.ROLE_TRADER + " is not found."));
-					roles.add(userRole);
-				}
-			});
-		}
-
-		user.setRoles(roles);
-		userRepo.save(user);
-		return ResponseEntity.ok(new MsgResponse("User registered successfully!"));
+		return userSvcImpl.registerUser(signUpRequest.getUsername(), signUpRequest.getPassword(), signUpRequest.getRole()) ;
 	}
 
 }

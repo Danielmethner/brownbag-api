@@ -28,37 +28,45 @@ public class Order implements Serializable {
 	@Column(name = "ID")
 	private Long id;
 
-	@Enumerated(EnumType.STRING)
-	@Column(length = 4)
-	private EDirection direction;
+	@NotNull
+	@Column(name = "AMOUNT")
+	private double amount;
 
 	@NotNull
 	@ManyToOne(targetEntity = Asset.class)
 	@JoinColumn(name = "ASSET_ID")
 	private Asset asset;
 
-	@NotNull
-	@Column(name = "QTY")
-	private int qty;
+	@Enumerated(EnumType.STRING)
+	@Column(length = 4)
+	private EDirection direction;
 
 	@NotNull
 	@Column(name = "PRICE")
 	private double price;
 
 	@NotNull
-	@Column(name = "AMOUNT")
-	private double amount;
+	@Column(name = "QTY")
+	private int qty;
+
+	@NotNull
+	@Column(name = "QTY_EXEC")
+	private int qty_exec;
 
 	@NotNull
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "USER_ID")
-//	@JsonManagedReference
 	private User user;
-
+	
+	@NotNull
+	@ManyToOne(targetEntity = OrderStatus.class)
+	@JoinColumn(name = "STATUS_ID")
+	private OrderStatus orderStatus;
+	
 	public Order() {
 	}
 
-	public Order(EDirection direction, Asset asset, @NotNull int qty, @NotNull double price, @NotNull User user) {
+	public Order(EDirection direction, Asset asset, @NotNull int qty, @NotNull double price, @NotNull User user, @NotNull OrderStatus orderStatus) {
 		super();
 		this.direction = direction;
 		this.asset = asset;
@@ -66,6 +74,7 @@ public class Order implements Serializable {
 		this.price = price;
 		this.amount = price * qty;
 		this.user = user;
+		this.orderStatus = orderStatus;
 	}
 
 	public Long getId() {
@@ -122,6 +131,22 @@ public class Order implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
+	}
+
+	public int getQty_exec() {
+		return qty_exec;
+	}
+
+	public void setQty_exec(int qty_exec) {
+		this.qty_exec = qty_exec;
+	}
+
+	public OrderStatus getOrderStatus() {
+		return orderStatus;
+	}
+
+	public void setOrderStatus(OrderStatus orderStatus) {
+		this.orderStatus = orderStatus;
 	}
 
 }
