@@ -21,6 +21,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "ASSET")
 public class Asset implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8337101973240362473L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
@@ -35,11 +40,10 @@ public class Asset implements Serializable {
 	private boolean isShare = true;
 	
 	@NotNull
-	@ManyToOne(targetEntity = User.class, fetch = FetchType.LAZY)
+	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "ISSUER_ID")
-	@JsonBackReference
 	private User issuer;
-
+	
 	// CONSTRUCTOR
 	public Asset(String name, boolean isShare, User issuer) {
 		this.name = name;
