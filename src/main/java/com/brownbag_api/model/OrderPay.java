@@ -1,7 +1,6 @@
 package com.brownbag_api.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,22 +14,16 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
 import com.brownbag_api.model.data.EOrderDir;
 import com.brownbag_api.model.data.EOrderStatus;
-import com.brownbag_api.model.data.EOrderType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name = "ORDER_BASE")
-public class Order implements Serializable {
+@Table(name = "ORDER_PAY")
+public class OrderPay implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +33,15 @@ public class Order implements Serializable {
 	@NotNull
 	@Column(name = "AMOUNT")
 	private double amount;
+
+	@NotNull
+	@ManyToOne(targetEntity = Asset.class)
+	@JoinColumn(name = "ASSET_ID")
+	private Asset asset;
+
+	@Enumerated(EnumType.STRING)
+	@Column(length = 4)
+	private EOrderDir direction;
 
 	@NotNull
 	@Column(name = "PRICE")
@@ -54,67 +56,21 @@ public class Order implements Serializable {
 	private int qty_exec;
 
 	@NotNull
-	@ManyToOne(targetEntity = Asset.class)
-	@JoinColumn(name = "ASSET_ID")
-	private Asset asset;
-
-	@Enumerated(EnumType.STRING)
-	@Column(length = 4)
-	private EOrderDir orderDir;
-
-	@Enumerated(EnumType.STRING)
-	@Column(length = 4)
-	private EOrderType orderType;
-
-	@Enumerated(EnumType.STRING)
-	@Column(length = 4)
-	private EOrderStatus orderStatus;
-	
-	@CreationTimestamp
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "TS_INS", updatable = false)
-	private Date timestampCreate;
-	
-	@UpdateTimestamp
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "TS_LAST_MODIFIED")
-	private Date timestampModified;
-	
-	@NotNull
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "USER_ID")
 	private User user;
-
-	public Order() {
+		
+	public OrderPay() {
 	}
 
-	public Order(EOrderDir orderDir, EOrderType orderType, Asset asset, @NotNull int qty, @NotNull double price,
-			@NotNull User user, @NotNull EOrderStatus orderStatus) {
+	public OrderPay(EOrderDir direction, Asset asset, @NotNull int qty, @NotNull double price, @NotNull User user) {
 		super();
-		this.orderDir = orderDir;
-		this.orderType = orderType;
+		this.direction = direction;
 		this.asset = asset;
 		this.qty = qty;
 		this.price = price;
 		this.amount = price * qty;
 		this.user = user;
-		this.orderStatus = orderStatus;
-	}
-
-	public EOrderDir getOrderDir() {
-		return orderDir;
-	}
-
-	public void setOrderDir(EOrderDir orderDir) {
-		this.orderDir = orderDir;
-	}
-
-	public EOrderType getOrderType() {
-		return orderType;
-	}
-
-	public void setOrderType(EOrderType orderType) {
-		this.orderType = orderType;
 	}
 
 	public Long getId() {
@@ -126,11 +82,11 @@ public class Order implements Serializable {
 	}
 
 	public EOrderDir getDirection() {
-		return orderDir;
+		return direction;
 	}
 
 	public void setDirection(EOrderDir direction) {
-		this.orderDir = direction;
+		this.direction = direction;
 	}
 
 	public Asset getAsset() {
@@ -181,13 +137,5 @@ public class Order implements Serializable {
 		this.qty_exec = qty_exec;
 	}
 
-	public EOrderStatus getOrderStatus() {
-		return orderStatus;
-	}
 
-	public void setOrderStatus(EOrderStatus orderStatus) {
-		this.orderStatus = orderStatus;
-	}
-	
-	
 }

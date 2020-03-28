@@ -27,12 +27,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.Order;
-import com.brownbag_api.model.OrderStatus;
 import com.brownbag_api.model.User;
 import com.brownbag_api.model.data.EOrderStatus;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.OrderRepo;
-import com.brownbag_api.repo.OrderStatusRepo;
 import com.brownbag_api.security.payload.request.LoginRequest;
 import com.brownbag_api.security.payload.response.JwtResponse;
 import com.brownbag_api.security.repo.UserRepo;
@@ -49,10 +47,7 @@ public class OrderController {
 	
 	@Autowired
 	private OrderRepo orderRepo;
-	
-	@Autowired
-	private OrderStatusRepo orderStatusRepo;
-	
+		
 	@Autowired
 	private OrderSvc orderSvc;
 	
@@ -81,8 +76,7 @@ public class OrderController {
 		User user = userRepo.findById(userDetailsImpl.getId())
 				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
 		order.setUser(user);
-		OrderStatus orderStatus = orderStatusRepo.findByIntlId(EOrderStatus.NEW.intlId);
-		order.setOrderStatus(orderStatus);
+		order.setOrderStatus(EOrderStatus.NEW);
 		orderSvc.place(order);
 		return ResponseEntity.ok("Order has been placed successfully!");
 	}

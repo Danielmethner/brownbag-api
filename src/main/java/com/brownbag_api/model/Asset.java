@@ -36,8 +36,8 @@ public class Asset implements Serializable {
 	private String name;
 
 	@NotNull
-	@Column(name = "IS_SHARE", columnDefinition = "tinyint default false")
-	private boolean isShare = true;
+	@Column(name = "IS_MACC", columnDefinition = "tinyint default false")
+	private boolean isMacc = false;
 	
 	@NotNull
 	@ManyToOne(targetEntity = User.class)
@@ -47,7 +47,7 @@ public class Asset implements Serializable {
 	// CONSTRUCTOR
 	public Asset(String name, boolean isShare, User issuer) {
 		this.name = name;
-		this.isShare = isShare;
+		this.isMacc = isShare;
 		this.issuer = issuer;
 	}
 	
@@ -75,11 +75,11 @@ public class Asset implements Serializable {
 	}
 
 	public boolean isShare() {
-		return isShare;
+		return isMacc;
 	}
 
 	public void setShare(boolean isShare) {
-		this.isShare = isShare;
+		this.isMacc = isShare;
 	}
 
 	public User getIssuer() {

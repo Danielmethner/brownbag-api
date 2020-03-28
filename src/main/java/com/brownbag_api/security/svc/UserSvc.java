@@ -4,8 +4,8 @@ import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 
-import com.brownbag_api.model.ERole;
 import com.brownbag_api.model.User;
+import com.brownbag_api.model.data.ERole;
 
 public interface UserSvc {
 	public void save(User user);

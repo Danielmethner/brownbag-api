@@ -1,7 +1,7 @@
 package com.brownbag_api.model.data;
 
 public enum EOrderStatus {
-	NEW("New"), PLACED("Placed");
+	NEW("New"), HOLD("Hold"), PLACED("Placed"), DONE("Done");
 	
 	public final String name;
 	public final String intlId;

@@ -20,9 +20,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brownbag_api.model.ERole;
 import com.brownbag_api.model.Role;
 import com.brownbag_api.model.User;
+import com.brownbag_api.model.data.ERole;
 import com.brownbag_api.security.jwt.JwtUtils;
 import com.brownbag_api.security.payload.request.LoginRequest;
 import com.brownbag_api.security.payload.request.SignupRequest;
