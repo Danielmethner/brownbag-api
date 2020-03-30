@@ -32,6 +32,9 @@ public class Log {
 	@Column(name = "MSG")
 	private String message;
 
+	public Log() {
+	}
+	
 	public Log(String message) {
 		setMessage(message);
 	}

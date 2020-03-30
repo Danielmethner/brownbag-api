@@ -7,16 +7,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.*;
+
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -25,12 +25,13 @@ import org.hibernate.annotations.UpdateTimestamp;
 import com.brownbag_api.model.data.EOrderDir;
 import com.brownbag_api.model.data.EOrderStatus;
 import com.brownbag_api.model.data.EOrderType;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name = "ORDER_BASE")
+@Table(name = "order_base")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Order implements Serializable {
+
+	private static final long serialVersionUID = -3458221490393509305L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,17 +70,17 @@ public class Order implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column(length = 4)
 	private EOrderStatus orderStatus;
-	
+
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "TS_INS", updatable = false)
 	private Date timestampCreate;
-	
+
 	@UpdateTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "TS_LAST_MODIFIED")
 	private Date timestampModified;
-	
+
 	@NotNull
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "USER_ID")
@@ -88,17 +89,14 @@ public class Order implements Serializable {
 	public Order() {
 	}
 
-	public Order(EOrderDir orderDir, EOrderType orderType, Asset asset, @NotNull int qty, @NotNull double price,
-			@NotNull User user, @NotNull EOrderStatus orderStatus) {
+	public Order(@NotNull int qty, @NotNull Asset asset, EOrderType orderType,
+			EOrderStatus orderStatus, @NotNull User user) {
 		super();
-		this.orderDir = orderDir;
-		this.orderType = orderType;
-		this.asset = asset;
 		this.qty = qty;
-		this.price = price;
-		this.amount = price * qty;
-		this.user = user;
+		this.asset = asset;
+		this.orderType = orderType;
 		this.orderStatus = orderStatus;
+		this.user = user;
 	}
 
 	public EOrderDir getOrderDir() {
@@ -188,6 +186,25 @@ public class Order implements Serializable {
 	public void setOrderStatus(EOrderStatus orderStatus) {
 		this.orderStatus = orderStatus;
 	}
-	
-	
+
+	public Date getTimestampCreate() {
+		return timestampCreate;
+	}
+
+	public void setTimestampCreate(Date timestampCreate) {
+		this.timestampCreate = timestampCreate;
+	}
+
+	public Date getTimestampModified() {
+		return timestampModified;
+	}
+
+	public void setTimestampModified(Date timestampModified) {
+		this.timestampModified = timestampModified;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 }

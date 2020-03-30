@@ -1,23 +1,20 @@
 package com.brownbag_api.model.data;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.Order;
-import com.brownbag_api.model.Position;
 import com.brownbag_api.model.Role;
 import com.brownbag_api.model.User;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.OrderRepo;
-import com.brownbag_api.repo.PosRepo;
+//import com.brownbag_api.repo.OrderRepo;
 import com.brownbag_api.security.repo.RoleRepo;
 import com.brownbag_api.security.repo.UserRepo;
 import com.brownbag_api.security.svc.UserSvc;
@@ -52,8 +49,8 @@ public class InitDataLoader {
 	// ---------------------------------------------------------------------
 	private void createRole(ERole eRole) {
 
-		if (!roleRepo.existsByName(eRole.name)) {
-			Role role = new Role(eRole.toString());
+		if (!roleRepo.existsByName(eRole.getName())) {
+			Role role = new Role(eRole.getName());
 			roleRepo.save(role);
 		}
 	}
@@ -113,9 +110,9 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 	// ORDERS
 	// -----------------------------------------------------------
-	private void createOrder(EOrderDir eDirection, EOrderType eOrderType, Asset asset, int qty, double price,
+	private void createOrder(EOrderDir orderDir, EOrderType orderType, Asset asset, int qty, double price,
 			@NotNull User user, @NotNull EOrderStatus orderStatus) {
-		Order order = new Order(eDirection, eOrderType, asset, qty, price, user, orderStatus);
+		Order order = new Order(qty, asset, orderType, orderStatus, user);
 		orderSvc.execAction(order, EOrderAction.HOLD);
 	}
 

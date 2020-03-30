@@ -6,10 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Asset;
-import com.brownbag_api.model.Order;
 import com.brownbag_api.model.Position;
 import com.brownbag_api.model.User;
-import com.brownbag_api.repo.OrderRepo;
 import com.brownbag_api.repo.PosRepo;
 
 @Service
