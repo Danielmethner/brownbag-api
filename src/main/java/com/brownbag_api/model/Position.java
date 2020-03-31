@@ -18,12 +18,13 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "POSITION")
 public class Position implements Serializable {
 
+	private static final long serialVersionUID = 1530699992135610397L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
 	private Long id;
 
-	@NotNull
 	@Column(name = "PRICE_AVG")
 	private double priceAvg;
 
@@ -37,21 +38,20 @@ public class Position implements Serializable {
 	public Asset asset;
 
 	@NotNull
-	@ManyToOne(targetEntity = User.class)
-	@JoinColumn(name = "USER_ID")
+	@ManyToOne(targetEntity = LegalEntity.class)
+	@JoinColumn(name = "LE_OWNER_ID")
 	@JsonBackReference
-	private User posUser;
+	private LegalEntity owner;
 
 	public Position() {
 	}
 
-	public Position(Long id, @NotNull double priceAvg, @NotNull int qty, @NotNull Asset asset, @NotNull User user) {
+	public Position(@NotNull double priceAvg, @NotNull int qty, @NotNull Asset asset, @NotNull LegalEntity owner) {
 		super();
-		this.id = id;
 		this.priceAvg = priceAvg;
 		this.qty = qty;
 		this.asset = asset;
-		this.posUser = user;
+		this.owner = owner;
 	}
 
 	public double getPriceAvg() {
@@ -70,20 +70,28 @@ public class Position implements Serializable {
 		this.qty = qty;
 	}
 
-	public User getUser() {
-		return posUser;
-	}
-
-	public void setUser(User user) {
-		this.posUser = user;
-	}
-
 	public Long getId() {
 		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Asset getAsset() {
+		return asset;
+	}
+
+	public void setAsset(Asset asset) {
+		this.asset = asset;
+	}
+
+	public LegalEntity getOwner() {
+		return owner;
+	}
+
+	public void setOwner(LegalEntity owner) {
+		this.owner = owner;
 	}
 
 }

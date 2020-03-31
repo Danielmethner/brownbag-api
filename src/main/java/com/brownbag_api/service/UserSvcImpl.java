@@ -1,4 +1,4 @@
-package com.brownbag_api.security.svc;
+package com.brownbag_api.service;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,10 +14,10 @@ import com.brownbag_api.model.User;
 import com.brownbag_api.model.data.EAsset;
 import com.brownbag_api.model.data.ERole;
 import com.brownbag_api.repo.AssetRepo;
+import com.brownbag_api.repo.RoleRepo;
+import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.payload.response.MsgResponse;
-import com.brownbag_api.security.repo.RoleRepo;
-import com.brownbag_api.security.repo.UserRepo;
-import com.brownbag_api.service.PosSvc;
+import com.brownbag_api.security.svc.UserSvc;
 
 @Service
 public class UserSvcImpl implements UserSvc {
@@ -33,6 +33,9 @@ public class UserSvcImpl implements UserSvc {
 
 	@Autowired
 	PosSvc posSvc;
+	
+	@Autowired
+	LESvc lESvc;
 
 	@Autowired
 	PasswordEncoder encoder;
@@ -77,7 +80,7 @@ public class UserSvcImpl implements UserSvc {
 		Set<Role> roles = new HashSet<>();
 
 		if (strRoles == null) {
-			Role userRole = roleRepo.findByName(ERole.ROLE_TRADER.toString());
+			Role userRole = roleRepo.findByName(ERole.ROLE_MGR.getName());
 			roles.add(userRole);
 		} else {
 			strRoles.forEach(strRole -> {
@@ -93,16 +96,19 @@ public class UserSvcImpl implements UserSvc {
 		// ---------------------------------------------------------------------
 		// PERSIST USER
 		// ---------------------------------------------------------------------
-		userRepo.save(user);
-		
+		user = userRepo.save(user);
+
 		// ---------------------------------------------------------------------
-		// ADD CASH ACCOUNT
+		// ADD NATURAL PERSON WITH MACC
 		// ---------------------------------------------------------------------
-		if (userSvc.hasRole(user, ERole.ROLE_TRADER)) {
-			Asset assetCash = assetRepo.findByName(EAsset.CASH.getName());
-			posSvc.createPosition(1000000, user, assetCash, 1);
+		for (Role role : user.getRoles()) {
+			String roleName = role.getName();
+			if (roleName.equals(ERole.ROLE_MGR.getName())) {
+				lESvc.createNaturalPerson(user);
+				break;
+			}
 		}
-		
+ 
 		return ResponseEntity.ok(new MsgResponse("User registered successfully!"));
 	}
 

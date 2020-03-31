@@ -39,29 +39,8 @@ public class Order implements Serializable {
 	private Long id;
 
 	@NotNull
-	@Column(name = "AMOUNT")
-	private double amount;
-
-	@NotNull
-	@Column(name = "PRICE")
-	private double price;
-
-	@NotNull
 	@Column(name = "QTY")
 	private int qty;
-
-	@NotNull
-	@Column(name = "QTY_EXEC")
-	private int qty_exec;
-
-	@NotNull
-	@ManyToOne(targetEntity = Asset.class)
-	@JoinColumn(name = "ASSET_ID")
-	private Asset asset;
-
-	@Enumerated(EnumType.STRING)
-	@Column(length = 4)
-	private EOrderDir orderDir;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 4)
@@ -70,6 +49,11 @@ public class Order implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column(length = 4)
 	private EOrderStatus orderStatus;
+	
+	@NotNull
+	@ManyToOne(targetEntity = Asset.class)
+	@JoinColumn(name = "ASSET_ID")
+	private Asset asset;
 
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
@@ -89,8 +73,8 @@ public class Order implements Serializable {
 	public Order() {
 	}
 
-	public Order(@NotNull int qty, @NotNull Asset asset, EOrderType orderType,
-			EOrderStatus orderStatus, @NotNull User user) {
+	public Order(@NotNull int qty, @NotNull Asset asset, EOrderType orderType, EOrderStatus orderStatus,
+			@NotNull User user) {
 		super();
 		this.qty = qty;
 		this.asset = asset;
@@ -98,15 +82,6 @@ public class Order implements Serializable {
 		this.orderStatus = orderStatus;
 		this.user = user;
 	}
-
-	public EOrderDir getOrderDir() {
-		return orderDir;
-	}
-
-	public void setOrderDir(EOrderDir orderDir) {
-		this.orderDir = orderDir;
-	}
-
 	public EOrderType getOrderType() {
 		return orderType;
 	}
@@ -121,14 +96,6 @@ public class Order implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public EOrderDir getDirection() {
-		return orderDir;
-	}
-
-	public void setDirection(EOrderDir direction) {
-		this.orderDir = direction;
 	}
 
 	public Asset getAsset() {
@@ -147,21 +114,6 @@ public class Order implements Serializable {
 		this.qty = qty;
 	}
 
-	public double getPrice() {
-		return price;
-	}
-
-	public void setPrice(double price) {
-		this.price = price;
-	}
-
-	public double getAmount() {
-		return amount;
-	}
-
-	public void setAmount(double amount) {
-		this.amount = amount;
-	}
 
 	public User getUser() {
 		return user;
@@ -169,14 +121,6 @@ public class Order implements Serializable {
 
 	public void setUser(User user) {
 		this.user = user;
-	}
-
-	public int getQty_exec() {
-		return qty_exec;
-	}
-
-	public void setQty_exec(int qty_exec) {
-		this.qty_exec = qty_exec;
 	}
 
 	public EOrderStatus getOrderStatus() {

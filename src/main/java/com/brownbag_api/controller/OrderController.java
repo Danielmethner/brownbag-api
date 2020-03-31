@@ -6,8 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.repo.AssetRepo;
-//import com.brownbag_api.repo.OrderRepo;
-import com.brownbag_api.security.repo.UserRepo;
+import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.service.OrderSvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)

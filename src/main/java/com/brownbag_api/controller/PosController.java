@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.Position;
 import com.brownbag_api.model.User;
+import com.brownbag_api.repo.LERepo;
 import com.brownbag_api.repo.PosRepo;
-import com.brownbag_api.security.repo.UserRepo;
+import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.svc.UserDetailsImpl;
+import com.brownbag_api.security.svc.UserSvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -26,22 +28,26 @@ public class PosController {
 	private PosRepo posRepo;
 
 	@Autowired
-	UserRepo userRepo;
+	LERepo lERepo;
+	
+	@Autowired
+	UserSvc userSvc;
 
 	@GetMapping("/all")
 	public List<Position> getAll() {
 		return posRepo.findAll();
 	}
 
-	@RequestMapping(value = "/user", method = RequestMethod.GET)
-	@ResponseBody
-	public List<Position> getByUser(Authentication authentication) {
-
-		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-		User user = userRepo.findById(userDetailsImpl.getId())
-				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
-		List<Position> positions = posRepo.findByPosUser(user);
-		return positions ;
-	}
+//	@RequestMapping(value = "/user", method = RequestMethod.GET)
+//	@ResponseBody
+//	public List<Position> getByUser(Authentication authentication) {
+//
+//		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
+//		User user = userRepo.findById(userDetailsImpl.getId())
+//				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
+//		
+//		List<Position> positions = posRepo.findByOwner(.getNaturalPerson());
+//		return positions ;
+//	}
 
 }

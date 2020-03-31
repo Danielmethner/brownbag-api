@@ -1,4 +1,4 @@
-package com.brownbag_api.security.repo;
+package com.brownbag_api.repo;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

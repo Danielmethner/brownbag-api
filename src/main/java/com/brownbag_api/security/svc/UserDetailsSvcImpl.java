@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.brownbag_api.model.User;
-import com.brownbag_api.security.repo.UserRepo;
+import com.brownbag_api.repo.UserRepo;
 
 
 @Service

@@ -18,14 +18,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.repo.RoleRepo;
+import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.jwt.JwtUtils;
 import com.brownbag_api.security.payload.request.LoginRequest;
 import com.brownbag_api.security.payload.request.SignupRequest;
 import com.brownbag_api.security.payload.response.JwtResponse;
-import com.brownbag_api.security.repo.RoleRepo;
-import com.brownbag_api.security.repo.UserRepo;
 import com.brownbag_api.security.svc.UserDetailsImpl;
-import com.brownbag_api.security.svc.UserSvcImpl;
+import com.brownbag_api.service.UserSvcImpl;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

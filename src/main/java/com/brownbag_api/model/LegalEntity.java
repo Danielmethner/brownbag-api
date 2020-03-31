@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,14 +18,14 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Entity
-@Table(name = "ASSET")
-@Inheritance(strategy=InheritanceType.JOINED)
-public class Asset implements Serializable {
+import com.brownbag_api.model.data.ELEType;
+import com.brownbag_api.model.data.EOrderType;
 
-	/**
-	 * 
-	 */
+@Entity
+@Table(name = "LEGAL_ENTITY")
+@Inheritance(strategy = InheritanceType.JOINED)
+public class LegalEntity implements Serializable {
+
 	private static final long serialVersionUID = -8337101973240362473L;
 
 	@Id
@@ -36,25 +38,26 @@ public class Asset implements Serializable {
 	private String name;
 
 	@NotNull
-	@Column(name = "IS_MACC", columnDefinition = "tinyint default false")
-	private boolean isMacc = false;
-	
+	@Enumerated(EnumType.STRING)
+	@Column(length = 50)
+	private ELEType legalEntityType;
+
 	@NotNull
-	@ManyToOne(targetEntity = LegalEntity.class)
-	@JoinColumn(name = "ISSUER_ID")
-	private LegalEntity issuer;
-	
+	@ManyToOne(targetEntity = User.class)
+	@JoinColumn(name = "USER_MGR_ID")
+	private User manager;
+
 	// CONSTRUCTOR
-	public Asset(String name, boolean isShare, LegalEntity issuer) {
+	public LegalEntity(String name, User manager, ELEType legalEntityType) {
 		this.name = name;
-		this.isMacc = isShare;
-		this.issuer = issuer;
+		this.manager = manager;
+		this.legalEntityType = legalEntityType;
 	}
-	
-	public Asset() {
+
+	public LegalEntity() {
 	}
-	
-	public Asset(Long id) {
+
+	public LegalEntity(Long id) {
 		this.id = id;
 	}
 
@@ -74,25 +77,24 @@ public class Asset implements Serializable {
 		this.name = name;
 	}
 
-	public LegalEntity getIssuer() {
-		return issuer;
+	public User getManager() {
+		return manager;
 	}
 
-	public void setIssuer(LegalEntity issuer) {
-		this.issuer = issuer;
-	}
-
-	public boolean isMacc() {
-		return isMacc;
-	}
-
-	public void setMacc(boolean isMacc) {
-		this.isMacc = isMacc;
+	public void setManager(User manager) {
+		this.manager = manager;
 	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
-	
+
+	public ELEType getLegalEntityType() {
+		return legalEntityType;
+	}
+
+	public void setLegalEntityType(ELEType legalEntityType) {
+		this.legalEntityType = legalEntityType;
+	}
+
 }

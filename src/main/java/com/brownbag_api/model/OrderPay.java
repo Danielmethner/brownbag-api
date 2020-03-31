@@ -7,6 +7,9 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.brownbag_api.model.data.EOrderStatus;
+import com.brownbag_api.model.data.EOrderType;
+
 @Entity
 @Table(name="order_pay")
 public class OrderPay extends Order implements Serializable {
@@ -22,6 +25,14 @@ public class OrderPay extends Order implements Serializable {
 
 	public OrderPay(@NotNull String bookText) {
 		super();
+		this.bookText = bookText;
+	}
+	
+	
+
+	public OrderPay(@NotNull int qty, @NotNull Asset asset, EOrderType orderType, EOrderStatus orderStatus,
+			@NotNull User user, @NotNull String bookText) {
+		super(qty, asset, orderType, orderStatus, user);
 		this.bookText = bookText;
 	}
 
