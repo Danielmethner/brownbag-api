@@ -16,12 +16,13 @@ import com.brownbag_api.model.LegalEntity;
 import com.brownbag_api.model.Role;
 import com.brownbag_api.model.User;
 import com.brownbag_api.repo.AssetRepo;
+import com.brownbag_api.repo.LERepo;
 import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.OrderRepo;
-import com.brownbag_api.repo.OrgRepo;
 import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.svc.UserSvc;
+import com.brownbag_api.service.LESvc;
 import com.brownbag_api.service.OrderSvc;
 import com.brownbag_api.service.PosSvc;
 
@@ -35,7 +36,13 @@ public class InitDataLoader {
 
 	@Autowired
 	private AssetRepo assetRepo;
-
+	
+	@Autowired
+	private LESvc lESvc;
+	
+	@Autowired
+	private LERepo lERepo;
+	
 	@Autowired
 	private OrderRepo orderRepo;
 
@@ -45,9 +52,6 @@ public class InitDataLoader {
 	@Autowired
 	private OrderSvc orderSvc;
 	
-	@Autowired
-	private OrgRepo orgRepo;
-
 	@Autowired
 	private PosSvc posSvc;
 
@@ -87,68 +91,75 @@ public class InitDataLoader {
 	// ---------------------------------------------------------------------
 	
 	// -----------------------------------------------------------
-	// USERS
+	// ASSET
+	// -----------------------------------------------------------
+	private void createAsset(String name, boolean isShare, LegalEntity issuer) {
+		Asset asset = new Asset(name, isShare, issuer);
+		assetRepo.save(asset);
+	}
+	
+	// -----------------------------------------------------------
+	// USER
 	// -----------------------------------------------------------
 	public void createUser(EUser eUser, ERole eRole) {
 		Set<String> roles = new HashSet<>();
 		roles.add(eRole.getName());
 		userSvc.registerUser(eUser.toString(), eUser.name(), eUser.toString(), roles);
 	}
+	// -----------------------------------------------------------
+	// USERS
+	// -----------------------------------------------------------
+	private void createOrgUsers() {
+		// ORGANISATIONS
+		createUser(EUser.MGR_CENTRAL_BANK, ERole.ROLE_ORG);
+		createUser(EUser.MGR_DEUTSCHE_BANK, ERole.ROLE_ORG);
+		createUser(EUser.MGR_GOVERNMENT, ERole.ROLE_ORG);
+		// BROKER
+		createUser(EUser.U_BROKER, ERole.ROLE_BROKER);
+	}
+		
+	
+	public void createCentralBank() {
+		User mgr;
+		mgr = userRepo.findByUsername(EUser.MGR_CENTRAL_BANK.toString());
+		LegalEntity orgCentralBank = lESvc.createLE(ELE.CENTRAL_BANK, mgr, ELEType.ORG_GOVT, false);
+		createAsset(EAsset.CASH.getName(), true, orgCentralBank);
+		posSvc.createMacc(0, orgCentralBank, 100000000);
+	}
+
 	
 	// -----------------------------------------------------------
 	// LEGAL ENTITIES
 	// -----------------------------------------------------------
-	private void createOrgUsers() {
-		createUser(EUser.MGR_CENTRAL_BANK, ERole.ROLE_ORG);
-		createUser(EUser.MGR_DEUTSCHE_BANK, ERole.ROLE_ORG);
-		createUser(EUser.MGR_GOVERNMENT, ERole.ROLE_ORG);
-	}
-	
-	public void createLegalEntity(ELE eOrg, User manager, ELEType legalEntityType) {
-		LegalEntity org = new LegalEntity(eOrg.toString(), manager, legalEntityType);
-		orgRepo.save(org);
-	}
-	
 	public void createLegalEntities() {
 		User mgr;
-		mgr = userRepo.findByUsername(EUser.MGR_CENTRAL_BANK.toString());
-		createLegalEntity(ELE.CENTRAL_BANK, mgr, ELEType.ORG_GOVT);
 		mgr = userRepo.findByUsername(EUser.MGR_DEUTSCHE_BANK.toString());
-		createLegalEntity(ELE.DEUTSCHE_BANK, mgr, ELEType.PERSON_LEGAL);
+		lESvc.createLE(ELE.DEUTSCHE_BANK, mgr, ELEType.PERSON_LEGAL, true);
 		mgr = userRepo.findByUsername(EUser.MGR_GOVERNMENT.toString());
-		createLegalEntity(ELE.GOVERNMENT, mgr, ELEType.ORG_GOVT);
+		lESvc.createLE(ELE.GOVERNMENT, mgr, ELEType.ORG_GOVT, true);
+		mgr = userRepo.findByUsername(EUser.U_BROKER.toString());
+		lESvc.createLE(ELE.BROKER, mgr, ELEType.PERSON_LEGAL, true);
 	}
 	
 	// -----------------------------------------------------------
 	// ASSETS
 	// -----------------------------------------------------------
-	private void createAsset(String name, boolean isShare, LegalEntity issuer) {
-		Asset asset = new Asset(name, isShare, issuer);
-		assetRepo.save(asset);
-	}
-
 	private void createAssets() {
-		LegalEntity orgCentralBank = orgRepo.findByName(ELE.CENTRAL_BANK.toString());
-		createAsset(EAsset.CASH.getName(), true, orgCentralBank);
-		LegalEntity orgGovernment = orgRepo.findByName(ELE.GOVERNMENT.toString());
+		LegalEntity orgGovernment = lERepo.findByName(ELE.GOVERNMENT.toString());
 		createAsset(EAsset.GOVERNMENT_BOND.getName(), false, orgGovernment);
-		LegalEntity orgDeutscheBank = orgRepo.findByName(ELE.DEUTSCHE_BANK.toString());
+		LegalEntity orgDeutscheBank = lERepo.findByName(ELE.DEUTSCHE_BANK.toString());
 		createAsset(EAsset.DEUTSCHE_BANK.getName(), false, orgDeutscheBank);
 	}
+	
+	
 
 	// -----------------------------------------------------------
 	// PERSONS
 	// -----------------------------------------------------------
 	public void createUsers() {
-		// BROKER
-		createUser(EUser.U_BROKER, ERole.ROLE_BROKER);
 		// MANAGERS
 		createUser(EUser.U_TRADER_1, ERole.ROLE_MGR);
 		createUser(EUser.U_TRADER_2, ERole.ROLE_MGR);
-	}
-	
-	public void createPerson() {
-		
 	}
 
 	// -----------------------------------------------------------
@@ -191,28 +202,13 @@ public class InitDataLoader {
 		createOrdersStex();
 	}
 
-	// -----------------------------------------------------------
-	// POSITIONS TODO (to be generated by Orders)
-	// -----------------------------------------------------------
-	private void createPosition(int qty, double priceAvg, @NotNull Asset cash, @NotNull LegalEntity owner) {
-		posSvc.createPosition(qty, owner, cash, priceAvg);
-	}
-
-	private void createPositions() {
-		Asset deutscheBank = assetRepo.findByName(EAsset.DEUTSCHE_BANK.getName());
-		
-//		createPosition(20000, 10, deutscheBank, userTrader1);
-//		createPosition(34000, 10, deutscheBank, userTrader2);
-
-	}
-
 	public void createDemoData() {
 		createOrgUsers();
+		createCentralBank();
 		createLegalEntities();
 		createAssets();
 		createUsers();
 		createOrders();
-		createPositions();
 	}
 
 }

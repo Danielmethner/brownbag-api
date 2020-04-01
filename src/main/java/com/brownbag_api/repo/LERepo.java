@@ -13,6 +13,8 @@ import com.brownbag_api.model.data.ELEType;
 
 @Repository
 public interface LERepo extends JpaRepository<LegalEntity, Long> {
+	
+	LegalEntity findByName(String name);
 
 	List<LegalEntity> findByManagerAndLegalEntityType(User manager, ELEType eLEType);
 

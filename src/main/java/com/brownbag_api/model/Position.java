@@ -10,7 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -25,13 +27,25 @@ public class Position implements Serializable {
 	@Column(name = "ID")
 	private Long id;
 
+	@NotBlank
+	@Size(max = 100)
+	private String name;
+
 	@Column(name = "PRICE_AVG")
 	private double priceAvg;
 
 	@NotNull
 	@Column(name = "QTY")
-	private int qty;
-	
+	private double qty;
+
+	@NotNull
+	@Column(name = "QTY_BLOCKED")
+	private double qtyBlocked;
+
+	@NotNull
+	@Column(name = "OVERDRAFT_LIMIT")
+	private double odLimit;
+
 	@NotNull
 	@ManyToOne(targetEntity = Asset.class)
 	@JoinColumn(name = "ASSET_ID")
@@ -46,12 +60,20 @@ public class Position implements Serializable {
 	public Position() {
 	}
 
-	public Position(@NotNull double priceAvg, @NotNull int qty, @NotNull Asset asset, @NotNull LegalEntity owner) {
+	public Position(double priceAvg, @NotNull double qty,
+			@NotNull double qtyBlocked, @NotNull double odLimit, @NotNull Asset asset, @NotNull LegalEntity owner) {
 		super();
 		this.priceAvg = priceAvg;
 		this.qty = qty;
+		this.qtyBlocked = qtyBlocked;
+		this.odLimit = odLimit;
 		this.asset = asset;
 		this.owner = owner;
+		this.name = genName();
+	}
+	
+	private String genName() {
+		return this.owner.getName() + ": " + this.asset.getName();
 	}
 
 	public double getPriceAvg() {
@@ -60,14 +82,6 @@ public class Position implements Serializable {
 
 	public void setPriceAvg(double priceAvg) {
 		this.priceAvg = priceAvg;
-	}
-
-	public int getQty() {
-		return qty;
-	}
-
-	public void setQty(int qty) {
-		this.qty = qty;
 	}
 
 	public Long getId() {
@@ -92,6 +106,18 @@ public class Position implements Serializable {
 
 	public void setOwner(LegalEntity owner) {
 		this.owner = owner;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

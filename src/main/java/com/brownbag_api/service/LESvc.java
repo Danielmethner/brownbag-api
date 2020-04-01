@@ -12,6 +12,7 @@ import com.brownbag_api.model.LegalEntity;
 import com.brownbag_api.model.Position;
 import com.brownbag_api.model.User;
 import com.brownbag_api.model.data.EAsset;
+import com.brownbag_api.model.data.ELE;
 import com.brownbag_api.model.data.ELEType;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.LERepo;
@@ -25,6 +26,15 @@ public class LESvc {
 		
 	@Autowired
 	private PosSvc posSvc;
+	
+	public LegalEntity createLE(ELE eOrg, User manager, ELEType legalEntityType, boolean addMacc) {
+		LegalEntity le = new LegalEntity(eOrg.toString(), manager, legalEntityType);
+		le = lERepo.save(le);
+		if (addMacc) { 
+			posSvc.createMacc(0, le, 0);
+		}
+		return le;
+	}
 
 	public LegalEntity getNaturalPerson(User manager) {
 		List<LegalEntity> lEs = lERepo.findByManagerAndLegalEntityType(manager, ELEType.PERSON_NATURAL);
@@ -40,7 +50,7 @@ public class LESvc {
 		if (getNaturalPerson(user) == null) {
 			LegalEntity natPerson = new LegalEntity(user.getName(), user, ELEType.PERSON_NATURAL);
 			lERepo.save(natPerson);
-			posSvc.createMacc(0, natPerson);			
+			posSvc.createMacc(0, natPerson, 0);			
 		}
 	}
 
