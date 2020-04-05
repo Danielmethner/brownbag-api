@@ -39,8 +39,8 @@ public class Order implements Serializable {
 	private Long id;
 
 	@NotNull
-	@Column(name = "QTY")
-	private int qty;
+	@Column(name = "BALANCE")
+	private double qty;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
@@ -106,11 +106,11 @@ public class Order implements Serializable {
 		this.asset = asset;
 	}
 
-	public int getQty() {
+	public double getQty() {
 		return qty;
 	}
 
-	public void setQty(int qty) {
+	public void setQty(double qty) {
 		this.qty = qty;
 	}
 

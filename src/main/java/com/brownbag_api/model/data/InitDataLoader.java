@@ -168,15 +168,12 @@ public class InitDataLoader {
 	// ORDERS
 	// -----------------------------------------------------------
 
-	private void createOrderPay(EOrderType orderType, int qty, @NotNull EUser eUser, @NotNull EOrderStatus orderStatus,
+	private void createOrderPay(int qty, @NotNull EUser eUser,
 			String bookText, Position maccSend, Position maccRcv) {
-
-		Asset assetCash = assetRepo.findByName(EAsset.CASH.getName());
 		
 		User user = userRepo.findByUsername(maccSend.getOwner().getUser().getUsername());
 		
-		OrderPay orderPay = new OrderPay(qty, assetCash, orderType, orderStatus, user, maccSend, maccRcv, bookText);
-		orderPayRepo.save(orderPay);
+		OrderPay orderPay = orderPaySvc.createPay(qty, user, null, bookText, maccSend, maccRcv);
 		orderSvc.execAction(orderPay, EOrderAction.HOLD);
 		orderPaySvc.execPay(orderPay);
 
@@ -193,7 +190,7 @@ public class InitDataLoader {
 		LegalEntity leRcv = userSvc.getNaturalPerson(userRcv);
 		Position maccRcv = lESvc.getMacc(leRcv);
 
-		createOrderPay(EOrderType.PAY, 10, EUser.U_TRADER_1, EOrderStatus.NEW, null, maccSend, maccRcv);
+		createOrderPay(10, EUser.U_TRADER_1, null, maccSend, maccRcv);
 	}
 
 	private void createOrderStex(EOrderDir orderDir, EOrderType orderType, Asset asset, int qty, double price,

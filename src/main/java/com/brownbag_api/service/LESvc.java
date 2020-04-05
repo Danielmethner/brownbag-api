@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.LegalEntity;
+import com.brownbag_api.model.OrderPay;
 import com.brownbag_api.model.Position;
 import com.brownbag_api.model.User;
 import com.brownbag_api.model.data.EAsset;
@@ -27,12 +28,18 @@ public class LESvc {
 	@Autowired
 	private PosSvc posSvc;
 
+	@Autowired
+	private OrderPaySvc orderPaySvc;
+
+	@Autowired
+	private LESvc lESvc;
+
 	/**
 	 * 
 	 * @param eOrg
-	 * @param user - managing user
+	 * @param user            - managing user
 	 * @param legalEntityType - Legal or natural person
-	 * @param addMacc - create MACC for newly created Legal Entity
+	 * @param addMacc         - create MACC for newly created Legal Entity
 	 * @return
 	 */
 	public LegalEntity createLE(ELE eOrg, User user, ELEType legalEntityType, boolean addMacc) {
@@ -51,9 +58,12 @@ public class LESvc {
 
 	public void createNaturalPerson(User user) {
 		if (getNaturalPerson(user) == null) {
+			
 			LegalEntity natPerson = new LegalEntity(user.getName(), user, ELEType.PERSON_NATURAL);
 			lERepo.save(natPerson);
-			posSvc.createMacc(0, natPerson, 0);
+		
+			// ADD MACC
+			posSvc.createMacc(100000, natPerson, 0);
 		}
 	}
 
