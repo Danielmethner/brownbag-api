@@ -12,6 +12,7 @@ import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.Order;
 import com.brownbag_api.model.OrderPay;
 import com.brownbag_api.model.OrderStex;
+import com.brownbag_api.model.Position;
 import com.brownbag_api.model.LegalEntity;
 import com.brownbag_api.model.Role;
 import com.brownbag_api.model.User;
@@ -23,6 +24,7 @@ import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.svc.UserSvc;
 import com.brownbag_api.service.LESvc;
+import com.brownbag_api.service.OrderPaySvc;
 import com.brownbag_api.service.OrderSvc;
 import com.brownbag_api.service.PosSvc;
 
@@ -36,13 +38,13 @@ public class InitDataLoader {
 
 	@Autowired
 	private AssetRepo assetRepo;
-	
+
 	@Autowired
 	private LESvc lESvc;
-	
+
 	@Autowired
 	private LERepo lERepo;
-	
+
 	@Autowired
 	private OrderRepo orderRepo;
 
@@ -51,7 +53,10 @@ public class InitDataLoader {
 
 	@Autowired
 	private OrderSvc orderSvc;
-	
+
+	@Autowired
+	private OrderPaySvc orderPaySvc;
+
 	@Autowired
 	private PosSvc posSvc;
 
@@ -63,7 +68,7 @@ public class InitDataLoader {
 	// CREATE PARAM DATA
 	// ---------------------------------------------------------------------
 	// ---------------------------------------------------------------------
-	
+
 	// -----------------------------------------------------------
 	// ROLES
 	// -----------------------------------------------------------
@@ -89,7 +94,7 @@ public class InitDataLoader {
 	// CREATE DEMO DATA
 	// ---------------------------------------------------------------------
 	// ---------------------------------------------------------------------
-	
+
 	// -----------------------------------------------------------
 	// ASSET
 	// -----------------------------------------------------------
@@ -97,7 +102,7 @@ public class InitDataLoader {
 		Asset asset = new Asset(name, isShare, issuer);
 		assetRepo.save(asset);
 	}
-	
+
 	// -----------------------------------------------------------
 	// USER
 	// -----------------------------------------------------------
@@ -106,6 +111,7 @@ public class InitDataLoader {
 		roles.add(eRole.getName());
 		userSvc.registerUser(eUser.toString(), eUser.name(), eUser.toString(), roles);
 	}
+
 	// -----------------------------------------------------------
 	// USERS
 	// -----------------------------------------------------------
@@ -117,8 +123,7 @@ public class InitDataLoader {
 		// BROKER
 		createUser(EUser.U_BROKER, ERole.ROLE_BROKER);
 	}
-		
-	
+
 	public void createCentralBank() {
 		User mgr;
 		mgr = userRepo.findByUsername(EUser.MGR_CENTRAL_BANK.toString());
@@ -127,7 +132,6 @@ public class InitDataLoader {
 		posSvc.createMacc(0, orgCentralBank, 100000000);
 	}
 
-	
 	// -----------------------------------------------------------
 	// LEGAL ENTITIES
 	// -----------------------------------------------------------
@@ -140,7 +144,7 @@ public class InitDataLoader {
 		mgr = userRepo.findByUsername(EUser.U_BROKER.toString());
 		lESvc.createLE(ELE.BROKER, mgr, ELEType.PERSON_LEGAL, true);
 	}
-	
+
 	// -----------------------------------------------------------
 	// ASSETS
 	// -----------------------------------------------------------
@@ -150,8 +154,6 @@ public class InitDataLoader {
 		LegalEntity orgDeutscheBank = lERepo.findByName(ELE.DEUTSCHE_BANK.toString());
 		createAsset(EAsset.DEUTSCHE_BANK.getName(), false, orgDeutscheBank);
 	}
-	
-	
 
 	// -----------------------------------------------------------
 	// PERSONS
@@ -166,17 +168,32 @@ public class InitDataLoader {
 	// ORDERS
 	// -----------------------------------------------------------
 
-	private void createOrderPay(EOrderType orderType, Asset asset, int qty, @NotNull User user,
-			@NotNull EOrderStatus orderStatus, @NotNull String bookText) {
-		OrderPay orderPay = new OrderPay(qty, asset, orderType, orderStatus, user, bookText);
+	private void createOrderPay(EOrderType orderType, int qty, @NotNull EUser eUser, @NotNull EOrderStatus orderStatus,
+			String bookText, Position maccSend, Position maccRcv) {
+
+		Asset assetCash = assetRepo.findByName(EAsset.CASH.getName());
+		
+		User user = userRepo.findByUsername(maccSend.getOwner().getUser().getUsername());
+		
+		OrderPay orderPay = new OrderPay(qty, assetCash, orderType, orderStatus, user, maccSend, maccRcv, bookText);
 		orderPayRepo.save(orderPay);
 		orderSvc.execAction(orderPay, EOrderAction.HOLD);
+		orderPaySvc.execPay(orderPay);
+
 	}
 
 	private void createOrdersPay() {
-		Asset cash = assetRepo.findByName(EAsset.CASH.getName());
-		User userTrader = userRepo.findByUsername(EUser.U_TRADER_1.toString());
-		createOrderPay(EOrderType.PAY, cash, 10, userTrader, EOrderStatus.NEW, "first payment");
+
+		// GET MACC - SENDER
+		LegalEntity leSend = lERepo.findByName(ELE.CENTRAL_BANK.toString());
+		Position maccSend = lESvc.getMacc(leSend);
+
+		// GET MACC - RECIPIENT
+		User userRcv = userRepo.findByUsername(EUser.U_TRADER_1.toString());
+		LegalEntity leRcv = userSvc.getNaturalPerson(userRcv);
+		Position maccRcv = lESvc.getMacc(leRcv);
+
+		createOrderPay(EOrderType.PAY, 10, EUser.U_TRADER_1, EOrderStatus.NEW, null, maccSend, maccRcv);
 	}
 
 	private void createOrderStex(EOrderDir orderDir, EOrderType orderType, Asset asset, int qty, double price,

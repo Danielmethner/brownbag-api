@@ -14,4 +14,6 @@ public interface PosRepo extends JpaRepository<Position, Long> {
 
 	List<Position> findByOwner(LegalEntity owner);
 	
+	List<Position> findByOwnerAndIsMacc(LegalEntity owner, boolean isMacc);
+	
 }

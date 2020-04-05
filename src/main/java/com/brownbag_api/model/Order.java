@@ -43,11 +43,11 @@ public class Order implements Serializable {
 	private int qty;
 
 	@Enumerated(EnumType.STRING)
-	@Column(length = 4)
+	@Column(length = 10)
 	private EOrderType orderType;
 
 	@Enumerated(EnumType.STRING)
-	@Column(length = 4)
+	@Column(length = 10)
 	private EOrderStatus orderStatus;
 	
 	@NotNull

@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Asset;
+import com.brownbag_api.model.LegalEntity;
 import com.brownbag_api.model.Role;
 import com.brownbag_api.model.User;
 import com.brownbag_api.model.data.EAsset;
@@ -116,5 +117,16 @@ public class UserSvcImpl implements UserSvc {
 	public ResponseEntity<?> registerUser(String userName, String password, Set<String> eRoles) {
 		return registerUser(userName, userName, password, eRoles);
 
+	}
+	
+	@Override
+	public LegalEntity getOrganisation(User user) {
+		
+		return lESvc.getNaturalPerson(user);
+	}
+	
+	@Override
+	public LegalEntity getNaturalPerson(User user) {
+		return lESvc.getNaturalPerson(user);
 	}
 }

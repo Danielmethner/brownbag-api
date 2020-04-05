@@ -19,12 +19,7 @@ public class OrderSvc {
 	@Autowired
 	private OrderTransRepo orderTransRepo;
 
-//	public void place(Order order) {
-//		order.setAmount(order.getPrice() * order.getQty());
-//		orderRepo.save(order);
-//	}
-
-	public void execAction(Order order, EOrderAction orderAction) {
+	public Order execAction(Order order, EOrderAction orderAction) {
 		OrderTrans orderTrans = new OrderTrans();
 		orderTrans.setOrderStatusOld(order.getOrderStatus());
 		order.setOrderStatus(orderAction.getNewStatus());
@@ -33,6 +28,7 @@ public class OrderSvc {
 		order = orderRepo.save(order);
 		orderTrans.setOrder(order);
 		orderTransRepo.save(orderTrans);
+		return order;
 	}
 
 }

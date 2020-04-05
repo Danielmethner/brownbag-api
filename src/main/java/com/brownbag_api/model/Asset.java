@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "ASSET")
-@Inheritance(strategy=InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Asset implements Serializable {
 
 	/**
@@ -36,24 +36,24 @@ public class Asset implements Serializable {
 	private String name;
 
 	@NotNull
-	@Column(name = "IS_MACC", columnDefinition = "tinyint default false")
-	private boolean isMacc = false;
-	
+	@Column(name = "IS_CURRY", columnDefinition = "tinyint default false")
+	private boolean isCurry = false;
+
 	@NotNull
 	@ManyToOne(targetEntity = LegalEntity.class)
 	@JoinColumn(name = "ISSUER_ID")
 	private LegalEntity issuer;
-	
+
 	// CONSTRUCTOR
 	public Asset(String name, boolean isShare, LegalEntity issuer) {
 		this.name = name;
-		this.isMacc = isShare;
+		this.isCurry = isShare;
 		this.issuer = issuer;
 	}
-	
+
 	public Asset() {
 	}
-	
+
 	public Asset(Long id) {
 		this.id = id;
 	}
@@ -82,17 +82,16 @@ public class Asset implements Serializable {
 		this.issuer = issuer;
 	}
 
-	public boolean isMacc() {
-		return isMacc;
+	public boolean isCurry() {
+		return isCurry;
 	}
 
-	public void setMacc(boolean isMacc) {
-		this.isMacc = isMacc;
+	public void setCurry(boolean isCurry) {
+		this.isCurry = isCurry;
 	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
-	
+
 }

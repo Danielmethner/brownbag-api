@@ -44,13 +44,13 @@ public class LegalEntity implements Serializable {
 
 	@NotNull
 	@ManyToOne(targetEntity = User.class)
-	@JoinColumn(name = "USER_MGR_ID")
-	private User manager;
+	@JoinColumn(name = "USER_ID")
+	private User user;
 
 	// CONSTRUCTOR
-	public LegalEntity(String name, User manager, ELEType legalEntityType) {
+	public LegalEntity(String name, User user, ELEType legalEntityType) {
 		this.name = name;
-		this.manager = manager;
+		this.user = user;
 		this.legalEntityType = legalEntityType;
 	}
 
@@ -77,12 +77,12 @@ public class LegalEntity implements Serializable {
 		this.name = name;
 	}
 
-	public User getManager() {
-		return manager;
+	public User getUser() {
+		return user;
 	}
 
-	public void setManager(User manager) {
-		this.manager = manager;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public static long getSerialversionuid() {

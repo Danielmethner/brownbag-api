@@ -37,7 +37,7 @@ public class LESvc {
 	}
 
 	public LegalEntity getNaturalPerson(User manager) {
-		List<LegalEntity> lEs = lERepo.findByManagerAndLegalEntityType(manager, ELEType.PERSON_NATURAL);
+		List<LegalEntity> lEs = lERepo.findByUserAndLegalEntityType(manager, ELEType.PERSON_NATURAL);
 		if (!lEs.isEmpty()) {
 			LegalEntity natPerson = lEs.get(0);
 			return natPerson;
@@ -52,6 +52,11 @@ public class LESvc {
 			lERepo.save(natPerson);
 			posSvc.createMacc(0, natPerson, 0);			
 		}
+	}
+
+	public Position getMacc(LegalEntity le) {
+		return posSvc.findByOwnerAndIsMacc(le, true);
+		
 	}
 
 }

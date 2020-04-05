@@ -16,6 +16,6 @@ public interface LERepo extends JpaRepository<LegalEntity, Long> {
 	
 	LegalEntity findByName(String name);
 
-	List<LegalEntity> findByManagerAndLegalEntityType(User manager, ELEType eLEType);
+	List<LegalEntity> findByUserAndLegalEntityType(User user, ELEType eLEType);
 
 }

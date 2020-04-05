@@ -57,11 +57,15 @@ public class Position implements Serializable {
 	@JsonBackReference
 	private LegalEntity owner;
 
+	@NotNull
+	@Column(name = "IS_MACC", columnDefinition = "tinyint default false")
+	private boolean isMacc = false;
+
 	public Position() {
 	}
 
-	public Position(double priceAvg, @NotNull double qty,
-			@NotNull double qtyBlocked, @NotNull double odLimit, @NotNull Asset asset, @NotNull LegalEntity owner) {
+	public Position(double priceAvg, @NotNull double qty, @NotNull double qtyBlocked, @NotNull double odLimit,
+			@NotNull Asset asset, @NotNull LegalEntity owner, @NotNull boolean isMacc) {
 		super();
 		this.priceAvg = priceAvg;
 		this.qty = qty;
@@ -70,8 +74,9 @@ public class Position implements Serializable {
 		this.asset = asset;
 		this.owner = owner;
 		this.name = genName();
+		this.isMacc = isMacc;
 	}
-	
+
 	private String genName() {
 		return this.owner.getName() + ": " + this.asset.getName();
 	}
@@ -118,6 +123,38 @@ public class Position implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public double getQty() {
+		return qty;
+	}
+
+	public void setQty(double qty) {
+		this.qty = qty;
+	}
+
+	public double getQtyBlocked() {
+		return qtyBlocked;
+	}
+
+	public void setQtyBlocked(double qtyBlocked) {
+		this.qtyBlocked = qtyBlocked;
+	}
+
+	public double getOdLimit() {
+		return odLimit;
+	}
+
+	public void setOdLimit(double odLimit) {
+		this.odLimit = odLimit;
+	}
+
+	public boolean isMacc() {
+		return isMacc;
+	}
+
+	public void setMacc(boolean isMacc) {
+		this.isMacc = isMacc;
 	}
 
 }

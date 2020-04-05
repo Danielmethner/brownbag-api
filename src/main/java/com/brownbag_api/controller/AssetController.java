@@ -21,12 +21,12 @@ public class AssetController {
 
 	@GetMapping("/sec/all")
 	public List<Asset> allSecurities() {
-		return assetRepo.findAllByIsMacc(false);
+		return assetRepo.findAllByIsCurry(false);
 	}
 	
 	@GetMapping("/macc/all")
 	public List<Asset> allMaccs() {
-		return assetRepo.findAllByIsMacc(true);
+		return assetRepo.findAllByIsCurry(true);
 	}
 
 }

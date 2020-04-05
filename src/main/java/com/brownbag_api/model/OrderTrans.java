@@ -37,15 +37,15 @@ public class OrderTrans implements Serializable {
 	public Order order;
 
 	@Enumerated(EnumType.STRING)
-	@Column(length = 4)
+	@Column(length = 10)
 	private EOrderAction orderAction;
 
 	@Enumerated(EnumType.STRING)
-	@Column(length = 4)
+	@Column(length = 10)
 	private EOrderStatus orderStatusOld;
 
 	@Enumerated(EnumType.STRING)
-	@Column(length = 4)
+	@Column(length = 10)
 	private EOrderStatus orderStatusNew;
 
 	@CreationTimestamp
