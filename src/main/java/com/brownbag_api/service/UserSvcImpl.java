@@ -8,11 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.Asset;
-import com.brownbag_api.model.LegalEntity;
+import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Role;
 import com.brownbag_api.model.User;
-import com.brownbag_api.model.data.EAsset;
 import com.brownbag_api.model.data.ERole;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.RoleRepo;
@@ -36,7 +34,7 @@ public class UserSvcImpl implements UserSvc {
 	PosSvc posSvc;
 	
 	@Autowired
-	LESvc lESvc;
+	PartySvc lESvc;
 
 	@Autowired
 	PasswordEncoder encoder;
@@ -120,13 +118,13 @@ public class UserSvcImpl implements UserSvc {
 	}
 	
 	@Override
-	public LegalEntity getOrganisation(User user) {
+	public Party getOrganisation(User user) {
 		
 		return lESvc.getNaturalPerson(user);
 	}
 	
 	@Override
-	public LegalEntity getNaturalPerson(User user) {
+	public Party getNaturalPerson(User user) {
 		return lESvc.getNaturalPerson(user);
 	}
 }

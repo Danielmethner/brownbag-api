@@ -40,12 +40,12 @@ public class Asset implements Serializable {
 	private boolean isCurry = false;
 
 	@NotNull
-	@ManyToOne(targetEntity = LegalEntity.class)
+	@ManyToOne(targetEntity = Party.class)
 	@JoinColumn(name = "ISSUER_ID")
-	private LegalEntity issuer;
+	private Party issuer;
 
 	// CONSTRUCTOR
-	public Asset(String name, boolean isShare, LegalEntity issuer) {
+	public Asset(String name, boolean isShare, Party issuer) {
 		this.name = name;
 		this.isCurry = isShare;
 		this.issuer = issuer;
@@ -74,11 +74,11 @@ public class Asset implements Serializable {
 		this.name = name;
 	}
 
-	public LegalEntity getIssuer() {
+	public Party getIssuer() {
 		return issuer;
 	}
 
-	public void setIssuer(LegalEntity issuer) {
+	public void setIssuer(Party issuer) {
 		this.issuer = issuer;
 	}
 

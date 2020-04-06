@@ -19,14 +19,14 @@ public class OrderPay extends Order implements Serializable {
 	private static final long serialVersionUID = 4643589803146964779L;
 
 	@NotNull
-	@ManyToOne(targetEntity = Position.class)
+	@ManyToOne(targetEntity = Pos.class)
 	@JoinColumn(name = "POS_SEND_ID")
-	private Position posSend;
+	private Pos posSend;
 
 	@NotNull
-	@ManyToOne(targetEntity = Position.class)
+	@ManyToOne(targetEntity = Pos.class)
 	@JoinColumn(name = "POS_RCV_ID")
-	private Position posRcv;
+	private Pos posRcv;
 
 	@NotNull
 	@Column(name = "BOOK_TEXT")
@@ -41,12 +41,12 @@ public class OrderPay extends Order implements Serializable {
 	}
 
 	public OrderPay(@NotNull int qty, @NotNull Asset asset, EOrderType orderType, EOrderStatus orderStatus,
-			@NotNull User user, @NotNull Position posSend, @NotNull Position posRcv, @NotNull String bookText) {
+			@NotNull User user, @NotNull Pos posSend, @NotNull Pos posRcv, @NotNull String bookText) {
 		super(qty, asset, orderType, orderStatus, user);
 		this.posSend = posSend;
 		this.posRcv = posRcv;
 		if (bookText == null) {
-			this.bookText = "Payment from " + posSend.getOwner().getName() + " to " + posRcv.getOwner().getName();
+			this.bookText = "Payment from " + posSend.getParty().getName() + " to " + posRcv.getParty().getName();
 		} else {
 			this.bookText = bookText;
 		}
@@ -61,19 +61,19 @@ public class OrderPay extends Order implements Serializable {
 		this.bookText = bookText;
 	}
 
-	public Position getPosSend() {
+	public Pos getPosSend() {
 		return posSend;
 	}
 
-	public void setPosSend(Position posSend) {
+	public void setPosSend(Pos posSend) {
 		this.posSend = posSend;
 	}
 
-	public Position getPosRcv() {
+	public Pos getPosRcv() {
 		return posRcv;
 	}
 
-	public void setPosRcv(Position posRcv) {
+	public void setPosRcv(Pos posRcv) {
 		this.posRcv = posRcv;
 	}
 

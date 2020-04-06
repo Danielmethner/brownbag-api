@@ -9,23 +9,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.brownbag_api.model.Asset;
-import com.brownbag_api.model.Order;
 import com.brownbag_api.model.OrderPay;
 import com.brownbag_api.model.OrderStex;
-import com.brownbag_api.model.Position;
-import com.brownbag_api.model.LegalEntity;
+import com.brownbag_api.model.Party;
+import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.Role;
 import com.brownbag_api.model.User;
 import com.brownbag_api.repo.AssetRepo;
-import com.brownbag_api.repo.LERepo;
 import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.OrderRepo;
+import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.svc.UserSvc;
-import com.brownbag_api.service.LESvc;
 import com.brownbag_api.service.OrderPaySvc;
 import com.brownbag_api.service.OrderSvc;
+import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
 
 @Component
@@ -40,10 +39,10 @@ public class InitDataLoader {
 	private AssetRepo assetRepo;
 
 	@Autowired
-	private LESvc lESvc;
+	private PartySvc lESvc;
 
 	@Autowired
-	private LERepo lERepo;
+	private PartyRepo lERepo;
 
 	@Autowired
 	private OrderRepo orderRepo;
@@ -98,7 +97,7 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 	// ASSET
 	// -----------------------------------------------------------
-	private void createAsset(String name, boolean isShare, LegalEntity issuer) {
+	private void createAsset(String name, boolean isShare, Party issuer) {
 		Asset asset = new Asset(name, isShare, issuer);
 		assetRepo.save(asset);
 	}
@@ -127,7 +126,7 @@ public class InitDataLoader {
 	public void createCentralBank() {
 		User mgr;
 		mgr = userRepo.findByUsername(EUser.MGR_CENTRAL_BANK.toString());
-		LegalEntity orgCentralBank = lESvc.createLE(ELE.CENTRAL_BANK, mgr, ELEType.ORG_GOVT, false);
+		Party orgCentralBank = lESvc.createParty(EParty.CENTRAL_BANK, mgr, EPartyType.ORG_GOVT, false);
 		createAsset(EAsset.CASH.getName(), true, orgCentralBank);
 		posSvc.createMacc(0, orgCentralBank, 100000000);
 	}
@@ -138,20 +137,20 @@ public class InitDataLoader {
 	public void createLegalEntities() {
 		User mgr;
 		mgr = userRepo.findByUsername(EUser.MGR_DEUTSCHE_BANK.toString());
-		lESvc.createLE(ELE.DEUTSCHE_BANK, mgr, ELEType.PERSON_LEGAL, true);
+		lESvc.createParty(EParty.DEUTSCHE_BANK, mgr, EPartyType.PERSON_LEGAL, true);
 		mgr = userRepo.findByUsername(EUser.MGR_GOVERNMENT.toString());
-		lESvc.createLE(ELE.GOVERNMENT, mgr, ELEType.ORG_GOVT, true);
+		lESvc.createParty(EParty.GOVERNMENT, mgr, EPartyType.ORG_GOVT, true);
 		mgr = userRepo.findByUsername(EUser.U_BROKER.toString());
-		lESvc.createLE(ELE.BROKER, mgr, ELEType.PERSON_LEGAL, true);
+		lESvc.createParty(EParty.BROKER, mgr, EPartyType.PERSON_LEGAL, true);
 	}
 
 	// -----------------------------------------------------------
 	// ASSETS
 	// -----------------------------------------------------------
 	private void createAssets() {
-		LegalEntity orgGovernment = lERepo.findByName(ELE.GOVERNMENT.toString());
+		Party orgGovernment = lERepo.findByName(EParty.GOVERNMENT.toString());
 		createAsset(EAsset.GOVERNMENT_BOND.getName(), false, orgGovernment);
-		LegalEntity orgDeutscheBank = lERepo.findByName(ELE.DEUTSCHE_BANK.toString());
+		Party orgDeutscheBank = lERepo.findByName(EParty.DEUTSCHE_BANK.toString());
 		createAsset(EAsset.DEUTSCHE_BANK.getName(), false, orgDeutscheBank);
 	}
 
@@ -169,9 +168,9 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 
 	private void createOrderPay(int qty, @NotNull EUser eUser,
-			String bookText, Position maccSend, Position maccRcv) {
+			String bookText, Pos maccSend, Pos maccRcv) {
 		
-		User user = userRepo.findByUsername(maccSend.getOwner().getUser().getUsername());
+		User user = userRepo.findByUsername(maccSend.getParty().getUser().getUsername());
 		
 		OrderPay orderPay = orderPaySvc.createPay(qty, user, null, bookText, maccSend, maccRcv);
 		orderSvc.execAction(orderPay, EOrderAction.HOLD);
@@ -182,13 +181,13 @@ public class InitDataLoader {
 	private void createOrdersPay() {
 
 		// GET MACC - SENDER
-		LegalEntity leSend = lERepo.findByName(ELE.CENTRAL_BANK.toString());
-		Position maccSend = lESvc.getMacc(leSend);
+		Party leSend = lERepo.findByName(EParty.CENTRAL_BANK.toString());
+		Pos maccSend = lESvc.getMacc(leSend);
 
 		// GET MACC - RECIPIENT
 		User userRcv = userRepo.findByUsername(EUser.U_TRADER_1.toString());
-		LegalEntity leRcv = userSvc.getNaturalPerson(userRcv);
-		Position maccRcv = lESvc.getMacc(leRcv);
+		Party leRcv = userSvc.getNaturalPerson(userRcv);
+		Pos maccRcv = lESvc.getMacc(leRcv);
 
 		createOrderPay(10, EUser.U_TRADER_1, null, maccSend, maccRcv);
 	}

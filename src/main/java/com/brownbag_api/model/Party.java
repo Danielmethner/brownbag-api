@@ -18,13 +18,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.brownbag_api.model.data.ELEType;
-import com.brownbag_api.model.data.EOrderType;
+import com.brownbag_api.model.data.EPartyType;
 
 @Entity
-@Table(name = "LEGAL_ENTITY")
+@Table(name = "PARTY")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class LegalEntity implements Serializable {
+public class Party implements Serializable {
 
 	private static final long serialVersionUID = -8337101973240362473L;
 
@@ -40,7 +39,7 @@ public class LegalEntity implements Serializable {
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(length = 50)
-	private ELEType legalEntityType;
+	private EPartyType partyType;
 
 	@NotNull
 	@ManyToOne(targetEntity = User.class)
@@ -48,16 +47,16 @@ public class LegalEntity implements Serializable {
 	private User user;
 
 	// CONSTRUCTOR
-	public LegalEntity(String name, User user, ELEType legalEntityType) {
+	public Party(String name, User user, EPartyType legalEntityType) {
 		this.name = name;
 		this.user = user;
-		this.legalEntityType = legalEntityType;
+		this.partyType = legalEntityType;
 	}
 
-	public LegalEntity() {
+	public Party() {
 	}
 
-	public LegalEntity(Long id) {
+	public Party(Long id) {
 		this.id = id;
 	}
 
@@ -89,12 +88,12 @@ public class LegalEntity implements Serializable {
 		return serialVersionUID;
 	}
 
-	public ELEType getLegalEntityType() {
-		return legalEntityType;
+	public EPartyType getLegalEntityType() {
+		return partyType;
 	}
 
-	public void setLegalEntityType(ELEType legalEntityType) {
-		this.legalEntityType = legalEntityType;
+	public void setLegalEntityType(EPartyType legalEntityType) {
+		this.partyType = legalEntityType;
 	}
 
 }

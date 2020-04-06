@@ -5,15 +5,14 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.brownbag_api.model.LegalEntity;
-import com.brownbag_api.model.Position;
-import com.brownbag_api.model.User;
+import com.brownbag_api.model.Party;
+import com.brownbag_api.model.Pos;
 
 @Repository
-public interface PosRepo extends JpaRepository<Position, Long> {
+public interface PosRepo extends JpaRepository<Pos, Long> {
 
-	List<Position> findByOwner(LegalEntity owner);
+	List<Pos> findByParty(Party owner);
 	
-	List<Position> findByOwnerAndIsMacc(LegalEntity owner, boolean isMacc);
+	List<Pos> findByPartyAndIsMacc(Party party, boolean isMacc);
 	
 }

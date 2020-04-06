@@ -17,8 +17,8 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "POSITION")
-public class Position implements Serializable {
+@Table(name = "POS")
+public class Pos implements Serializable {
 
 	private static final long serialVersionUID = 1530699992135610397L;
 
@@ -52,33 +52,33 @@ public class Position implements Serializable {
 	public Asset asset;
 
 	@NotNull
-	@ManyToOne(targetEntity = LegalEntity.class)
-	@JoinColumn(name = "LE_OWNER_ID")
+	@ManyToOne(targetEntity = Party.class)
+	@JoinColumn(name = "PARTY_ID")
 	@JsonBackReference
-	private LegalEntity owner;
+	private Party party;
 
 	@NotNull
 	@Column(name = "IS_MACC", columnDefinition = "tinyint default false")
 	private boolean isMacc = false;
 
-	public Position() {
+	public Pos() {
 	}
 
-	public Position(double priceAvg, @NotNull double qty, @NotNull double qtyBlocked, @NotNull double odLimit,
-			@NotNull Asset asset, @NotNull LegalEntity owner, @NotNull boolean isMacc) {
+	public Pos(double priceAvg, @NotNull double qty, @NotNull double qtyBlocked, @NotNull double odLimit,
+			@NotNull Asset asset, @NotNull Party owner, @NotNull boolean isMacc) {
 		super();
 		this.priceAvg = priceAvg;
 		this.qty = qty;
 		this.qtyBlocked = qtyBlocked;
 		this.odLimit = odLimit;
 		this.asset = asset;
-		this.owner = owner;
+		this.party = owner;
 		this.name = genName();
 		this.isMacc = isMacc;
 	}
 
 	private String genName() {
-		return this.owner.getName() + ": " + this.asset.getName();
+		return this.party.getName() + ": " + this.asset.getName();
 	}
 
 	public double getPriceAvg() {
@@ -105,12 +105,12 @@ public class Position implements Serializable {
 		this.asset = asset;
 	}
 
-	public LegalEntity getOwner() {
-		return owner;
+	public Party getParty() {
+		return party;
 	}
 
-	public void setOwner(LegalEntity owner) {
-		this.owner = owner;
+	public void setParty(Party party) {
+		this.party = party;
 	}
 
 	public String getName() {
