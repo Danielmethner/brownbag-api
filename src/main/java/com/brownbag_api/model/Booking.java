@@ -63,17 +63,23 @@ public class Booking implements Serializable {
 	@Column(name = "TIMESTAMP", updatable = false)
 	private Date timestampCreate;
 
+	@NotNull
+	@ManyToOne(targetEntity = BalSheetItem.class)
+	@JoinColumn(name = "BAL_SHEET_ITEM_ID")
+	private BalSheetItem bsi;
+
 	public Booking() {
 	}
 
 	public Booking(@NotNull Order order, @NotNull double posBalOld, @NotNull double qty, @NotNull double posBalNew,
-			@NotNull Pos pos) {
+			@NotNull Pos pos, @NotNull BalSheetItem bsi) {
 		super();
 		this.order = order;
 		this.posBalOld = posBalOld;
 		this.qty = qty;
 		this.posBalNew = posBalNew;
 		this.pos = pos;
+		this.bsi = bsi;
 	}
 
 	public Long getId() {

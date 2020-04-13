@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.BalSheet;
-import com.brownbag_api.model.BalSheetSection;
+import com.brownbag_api.model.BalSheetSectionType;
 import com.brownbag_api.model.Booking;
 import com.brownbag_api.model.Order;
 import com.brownbag_api.model.OrderPay;
@@ -19,8 +19,8 @@ import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.User;
 import com.brownbag_api.model.data.EAsset;
-import com.brownbag_api.model.data.EBalSheetItem;
-import com.brownbag_api.model.data.EBalSheetSection;
+import com.brownbag_api.model.data.EBalSheetItemType;
+import com.brownbag_api.model.data.EBalSheetSectionType;
 import com.brownbag_api.model.data.EBookingDir;
 import com.brownbag_api.model.data.EOrderAction;
 import com.brownbag_api.model.data.EOrderDir;
@@ -51,20 +51,20 @@ public class BalSheetSectionSvc {
 	@Autowired
 	private PosRepo posRepo;
 
-	public List<EBalSheetItem> getItemsBySection(EBalSheetSection section) {
-		List<EBalSheetItem> items;
-		Stream<EBalSheetItem> sItems;
-		sItems = EBalSheetItem.stream().filter(item -> item.getSection().equals(section));
+	public List<EBalSheetItemType> getItemsBySection(EBalSheetSectionType section) {
+		List<EBalSheetItemType> items;
+		Stream<EBalSheetItemType> sItems;
+		sItems = EBalSheetItemType.stream().filter(item -> item.getSection().equals(section));
 		items = sItems.collect(Collectors.toList());
 		return items;
 	}
 
-	public BalSheetSection createBalSheetSection(BalSheet balSheet, EBalSheetSection eBalSheetSection) {
-		BalSheetSection balSheetSection = new BalSheetSection(balSheet, eBalSheetSection);
-		BalSheetSection balSheetSectionDb = balSheetSectionRepo.save(balSheetSection);
-		List<EBalSheetItem> items = getItemsBySection(eBalSheetSection);
+	public BalSheetSectionType createBalSheetSection(BalSheet balSheet, EBalSheetSectionType eBalSheetSection) {
+		BalSheetSectionType balSheetSection = new BalSheetSectionType(balSheet, eBalSheetSection);
+		BalSheetSectionType balSheetSectionDb = balSheetSectionRepo.save(balSheetSection);
+		List<EBalSheetItemType> items = getItemsBySection(eBalSheetSection);
 		items.forEach(eBalSheetItem -> {
-			balSheetItemSvc.createItem(eBalSheetItem, balSheetSectionDb);
+			balSheetItemSvc.createItem(eBalSheetItem, balSheetSectionDb, balSheet.getFinYear(), balSheet.getParty());
 		});
 		return balSheetSection;
 	}

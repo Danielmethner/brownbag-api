@@ -14,6 +14,7 @@ import com.brownbag_api.model.OrderPay;
 import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.data.EAsset;
+import com.brownbag_api.model.data.EBalSheetItemType;
 import com.brownbag_api.model.data.EBookType;
 import com.brownbag_api.model.data.EBookingDir;
 import com.brownbag_api.model.data.EParty;
@@ -71,12 +72,12 @@ public class PosSvc {
 	}
 
 	public Pos debitPos(OrderPay orderPay) {
-		return bookingSvc.createBooking(orderPay, orderPay.getPosSend(), EBookingDir.DEBIT);
+		return bookingSvc.createBooking(orderPay, orderPay.getPosSend(), EBookingDir.DEBIT, EBalSheetItemType.CASH, EBalSheetItemType.EQUITY);
 		
 	}
 
 	public Pos crebitPos(OrderPay orderPay) {
-		return bookingSvc.createBooking(orderPay, orderPay.getPosRcv(), EBookingDir.CREDIT);
+		return bookingSvc.createBooking(orderPay, orderPay.getPosRcv(), EBookingDir.CREDIT, EBalSheetItemType.CASH, EBalSheetItemType.EQUITY);
 	}
 
 }

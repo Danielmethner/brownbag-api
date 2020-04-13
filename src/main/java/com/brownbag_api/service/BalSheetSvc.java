@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.BalSheet;
-import com.brownbag_api.model.BalSheetSection;
+import com.brownbag_api.model.BalSheetSectionType;
 import com.brownbag_api.model.Booking;
 import com.brownbag_api.model.Order;
 import com.brownbag_api.model.OrderPay;
@@ -15,7 +15,7 @@ import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.User;
 import com.brownbag_api.model.data.EAsset;
-import com.brownbag_api.model.data.EBalSheetSection;
+import com.brownbag_api.model.data.EBalSheetSectionType;
 import com.brownbag_api.model.data.EBookingDir;
 import com.brownbag_api.model.data.EOrderAction;
 import com.brownbag_api.model.data.EOrderDir;
@@ -46,9 +46,9 @@ public class BalSheetSvc {
 	public BalSheet createBalSheet(Party party, int finYear) {
 		BalSheet balSheet = new BalSheet(party, finYear);
 		balSheet = balSheetRepo.save(balSheet);
-		balSheetSectionSvc.createBalSheetSection(balSheet, EBalSheetSection.ASSETS);
-		balSheetSectionSvc.createBalSheetSection(balSheet, EBalSheetSection.LIABILITIES);
-		balSheetSectionSvc.createBalSheetSection(balSheet, EBalSheetSection.EQUITY);
+		balSheetSectionSvc.createBalSheetSection(balSheet, EBalSheetSectionType.ASSETS);
+		balSheetSectionSvc.createBalSheetSection(balSheet, EBalSheetSectionType.LIABILITIES);
+		balSheetSectionSvc.createBalSheetSection(balSheet, EBalSheetSectionType.EQUITY);
 		return balSheet;
 	}
 	

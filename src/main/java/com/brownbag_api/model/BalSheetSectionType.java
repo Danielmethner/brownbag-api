@@ -16,13 +16,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.brownbag_api.model.data.EBalSheetSection;
+import com.brownbag_api.model.data.EBalSheetSectionType;
 import com.brownbag_api.model.data.EBookType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "BAL_SHEET_SECTION")
-public class BalSheetSection implements Serializable {
+public class BalSheetSectionType implements Serializable {
 
 	private static final long serialVersionUID = 7386741814449599918L;
 
@@ -39,20 +39,20 @@ public class BalSheetSection implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20)
-	private EBalSheetSection eBalSheetSection;
+	private EBalSheetSectionType section;
 
 	@NotBlank
 	@Size(max = 100)
 	private String name;
 
-	public BalSheetSection() {
+	public BalSheetSectionType() {
 
 	}
 
-	public BalSheetSection(@NotNull BalSheet balSheet, EBalSheetSection eBalSheetSection) {
+	public BalSheetSectionType(@NotNull BalSheet balSheet, EBalSheetSectionType eBalSheetSection) {
 		super();
 		this.balSheet = balSheet;
-		this.eBalSheetSection = eBalSheetSection;
+		this.section = eBalSheetSection;
 		this.name = balSheet.getParty().getName() + ": " + eBalSheetSection.getName() + ": " + "Year: "
 				+ balSheet.getFinYear();
 	}
@@ -77,20 +77,20 @@ public class BalSheetSection implements Serializable {
 		this.balSheet = balSheet;
 	}
 
-	public EBalSheetSection geteBalSheetSection() {
-		return eBalSheetSection;
-	}
-
-	public void seteBalSheetSection(EBalSheetSection eBalSheetSection) {
-		this.eBalSheetSection = eBalSheetSection;
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public EBalSheetSectionType getSection() {
+		return section;
+	}
+
+	public void setSection(EBalSheetSectionType section) {
+		this.section = section;
 	}
 
 }

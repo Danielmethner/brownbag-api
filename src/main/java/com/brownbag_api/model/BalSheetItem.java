@@ -1,6 +1,7 @@
 package com.brownbag_api.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,12 +13,16 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.brownbag_api.model.data.EBalSheetItem;
-import com.brownbag_api.model.data.EBalSheetSection;
+import org.hibernate.annotations.CreationTimestamp;
+
+import com.brownbag_api.model.data.EBalSheetItemType;
+import com.brownbag_api.model.data.EBalSheetSectionType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
@@ -39,30 +44,48 @@ public class BalSheetItem implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 50)
-	private EBalSheetItem eBalSheetItem;
+	private EBalSheetItemType itemType;
 
 	@NotNull
-	@ManyToOne(targetEntity = BalSheetSection.class)
+	@Column(name = "FIN_YEAR", updatable = false)
+	private int finYear;
+	
+	@NotNull
+	@ManyToOne(targetEntity = Party.class)
+	@JoinColumn(name = "PARTY_ID")
+	@JsonBackReference
+	private Party party;
+
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "DATE_CREATED", updatable = false)
+	private Date timestampCreate;
+
+	@NotNull
+	@ManyToOne(targetEntity = BalSheetSectionType.class)
 	@JoinColumn(name = "BAL_SHEET_SECTION_ID")
 	@JsonBackReference
-	private BalSheetSection balSheetSection;
+	private BalSheetSectionType balSheetSection;
 
 	public BalSheetItem() {
 	}
 
-	public BalSheetItem(EBalSheetItem eBalSheetItem, @NotNull BalSheetSection balSheetSection, double qty) {
+	public BalSheetItem(@NotNull double qty, EBalSheetItemType itemType,
+			@NotNull int finYear, @NotNull Party party, @NotNull BalSheetSectionType balSheetSection) {
 		super();
-		this.name = balSheetSection.getName() + ": " + eBalSheetItem.getName();
-		this.eBalSheetItem = eBalSheetItem;
-		this.balSheetSection = balSheetSection;
+		this.name = balSheetSection.getName() + ": " + itemType.getName();
 		this.qty = qty;
+		this.itemType = itemType;
+		this.finYear = finYear;
+		this.party = party;
+		this.balSheetSection = balSheetSection;
 	}
 
-	public BalSheetSection getBalSheetSection() {
+	public BalSheetSectionType getBalSheetSection() {
 		return balSheetSection;
 	}
 
-	public void setBalSheetSection(BalSheetSection balSheetSection) {
+	public void setBalSheetSection(BalSheetSectionType balSheetSection) {
 		this.balSheetSection = balSheetSection;
 	}
 
@@ -74,14 +97,6 @@ public class BalSheetItem implements Serializable {
 		this.name = name;
 	}
 
-	public EBalSheetItem geteBalSheetItem() {
-		return eBalSheetItem;
-	}
-
-	public void seteBalSheetItem(EBalSheetItem eBalSheetItem) {
-		this.eBalSheetItem = eBalSheetItem;
-	}
-
 	public double getQty() {
 		return qty;
 	}
@@ -89,5 +104,31 @@ public class BalSheetItem implements Serializable {
 	public void setQty(double qty) {
 		this.qty = qty;
 	}
+
+	public EBalSheetItemType getItemType() {
+		return itemType;
+	}
+
+	public void setItemType(EBalSheetItemType itemType) {
+		this.itemType = itemType;
+	}
+
+	public int getFinYear() {
+		return finYear;
+	}
+
+	public void setFinYear(int finYear) {
+		this.finYear = finYear;
+	}
+
+	public Party getParty() {
+		return party;
+	}
+
+	public void setParty(Party party) {
+		this.party = party;
+	}
+	
+	
 
 }
