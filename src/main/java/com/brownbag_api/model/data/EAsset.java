@@ -1,7 +1,7 @@
 package com.brownbag_api.model.data;
 
 public enum EAsset {
-	CASH("Cash"), DEUTSCHE_BANK("Deutsche Bank"), GOVERNMENT_BOND("Government Bond");
+	EUR("Euro"), DEUTSCHE_BANK("Deutsche Bank"), GOVERNMENT_BOND("Government Bond");
 
 	public final String name;
 

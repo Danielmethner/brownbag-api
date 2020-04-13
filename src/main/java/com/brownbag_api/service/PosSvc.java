@@ -8,12 +8,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Asset;
+import com.brownbag_api.model.Booking;
+import com.brownbag_api.model.Order;
 import com.brownbag_api.model.OrderPay;
 import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.data.EAsset;
+import com.brownbag_api.model.data.EBookType;
+import com.brownbag_api.model.data.EBookingDir;
 import com.brownbag_api.model.data.EParty;
 import com.brownbag_api.repo.AssetRepo;
+import com.brownbag_api.repo.BookingRepo;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.PosRepo;
 
@@ -24,6 +29,11 @@ public class PosSvc {
 	private AssetRepo assetRepo;
 	@Autowired
 	private PosRepo posRepo;
+	@Autowired
+	private BookingRepo bookingRepo;
+
+	@Autowired
+	private BookingSvc bookingSvc;
 	@Autowired
 	private OrderPaySvc orderPaySvc;
 	@Autowired
@@ -38,17 +48,17 @@ public class PosSvc {
 	}
 
 	public Pos createMacc(@NotNull int initialDeposit, @NotNull Party owner, double odLimit) {
-		Asset assetCash = assetRepo.findByName(EAsset.CASH.getName());
+		Asset assetCash = assetRepo.findByName(EAsset.EUR.getName());
 		Pos newMacc = createPosition(0, owner, assetCash, 1, odLimit, true);
 
 		// ADD INITIAL DEPOSIT FROM CENTRAL BANK
 		if (initialDeposit > 0) {
 
-			Party leSend = partyRepo.findByName(EParty.CENTRAL_BANK.toString());
+			Party leSend = partyRepo.findByName(EParty.ECB.toString());
 			Pos maccCentralBank = lESvc.getMacc(leSend);
 			String bookText = "Initial Deposit from Central Bank for Entity: " + owner.getName();
 			OrderPay orderPay = orderPaySvc.createPay(initialDeposit, owner.getUser(), null, bookText, maccCentralBank,
-					newMacc);
+					newMacc, EBookType.REVENUE);
 			orderPaySvc.execPay(orderPay);
 		}
 
@@ -60,14 +70,13 @@ public class PosSvc {
 		return maccList.isEmpty() ? null : maccList.get(0);
 	}
 
-	public Pos debitPos(Pos pos, double qty) {
-		pos.setQty(pos.getQty() - qty);
-		return posRepo.save(pos);
+	public Pos debitPos(OrderPay orderPay) {
+		return bookingSvc.createBooking(orderPay, orderPay.getPosSend(), EBookingDir.DEBIT);
+		
 	}
 
-	public Pos crebitPos(Pos pos, double qty) {
-		pos.setQty(pos.getQty() + qty);
-		return posRepo.save(pos);
+	public Pos crebitPos(OrderPay orderPay) {
+		return bookingSvc.createBooking(orderPay, orderPay.getPosRcv(), EBookingDir.CREDIT);
 	}
 
 }

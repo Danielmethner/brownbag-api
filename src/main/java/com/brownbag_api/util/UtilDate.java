@@ -35,6 +35,6 @@ public class UtilDate {
 
 	public static Date minDate = new GregorianCalendar(1000, 0, 1).getTime();
 	public static Date maxDate = new GregorianCalendar(3000, 11, 1).getTime();
-	
+	public static int finYear = 2000;
 	
 }

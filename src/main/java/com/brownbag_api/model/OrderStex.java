@@ -7,6 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.brownbag_api.model.data.EBookType;
 import com.brownbag_api.model.data.EOrderStatus;
 import com.brownbag_api.model.data.EOrderType;
 
@@ -29,8 +30,8 @@ public class OrderStex extends Order implements Serializable {
 	}
 
 	public OrderStex(@NotNull int qty, @NotNull Asset asset, EOrderType orderType, EOrderStatus orderStatus,
-			@NotNull User user, @NotNull double price) {
-		super(qty, asset, orderType, orderStatus, user);
+			@NotNull User user, @NotNull double price, @NotNull EBookType bookType) {
+		super(qty, asset, orderType, orderStatus, user, bookType, null);
 		this.price = price;
 	}
 

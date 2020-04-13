@@ -21,9 +21,6 @@ import javax.validation.constraints.Size;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class Asset implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -8337101973240362473L;
 
 	@Id

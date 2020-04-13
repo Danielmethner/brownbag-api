@@ -116,7 +116,7 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 	private void createOrgUsers() {
 		// ORGANISATIONS
-		createUser(EUser.MGR_CENTRAL_BANK, ERole.ROLE_ORG);
+		createUser(EUser.MGR_ECB, ERole.ROLE_ORG);
 		createUser(EUser.MGR_DEUTSCHE_BANK, ERole.ROLE_ORG);
 		createUser(EUser.MGR_GOVERNMENT, ERole.ROLE_ORG);
 		// BROKER
@@ -125,9 +125,9 @@ public class InitDataLoader {
 
 	public void createCentralBank() {
 		User mgr;
-		mgr = userRepo.findByUsername(EUser.MGR_CENTRAL_BANK.toString());
-		Party orgCentralBank = lESvc.createParty(EParty.CENTRAL_BANK, mgr, EPartyType.ORG_GOVT, false);
-		createAsset(EAsset.CASH.getName(), true, orgCentralBank);
+		mgr = userRepo.findByUsername(EUser.MGR_ECB.toString());
+		Party orgCentralBank = lESvc.createParty(EParty.ECB, mgr, EPartyType.ORG_GOVT, false);
+		createAsset(EAsset.EUR.getName(), true, orgCentralBank);
 		posSvc.createMacc(0, orgCentralBank, 100000000);
 	}
 
@@ -172,7 +172,7 @@ public class InitDataLoader {
 		
 		User user = userRepo.findByUsername(maccSend.getParty().getUser().getUsername());
 		
-		OrderPay orderPay = orderPaySvc.createPay(qty, user, null, bookText, maccSend, maccRcv);
+		OrderPay orderPay = orderPaySvc.createPay(qty, user, null, bookText, maccSend, maccRcv, EBookType.REVENUE);
 		orderSvc.execAction(orderPay, EOrderAction.HOLD);
 		orderPaySvc.execPay(orderPay);
 
@@ -181,7 +181,7 @@ public class InitDataLoader {
 	private void createOrdersPay() {
 
 		// GET MACC - SENDER
-		Party leSend = lERepo.findByName(EParty.CENTRAL_BANK.toString());
+		Party leSend = lERepo.findByName(EParty.ECB.toString());
 		Pos maccSend = lESvc.getMacc(leSend);
 
 		// GET MACC - RECIPIENT
@@ -194,9 +194,7 @@ public class InitDataLoader {
 
 	private void createOrderStex(EOrderDir orderDir, EOrderType orderType, Asset asset, int qty, double price,
 			@NotNull User user, @NotNull EOrderStatus orderStatus) {
-//		System.out.println("Price: " + price);
-		OrderStex orderStex = new OrderStex(qty, asset, orderType, orderStatus, user, price);
-//		System.out.println("Price: " + orderStex.getPrice());
+		OrderStex orderStex = new OrderStex(qty, asset, orderType, orderStatus, user, price, EBookType.REVENUE);
 		orderSvc.execAction(orderStex, EOrderAction.HOLD);
 	}
 

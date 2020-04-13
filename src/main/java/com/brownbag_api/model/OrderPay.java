@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import com.brownbag_api.model.data.EBookType;
 import com.brownbag_api.model.data.EOrderStatus;
 import com.brownbag_api.model.data.EOrderType;
 
@@ -28,37 +29,18 @@ public class OrderPay extends Order implements Serializable {
 	@JoinColumn(name = "POS_RCV_ID")
 	private Pos posRcv;
 
-	@NotNull
-	@Column(name = "BOOK_TEXT")
-	private String bookText;
-
 	public OrderPay() {
-	}
-
-	public OrderPay(@NotNull String bookText) {
 		super();
-		this.bookText = bookText;
 	}
 
 	public OrderPay(@NotNull int qty, @NotNull Asset asset, EOrderType orderType, EOrderStatus orderStatus,
-			@NotNull User user, @NotNull Pos posSend, @NotNull Pos posRcv, @NotNull String bookText) {
-		super(qty, asset, orderType, orderStatus, user);
+			@NotNull User user, @NotNull Pos posSend, @NotNull Pos posRcv, @NotNull EBookType bookType,
+			@NotNull String advText) {
+
+		super(qty, asset, orderType, orderStatus, user, bookType, advText);
 		this.posSend = posSend;
 		this.posRcv = posRcv;
-		if (bookText == null) {
-			this.bookText = "Payment from " + posSend.getParty().getName() + " to " + posRcv.getParty().getName();
-		} else {
-			this.bookText = bookText;
-		}
 
-	}
-
-	public String getBookText() {
-		return bookText;
-	}
-
-	public void setBookText(String bookText) {
-		this.bookText = bookText;
 	}
 
 	public Pos getPosSend() {

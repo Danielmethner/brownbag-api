@@ -1,16 +1,15 @@
 package com.brownbag_api.model.data;
 
-public enum EOrderStatus {
-	NEW("New"), HOLD("Hold"), PLACED("Placed"), DONE("Done");
-	
+public enum EBalSheetSection {
+	ASSETS("Assets"), LIABILITIES("Liabilities"), EQUITY("Equity");
+
 	public final String name;
 
-	private EOrderStatus(String name) {
+	private EBalSheetSection(String name) {
 		this.name = name;
 	}
 
 	public String getName() {
 		return name;
 	}
-	
 }

@@ -22,6 +22,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.brownbag_api.model.data.EBookType;
 import com.brownbag_api.model.data.EOrderStatus;
 import com.brownbag_api.model.data.EOrderType;
 
@@ -38,7 +39,7 @@ public class Order implements Serializable {
 	private Long id;
 
 	@NotNull
-	@Column(name = "BALANCE")
+	@Column(name = "QTY")
 	private double qty;
 
 	@Enumerated(EnumType.STRING)
@@ -48,7 +49,14 @@ public class Order implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
 	private EOrderStatus orderStatus;
-	
+
+	@Enumerated(EnumType.STRING)
+	@Column(length = 10)
+	private EBookType bookType;
+
+	@Column(name = "ADV_TEXT")
+	private String advText;
+
 	@NotNull
 	@ManyToOne(targetEntity = Asset.class)
 	@JoinColumn(name = "ASSET_ID")
@@ -73,14 +81,18 @@ public class Order implements Serializable {
 	}
 
 	public Order(@NotNull int qty, @NotNull Asset asset, EOrderType orderType, EOrderStatus orderStatus,
-			@NotNull User user) {
+			@NotNull User user, @NotNull EBookType bookType, String advText) {
 		super();
 		this.qty = qty;
 		this.asset = asset;
 		this.orderType = orderType;
 		this.orderStatus = orderStatus;
 		this.user = user;
+		this.bookType = bookType;
+		this.advText = advText;
+
 	}
+
 	public EOrderType getOrderType() {
 		return orderType;
 	}
@@ -112,7 +124,6 @@ public class Order implements Serializable {
 	public void setQty(double qty) {
 		this.qty = qty;
 	}
-
 
 	public User getUser() {
 		return user;
