@@ -62,5 +62,9 @@ public class Log {
 	public void setMessage(String message) {
 		this.message = message;
 	}
+	
+	public void write() {
+		
+	}
 
 }

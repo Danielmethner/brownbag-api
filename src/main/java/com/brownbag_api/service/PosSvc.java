@@ -42,8 +42,8 @@ public class PosSvc {
 	@Autowired
 	private PartySvc lESvc;
 
-	public Pos createPosition(@NotNull int qty, @NotNull Party owner, @NotNull Asset asset,
-			@NotNull double priceAvg, double odLimit, boolean isMacc) {
+	public Pos createPosition(@NotNull int qty, @NotNull Party owner, @NotNull Asset asset, @NotNull double priceAvg,
+			double odLimit, boolean isMacc) {
 		Pos position = new Pos(priceAvg, qty, 0, odLimit, asset, owner, isMacc);
 		return posRepo.save(position);
 	}
@@ -59,7 +59,7 @@ public class PosSvc {
 			Pos maccCentralBank = lESvc.getMacc(leSend);
 			String bookText = "Initial Deposit from Central Bank for Entity: " + owner.getName();
 			OrderPay orderPay = orderPaySvc.createPay(initialDeposit, owner.getUser(), null, bookText, maccCentralBank,
-					newMacc, EBookType.REVENUE);
+					newMacc);
 			orderPaySvc.execPay(orderPay);
 		}
 
@@ -72,12 +72,14 @@ public class PosSvc {
 	}
 
 	public Pos debitPos(OrderPay orderPay) {
-		return bookingSvc.createBooking(orderPay, orderPay.getPosSend(), EBookingDir.DEBIT, EBalSheetItemType.CASH, EBalSheetItemType.EQUITY);
-		
+		return bookingSvc.createBooking(orderPay, orderPay.getPosSend(), EBookingDir.DEBIT, EBalSheetItemType.CASH,
+				EBalSheetItemType.EQUITY);
+
 	}
 
 	public Pos crebitPos(OrderPay orderPay) {
-		return bookingSvc.createBooking(orderPay, orderPay.getPosRcv(), EBookingDir.CREDIT, EBalSheetItemType.CASH, EBalSheetItemType.EQUITY);
+		return bookingSvc.createBooking(orderPay, orderPay.getPosRcv(), EBookingDir.CREDIT, EBalSheetItemType.CASH,
+				EBalSheetItemType.EQUITY);
 	}
 
 }

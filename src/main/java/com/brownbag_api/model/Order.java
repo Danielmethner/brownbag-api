@@ -50,10 +50,6 @@ public class Order implements Serializable {
 	@Column(length = 10)
 	private EOrderStatus orderStatus;
 
-	@Enumerated(EnumType.STRING)
-	@Column(length = 10)
-	private EBookType bookType;
-
 	@Column(name = "ADV_TEXT")
 	private String advText;
 
@@ -80,15 +76,14 @@ public class Order implements Serializable {
 	public Order() {
 	}
 
-	public Order(@NotNull int qty, @NotNull Asset asset, EOrderType orderType, EOrderStatus orderStatus,
-			@NotNull User user, @NotNull EBookType bookType, String advText) {
+	public Order(@NotNull double qty, @NotNull Asset asset, EOrderType orderType, EOrderStatus orderStatus,
+			@NotNull User user, String advText) {
 		super();
 		this.qty = qty;
 		this.asset = asset;
 		this.orderType = orderType;
 		this.orderStatus = orderStatus;
 		this.user = user;
-		this.bookType = bookType;
 		this.advText = advText;
 
 	}

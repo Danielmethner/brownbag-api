@@ -172,7 +172,7 @@ public class InitDataLoader {
 		
 		User user = userRepo.findByUsername(maccSend.getParty().getUser().getUsername());
 		
-		OrderPay orderPay = orderPaySvc.createPay(qty, user, null, bookText, maccSend, maccRcv, EBookType.REVENUE);
+		OrderPay orderPay = orderPaySvc.createPay(qty, user, null, bookText, maccSend, maccRcv);
 		orderSvc.execAction(orderPay, EOrderAction.HOLD);
 		orderPaySvc.execPay(orderPay);
 
@@ -194,7 +194,7 @@ public class InitDataLoader {
 
 	private void createOrderStex(EOrderDir orderDir, EOrderType orderType, Asset asset, int qty, double price,
 			@NotNull User user, @NotNull EOrderStatus orderStatus) {
-		OrderStex orderStex = new OrderStex(qty, asset, orderType, orderStatus, user, price, EBookType.REVENUE);
+		OrderStex orderStex = new OrderStex(qty, asset, orderType, orderStatus, user, price);
 		orderSvc.execAction(orderStex, EOrderAction.HOLD);
 	}
 

@@ -30,8 +30,8 @@ public class OrderStex extends Order implements Serializable {
 	}
 
 	public OrderStex(@NotNull int qty, @NotNull Asset asset, EOrderType orderType, EOrderStatus orderStatus,
-			@NotNull User user, @NotNull double price, @NotNull EBookType bookType) {
-		super(qty, asset, orderType, orderStatus, user, bookType, null);
+			@NotNull User user, @NotNull double price) {
+		super(qty, asset, orderType, orderStatus, user, null);
 		this.price = price;
 	}
 
