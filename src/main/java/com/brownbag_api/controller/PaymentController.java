@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +21,6 @@ import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.service.OrderPaySvc;
 import com.brownbag_api.service.OrderSvc;
-import com.brownbag_api.util.UtilDate;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

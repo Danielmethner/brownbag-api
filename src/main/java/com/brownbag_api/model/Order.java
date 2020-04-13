@@ -22,7 +22,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import com.brownbag_api.model.data.EBookType;
 import com.brownbag_api.model.data.EOrderStatus;
 import com.brownbag_api.model.data.EOrderType;
 
@@ -155,5 +154,15 @@ public class Order implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	public String getAdvText() {
+		return advText;
+	}
+
+	public void setAdvText(String advText) {
+		this.advText = advText;
+	}
+	
+	
 
 }

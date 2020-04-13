@@ -14,8 +14,6 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 @Entity
 @Table(name = "POS")
 public class Pos implements Serializable {
@@ -54,7 +52,6 @@ public class Pos implements Serializable {
 	@NotNull
 	@ManyToOne(targetEntity = Party.class)
 	@JoinColumn(name = "PARTY_ID")
-	@JsonBackReference
 	private Party party;
 
 	@NotNull

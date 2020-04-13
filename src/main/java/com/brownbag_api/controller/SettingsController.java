@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.Log;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.service.LogSvc;

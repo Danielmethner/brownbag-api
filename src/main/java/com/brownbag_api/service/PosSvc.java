@@ -8,14 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Asset;
-import com.brownbag_api.model.Booking;
-import com.brownbag_api.model.Order;
 import com.brownbag_api.model.OrderPay;
 import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.data.EAsset;
 import com.brownbag_api.model.data.EBalSheetItemType;
-import com.brownbag_api.model.data.EBookType;
 import com.brownbag_api.model.data.EBookingDir;
 import com.brownbag_api.model.data.EParty;
 import com.brownbag_api.repo.AssetRepo;

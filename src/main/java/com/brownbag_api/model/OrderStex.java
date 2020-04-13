@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.brownbag_api.model.data.EBookType;
 import com.brownbag_api.model.data.EOrderStatus;
 import com.brownbag_api.model.data.EOrderType;
 
