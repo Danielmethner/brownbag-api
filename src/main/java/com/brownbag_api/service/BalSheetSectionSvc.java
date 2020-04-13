@@ -64,7 +64,6 @@ public class BalSheetSectionSvc {
 		BalSheetSection balSheetSectionDb = balSheetSectionRepo.save(balSheetSection);
 		List<EBalSheetItem> items = getItemsBySection(eBalSheetSection);
 		items.forEach(eBalSheetItem -> {
-			System.err.println("Section: " + eBalSheetSection.getName() + " Item: " + eBalSheetItem.getName());
 			balSheetItemSvc.createItem(eBalSheetItem, balSheetSectionDb);
 		});
 		return balSheetSection;

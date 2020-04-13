@@ -28,9 +28,6 @@ public class OrderPaySvc extends OrderSvc {
 
 	@Autowired
 	private OrderPayRepo orderPayRepo;
-	
-	@Autowired
-	private BalSheetSvc balSheetSvc;
 
 	@Autowired
 	private OrderSvc orderSvc;
@@ -57,8 +54,6 @@ public class OrderPaySvc extends OrderSvc {
 			orderPay = orderRepo.save(orderPay);
 		}
 		posSvc.debitPos(orderPay);
-		BalSheet balSheet = balSheetSvc.getBalSheet(orderPay.getPosSend().getParty(), UtilDate.finYear);
-		System.err.println("balSheetSvc: " + balSheet.getName());
 		posSvc.crebitPos(orderPay);
 		
 		orderSvc.execAction(orderPay, EOrderAction.VERIFY);

@@ -52,9 +52,9 @@ public class BalSheet implements Serializable {
 	public BalSheet() {
 	}
 
-	public BalSheet(@NotBlank @Size(max = 100) String name, @NotNull Party party, @NotNull int finYear) {
+	public BalSheet(@NotNull Party party, @NotNull int finYear) {
 		super();
-		this.name = name;
+		this.name = "Balance Sheet for " + party.getName() + " as of Financial Year: " + finYear;
 		this.party = party;
 		this.finYear = finYear;
 	}

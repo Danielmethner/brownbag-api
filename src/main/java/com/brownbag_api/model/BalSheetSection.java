@@ -53,7 +53,7 @@ public class BalSheetSection implements Serializable {
 		super();
 		this.balSheet = balSheet;
 		this.eBalSheetSection = eBalSheetSection;
-		this.name = eBalSheetSection.getName() + " for " + balSheet.getParty().getName() + " for Year "
+		this.name = balSheet.getParty().getName() + ": " + eBalSheetSection.getName() + ": " + "Year: "
 				+ balSheet.getFinYear();
 	}
 

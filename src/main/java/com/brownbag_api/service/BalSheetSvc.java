@@ -44,8 +44,7 @@ public class BalSheetSvc {
 	private PosRepo posRepo;
 
 	public BalSheet createBalSheet(Party party, int finYear) {
-		String balSheetName = "Balance Sheet for " + party.getName() + " as of Financial Year: " + finYear;
-		BalSheet balSheet = new BalSheet(balSheetName, party, finYear);
+		BalSheet balSheet = new BalSheet(party, finYear);
 		balSheet = balSheetRepo.save(balSheet);
 		balSheetSectionSvc.createBalSheetSection(balSheet, EBalSheetSection.ASSETS);
 		balSheetSectionSvc.createBalSheetSection(balSheet, EBalSheetSection.LIABILITIES);
