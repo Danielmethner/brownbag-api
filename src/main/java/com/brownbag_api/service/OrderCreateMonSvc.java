@@ -86,9 +86,7 @@ public class OrderCreateMonSvc extends OrderSvc {
 		OrderCreateMon orderCreateMon = new OrderCreateMon(amount, maccCentralBank.getAsset(), EOrderType.CREATE_MONEY,
 				EOrderStatus.DONE, partySend.getUser(), maccCentralBank, null);
 		orderCreateMon = orderRepo.save(orderCreateMon);
-		System.out.println("Qty before booking: " + orderCreateMon.getPosRcv().getQty());
 		orderCreateMon.setPosRcv(posSvc.crebitPos(orderCreateMon));
-		System.out.println("Qty before after booking: " + orderCreateMon.getPosRcv().getQty());
 		return (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.VERIFY);
 	}
 
