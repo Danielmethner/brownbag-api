@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Asset;
+import com.brownbag_api.model.OrderCreateMon;
 import com.brownbag_api.model.OrderPay;
 import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Pos;
@@ -37,7 +38,9 @@ public class PosSvc {
 	@Autowired
 	private PartyRepo partyRepo;
 	@Autowired
-	private PartySvc lESvc;
+	private PartySvc partySvc;
+	@Autowired
+	private OrderCreateMonSvc orderCreateMonSvc;
 
 	public Pos createPosition(@NotNull int qty, @NotNull Party owner, @NotNull Asset asset, @NotNull double priceAvg,
 			double odLimit, boolean isMacc) {
@@ -45,7 +48,7 @@ public class PosSvc {
 		return posRepo.save(position);
 	}
 
-	public Pos createMacc(@NotNull int initialDeposit, @NotNull Party owner, double odLimit) {
+	public Pos createMacc(@NotNull double initialDeposit, @NotNull Party owner, double odLimit) {
 		Asset assetCash = assetRepo.findByName(EAsset.EUR.getName());
 		Pos newMacc = createPosition(0, owner, assetCash, 1, odLimit, true);
 
@@ -53,8 +56,11 @@ public class PosSvc {
 		if (initialDeposit > 0) {
 
 			Party leSend = partyRepo.findByName(EParty.ECB.toString());
-			Pos maccCentralBank = lESvc.getMacc(leSend);
 			String bookText = "Initial Deposit from Central Bank for Entity: " + owner.getName();
+			//TODO: implement book_text
+			orderCreateMonSvc.createMon(leSend, initialDeposit);
+			
+			Pos maccCentralBank = partySvc.getMacc(leSend);
 			OrderPay orderPay = orderPaySvc.createPay(initialDeposit, owner.getUser(), null, bookText, maccCentralBank,
 					newMacc);
 			orderPaySvc.execPay(orderPay);
@@ -76,6 +82,11 @@ public class PosSvc {
 
 	public Pos crebitPos(OrderPay orderPay) {
 		return bookingSvc.createBooking(orderPay, orderPay.getPosRcv(), EBookingDir.CREDIT, EBalSheetItemType.CASH,
+				EBalSheetItemType.EQUITY);
+	}
+	
+	public Pos crebitPos(OrderCreateMon orderCreateMon) {
+		return bookingSvc.createBooking(orderCreateMon, orderCreateMon.getPosRcv(), EBookingDir.CREDIT, EBalSheetItemType.CASH,
 				EBalSheetItemType.EQUITY);
 	}
 

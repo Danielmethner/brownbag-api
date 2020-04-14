@@ -16,7 +16,7 @@ import com.brownbag_api.repo.PartyRepo;
 public class PartySvc {
 
 	@Autowired
-	private PartyRepo lERepo;
+	private PartyRepo partyRepo;
 
 	@Autowired
 	private PosSvc posSvc;
@@ -37,7 +37,7 @@ public class PartySvc {
 	 */
 	public Party createParty(EParty eOrg, User user, EPartyType legalEntityType, boolean addMacc) {
 		Party le = new Party(eOrg.toString(), user, legalEntityType);
-		le = lERepo.save(le);
+		le = partyRepo.save(le);
 		if (addMacc) {
 			posSvc.createMacc(0, le, 0);
 		}
@@ -45,7 +45,7 @@ public class PartySvc {
 	}
 
 	public Party getNaturalPerson(User manager) {
-		List<Party> lEs = lERepo.findByUserAndPartyType(manager, EPartyType.PERSON_NATURAL);
+		List<Party> lEs = partyRepo.findByUserAndPartyType(manager, EPartyType.PERSON_NATURAL);
 		return lEs.isEmpty() ? null : lEs.get(0);
 	}
 
@@ -53,7 +53,7 @@ public class PartySvc {
 		if (getNaturalPerson(user) == null) {
 
 			Party natPerson = new Party(user.getName(), user, EPartyType.PERSON_NATURAL);
-			lERepo.save(natPerson);
+			partyRepo.save(natPerson);
 
 			// ADD MACC
 			posSvc.createMacc(100000, natPerson, 0);

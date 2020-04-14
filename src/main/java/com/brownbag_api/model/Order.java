@@ -42,7 +42,7 @@ public class Order implements Serializable {
 	private double qty;
 
 	@Enumerated(EnumType.STRING)
-	@Column(length = 10)
+	@Column(length = 30)
 	private EOrderType orderType;
 
 	@Enumerated(EnumType.STRING)

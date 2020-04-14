@@ -22,6 +22,7 @@ import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.svc.UserSvc;
+import com.brownbag_api.service.OrderCreateMonSvc;
 import com.brownbag_api.service.OrderPaySvc;
 import com.brownbag_api.service.OrderSvc;
 import com.brownbag_api.service.PartySvc;
@@ -61,6 +62,9 @@ public class InitDataLoader {
 
 	@Autowired
 	private UserRepo userRepo;
+	
+	@Autowired
+	OrderCreateMonSvc orderCreateMonSvc;
 
 	// ---------------------------------------------------------------------
 	// ---------------------------------------------------------------------
@@ -167,7 +171,7 @@ public class InitDataLoader {
 	// ORDERS
 	// -----------------------------------------------------------
 
-	private void createOrderPay(int qty, @NotNull EUser eUser,
+	private void createOrderPay(double qty, @NotNull EUser eUser,
 			String bookText, Pos maccSend, Pos maccRcv) {
 		
 		User user = userRepo.findByUsername(maccSend.getParty().getUser().getUsername());
@@ -179,7 +183,10 @@ public class InitDataLoader {
 	}
 
 	private void createOrdersPay() {
-
+		
+		double amount = 10;
+		// CREATE MONEY
+		orderCreateMonSvc.createMon(EParty.ECB, amount);
 		// GET MACC - SENDER
 		Party leSend = lERepo.findByName(EParty.ECB.toString());
 		Pos maccSend = lESvc.getMacc(leSend);
@@ -189,7 +196,7 @@ public class InitDataLoader {
 		Party leRcv = userSvc.getNaturalPerson(userRcv);
 		Pos maccRcv = lESvc.getMacc(leRcv);
 
-		createOrderPay(10, EUser.U_TRADER_1, null, maccSend, maccRcv);
+		createOrderPay(amount, EUser.U_TRADER_1, null, maccSend, maccRcv);
 	}
 
 	private void createOrderStex(EOrderDir orderDir, EOrderType orderType, Asset asset, int qty, double price,
