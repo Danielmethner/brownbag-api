@@ -65,9 +65,7 @@ public class OrderPaySvc extends OrderSvc {
 		if (orderPay.getId() == null) {
 			orderPay = orderRepo.save(orderPay);
 		}
-		System.out.println("Qty before booking: " + orderPay.getPosSend().getQty());
 		orderPay.setPosSend(posSvc.debitPos(orderPay));
-		System.out.println("Qty before after booking: " + orderPay.getPosSend().getQty());
 		orderPay.setPosRcv(posSvc.crebitPos(orderPay));
 
 		return (OrderPay) orderSvc.execAction(orderPay, EOrderAction.VERIFY);
