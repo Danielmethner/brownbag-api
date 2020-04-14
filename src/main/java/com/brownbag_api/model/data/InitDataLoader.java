@@ -16,8 +16,6 @@ import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.Role;
 import com.brownbag_api.model.User;
 import com.brownbag_api.repo.AssetRepo;
-import com.brownbag_api.repo.OrderPayRepo;
-import com.brownbag_api.repo.OrderRepo;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.repo.UserRepo;
@@ -46,12 +44,6 @@ public class InitDataLoader {
 	private PartyRepo lERepo;
 
 	@Autowired
-	private OrderRepo orderRepo;
-
-	@Autowired
-	private OrderPayRepo orderPayRepo;
-
-	@Autowired
 	private OrderSvc orderSvc;
 
 	@Autowired
@@ -62,7 +54,7 @@ public class InitDataLoader {
 
 	@Autowired
 	private UserRepo userRepo;
-	
+
 	@Autowired
 	OrderCreateMonSvc orderCreateMonSvc;
 
@@ -171,11 +163,10 @@ public class InitDataLoader {
 	// ORDERS
 	// -----------------------------------------------------------
 
-	private void createOrderPay(double qty, @NotNull EUser eUser,
-			String bookText, Pos maccSend, Pos maccRcv) {
-		
+	private void createOrderPay(double qty, @NotNull EUser eUser, String bookText, Pos maccSend, Pos maccRcv) {
+
 		User user = userRepo.findByUsername(maccSend.getParty().getUser().getUsername());
-		
+
 		OrderPay orderPay = orderPaySvc.createPay(qty, user, null, bookText, maccSend, maccRcv);
 		orderSvc.execAction(orderPay, EOrderAction.HOLD);
 		orderPaySvc.execPay(orderPay);
@@ -183,7 +174,7 @@ public class InitDataLoader {
 	}
 
 	private void createOrdersPay() {
-		
+
 		double amount = 10;
 		// CREATE MONEY
 		orderCreateMonSvc.createMon(EParty.ECB, amount);

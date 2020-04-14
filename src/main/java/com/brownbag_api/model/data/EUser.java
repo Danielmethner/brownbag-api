@@ -13,6 +13,5 @@ public enum EUser {
 	public String getName() {
 		return name;
 	}
-	
-	
+
 }

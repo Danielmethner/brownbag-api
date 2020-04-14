@@ -45,7 +45,7 @@ public class AuthController {
 
 	@Autowired
 	JwtUtils jwtUtils;
-	
+
 	@Autowired
 	private UserSvcImpl userSvcImpl;
 
@@ -67,7 +67,8 @@ public class AuthController {
 
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-		return userSvcImpl.registerUser(signUpRequest.getUsername(), signUpRequest.getPassword(), signUpRequest.getRole()) ;
+		return userSvcImpl.registerUser(signUpRequest.getUsername(), signUpRequest.getPassword(),
+				signUpRequest.getRole());
 	}
 
 }

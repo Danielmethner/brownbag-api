@@ -34,7 +34,7 @@ public class Log {
 
 	public Log() {
 	}
-	
+
 	public Log(String message) {
 		setMessage(message);
 	}
@@ -62,9 +62,9 @@ public class Log {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-	
+
 	public void write() {
-		
+
 	}
 
 }

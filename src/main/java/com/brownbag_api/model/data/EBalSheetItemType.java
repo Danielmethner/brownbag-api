@@ -18,8 +18,6 @@ public enum EBalSheetItemType {
 		return Stream.of(EBalSheetItemType.values());
 	}
 
-
-
 	public String getName() {
 		return name;
 	}

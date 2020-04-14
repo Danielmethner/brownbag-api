@@ -1,6 +1,5 @@
 package com.brownbag_api.security.payload.request;
 
-
 import javax.validation.constraints.NotBlank;
 
 public class LoginRequest {

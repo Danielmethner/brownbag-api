@@ -23,7 +23,7 @@ public class PosController {
 
 	@Autowired
 	PartyRepo lERepo;
-	
+
 	@Autowired
 	UserSvc userSvc;
 
@@ -39,7 +39,7 @@ public class PosController {
 //		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 //		User user = userRepo.findById(userDetailsImpl.getId())
 //				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
-//		
+//
 //		List<Position> positions = posRepo.findByOwner(.getNaturalPerson());
 //		return positions ;
 //	}

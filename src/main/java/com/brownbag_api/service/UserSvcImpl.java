@@ -32,7 +32,7 @@ public class UserSvcImpl implements UserSvc {
 
 	@Autowired
 	PosSvc posSvc;
-	
+
 	@Autowired
 	PartySvc lESvc;
 
@@ -107,7 +107,7 @@ public class UserSvcImpl implements UserSvc {
 				break;
 			}
 		}
- 
+
 		return ResponseEntity.ok(new MsgResponse("User registered successfully!"));
 	}
 
@@ -116,13 +116,13 @@ public class UserSvcImpl implements UserSvc {
 		return registerUser(userName, userName, password, eRoles);
 
 	}
-	
+
 	@Override
 	public Party getOrganisation(User user) {
-		
+
 		return lESvc.getNaturalPerson(user);
 	}
-	
+
 	@Override
 	public Party getNaturalPerson(User user) {
 		return lESvc.getNaturalPerson(user);

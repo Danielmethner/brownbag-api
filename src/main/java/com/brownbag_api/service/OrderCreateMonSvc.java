@@ -18,7 +18,6 @@ import com.brownbag_api.model.data.EOrderStatus;
 import com.brownbag_api.model.data.EOrderType;
 import com.brownbag_api.model.data.EParty;
 import com.brownbag_api.repo.AssetRepo;
-import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.OrderRepo;
 import com.brownbag_api.repo.PartyRepo;
 
@@ -27,9 +26,6 @@ public class OrderCreateMonSvc extends OrderSvc {
 
 	@Autowired
 	private AssetRepo assetRepo;
-
-	@Autowired
-	private OrderPayRepo orderPayRepo;
 
 	@Autowired
 	private OrderSvc orderSvc;
@@ -42,10 +38,10 @@ public class OrderCreateMonSvc extends OrderSvc {
 
 	@Autowired
 	private LogSvc logSvc;
-	
+
 	@Autowired
 	private PartyRepo partyRepo;
-	
+
 	@Autowired
 	private PartySvc partySvc;
 

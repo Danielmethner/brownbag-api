@@ -23,7 +23,7 @@ public class AssetController {
 	public List<Asset> allSecurities() {
 		return assetRepo.findAllByIsCurry(false);
 	}
-	
+
 	@GetMapping("/macc/all")
 	public List<Asset> allMaccs() {
 		return assetRepo.findAllByIsCurry(true);

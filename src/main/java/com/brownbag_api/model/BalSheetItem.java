@@ -28,6 +28,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "BAL_SHEET_ITEM")
 public class BalSheetItem implements Serializable {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -7740583490908285403L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
@@ -48,7 +53,7 @@ public class BalSheetItem implements Serializable {
 	@NotNull
 	@Column(name = "FIN_YEAR", updatable = false)
 	private int finYear;
-	
+
 	@NotNull
 	@ManyToOne(targetEntity = Party.class)
 	@JoinColumn(name = "PARTY_ID")
@@ -69,8 +74,8 @@ public class BalSheetItem implements Serializable {
 	public BalSheetItem() {
 	}
 
-	public BalSheetItem(@NotNull double qty, EBalSheetItemType itemType,
-			@NotNull int finYear, @NotNull Party party, @NotNull BalSheetSectionType balSheetSection) {
+	public BalSheetItem(@NotNull double qty, EBalSheetItemType itemType, @NotNull int finYear, @NotNull Party party,
+			@NotNull BalSheetSectionType balSheetSection) {
 		super();
 		this.name = balSheetSection.getName() + ": " + itemType.getName();
 		this.qty = qty;
@@ -127,7 +132,5 @@ public class BalSheetItem implements Serializable {
 	public void setParty(Party party) {
 		this.party = party;
 	}
-	
-	
 
 }

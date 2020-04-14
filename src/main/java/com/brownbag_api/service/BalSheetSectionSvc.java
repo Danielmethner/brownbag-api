@@ -11,28 +11,16 @@ import com.brownbag_api.model.BalSheet;
 import com.brownbag_api.model.BalSheetSectionType;
 import com.brownbag_api.model.data.EBalSheetItemType;
 import com.brownbag_api.model.data.EBalSheetSectionType;
-import com.brownbag_api.repo.BalSheetRepo;
 import com.brownbag_api.repo.BalSheetSectionRepo;
-import com.brownbag_api.repo.BookingRepo;
-import com.brownbag_api.repo.PosRepo;
 
 @Service
 public class BalSheetSectionSvc {
-
-	@Autowired
-	private BalSheetRepo balSheetRepo;
 
 	@Autowired
 	private BalSheetSectionRepo balSheetSectionRepo;
 
 	@Autowired
 	private BalSheetItemSvc balSheetItemSvc;
-	
-	@Autowired
-	private BookingRepo bookingRepo;
-
-	@Autowired
-	private PosRepo posRepo;
 
 	public List<EBalSheetItemType> getItemsBySection(EBalSheetSectionType section) {
 		List<EBalSheetItemType> items;

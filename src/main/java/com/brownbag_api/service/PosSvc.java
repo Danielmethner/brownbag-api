@@ -17,7 +17,6 @@ import com.brownbag_api.model.data.EBalSheetItemType;
 import com.brownbag_api.model.data.EBookingDir;
 import com.brownbag_api.model.data.EParty;
 import com.brownbag_api.repo.AssetRepo;
-import com.brownbag_api.repo.BookingRepo;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.PosRepo;
 
@@ -28,9 +27,6 @@ public class PosSvc {
 	private AssetRepo assetRepo;
 	@Autowired
 	private PosRepo posRepo;
-	@Autowired
-	private BookingRepo bookingRepo;
-
 	@Autowired
 	private BookingSvc bookingSvc;
 	@Autowired
@@ -57,9 +53,9 @@ public class PosSvc {
 
 			Party leSend = partyRepo.findByName(EParty.ECB.toString());
 			String bookText = "Initial Deposit from Central Bank for Entity: " + owner.getName();
-			//TODO: implement book_text
+			// TODO: implement book_text
 			orderCreateMonSvc.createMon(leSend, initialDeposit);
-			
+
 			Pos maccCentralBank = partySvc.getMacc(leSend);
 			OrderPay orderPay = orderPaySvc.createPay(initialDeposit, owner.getUser(), null, bookText, maccCentralBank,
 					newMacc);
@@ -84,10 +80,10 @@ public class PosSvc {
 		return bookingSvc.createBooking(orderPay, orderPay.getPosRcv(), EBookingDir.CREDIT, EBalSheetItemType.CASH,
 				EBalSheetItemType.EQUITY);
 	}
-	
+
 	public Pos crebitPos(OrderCreateMon orderCreateMon) {
-		return bookingSvc.createBooking(orderCreateMon, orderCreateMon.getPosRcv(), EBookingDir.CREDIT, EBalSheetItemType.CASH,
-				EBalSheetItemType.EQUITY);
+		return bookingSvc.createBooking(orderCreateMon, orderCreateMon.getPosRcv(), EBookingDir.CREDIT,
+				EBalSheetItemType.CASH, EBalSheetItemType.EQUITY);
 	}
 
 }

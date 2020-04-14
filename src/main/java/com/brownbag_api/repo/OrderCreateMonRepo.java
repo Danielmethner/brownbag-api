@@ -14,5 +14,4 @@ public interface OrderCreateMonRepo extends JpaRepository<OrderPay, Long> {
 
 	List<Order> findByUser(User user);
 
-
 }

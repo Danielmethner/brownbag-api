@@ -1,6 +1,5 @@
 package com.brownbag_api.security.svc;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.brownbag_api.model.User;
 import com.brownbag_api.repo.UserRepo;
-
 
 @Service
 public class UserDetailsSvcImpl implements UserDetailsService {

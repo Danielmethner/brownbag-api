@@ -10,6 +10,7 @@ import com.brownbag_api.model.Asset;
 @Repository
 public interface AssetRepo extends JpaRepository<Asset, Long> {
 	Asset findByName(String name);
+
 	List<Asset> findAllByIsCurry(boolean isCurry);
 
 }

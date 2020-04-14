@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.Log;
-import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.service.LogSvc;
 import com.brownbag_api.util.UtilDate;
 
@@ -20,21 +19,18 @@ import com.brownbag_api.util.UtilDate;
 public class SettingsController {
 
 	@Autowired
-	private AssetRepo assetRepo;
-	
-	@Autowired
 	private LogSvc logSvc;
 
 	@GetMapping("/finyear")
 	public int getFinYear() {
 		return UtilDate.finYear;
 	}
-	
+
 	@GetMapping("/finyear/increment")
 	public int incrementFinYear() {
 		return UtilDate.finYear += 1;
 	}
-	
+
 	@GetMapping("/finyear/set/{year}")
 	public int setFinYear(@PathVariable int year) {
 		return UtilDate.finYear = year;

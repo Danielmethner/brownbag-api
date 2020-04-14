@@ -15,12 +15,10 @@ import com.brownbag_api.model.OrderPay;
 import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.User;
 import com.brownbag_api.model.data.EUser;
-import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.service.OrderPaySvc;
-import com.brownbag_api.service.OrderSvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -28,13 +26,8 @@ import com.brownbag_api.service.OrderSvc;
 public class PaymentController {
 
 	@Autowired
-	private AssetRepo assetRepo;
-
-	@Autowired
 	private PosRepo posRepo;
 
-	@Autowired
-	private OrderSvc orderSvc;
 	@Autowired
 	private OrderPayRepo orderPayRepo;
 	@Autowired
@@ -68,7 +61,7 @@ public class PaymentController {
 			System.err.println("Payment executed: " + pay.getPosRcv().getParty().getName());
 			Long payId = pay.getId();
 			System.err.println("Payment executed: " + payId);
-			Optional<OrderPay> orderPay = orderPayRepo.findById(payId);
+			orderPayRepo.findById(payId);
 			return ResponseEntity.ok(pay);
 		}
 

@@ -10,11 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.Order;
 import com.brownbag_api.model.OrderPay;
-import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.OrderRepo;
 import com.brownbag_api.repo.UserRepo;
-import com.brownbag_api.service.OrderSvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -22,17 +20,11 @@ import com.brownbag_api.service.OrderSvc;
 public class OrderController {
 
 	@Autowired
-	private AssetRepo assetRepo;
-	
-	@Autowired
 	private OrderRepo orderRepo;
-	
+
 	@Autowired
 	private OrderPayRepo orderPayRepo;
-	
-	@Autowired
-	private OrderSvc orderSvc;
-	
+
 	@Autowired
 	UserRepo userRepo;
 
@@ -40,7 +32,7 @@ public class OrderController {
 	public List<Order> getAll() {
 		return orderRepo.findAll();
 	}
-	
+
 	@GetMapping("/pay/all")
 	public List<OrderPay> getAllPayments() {
 		return orderPayRepo.findAll();
@@ -56,7 +48,7 @@ public class OrderController {
 //		List<Order> orders = orderRepo.findByUser(user);
 //		return orders;
 //	}
-	
+
 //	@PostMapping(value = "/place", consumes="application/json")
 //	public ResponseEntity<?> authenticateUser(@RequestBody Order order, Authentication authentication) {
 //		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
@@ -67,6 +59,5 @@ public class OrderController {
 //		orderSvc.place(order);
 //		return ResponseEntity.ok("Order has been placed successfully!");
 //	}
-
 
 }

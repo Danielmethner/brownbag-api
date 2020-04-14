@@ -12,7 +12,7 @@ import com.brownbag_api.model.Pos;
 public interface PosRepo extends JpaRepository<Pos, Long> {
 
 	List<Pos> findByParty(Party owner);
-	
+
 	List<Pos> findByPartyAndIsMacc(Party party, boolean isMacc);
-	
+
 }

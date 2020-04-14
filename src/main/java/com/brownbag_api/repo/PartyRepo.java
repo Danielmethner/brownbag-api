@@ -11,7 +11,7 @@ import com.brownbag_api.model.data.EPartyType;
 
 @Repository
 public interface PartyRepo extends JpaRepository<Party, Long> {
-	
+
 	Party findByName(String name);
 
 	List<Party> findByUserAndPartyType(User user, EPartyType ePartyType);

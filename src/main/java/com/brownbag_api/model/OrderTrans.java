@@ -26,6 +26,11 @@ import com.brownbag_api.model.data.EOrderStatus;
 @Table(name = "ORDER_TRANS")
 public class OrderTrans implements Serializable {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -8877249146176590434L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")

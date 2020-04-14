@@ -162,7 +162,5 @@ public class Order implements Serializable {
 	public void setAdvText(String advText) {
 		this.advText = advText;
 	}
-	
-	
 
 }

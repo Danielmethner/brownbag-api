@@ -9,7 +9,7 @@ import com.brownbag_api.model.data.EBalSheetSectionType;
 
 @Repository
 public interface BalSheetSectionRepo extends JpaRepository<BalSheetSectionType, Long> {
-	
+
 	BalSheetSectionType findByBalSheetAndSection(BalSheet balSheet, EBalSheetSectionType section);
-	
+
 }

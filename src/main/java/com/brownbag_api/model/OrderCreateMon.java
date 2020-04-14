@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
 @Table(name = "order_create_mon")
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class OrderCreateMon extends Order implements Serializable {
 
 	private static final long serialVersionUID = 4643589803146964779L;
@@ -47,6 +47,5 @@ public class OrderCreateMon extends Order implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
 
 }

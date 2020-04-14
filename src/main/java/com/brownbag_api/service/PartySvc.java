@@ -21,14 +21,8 @@ public class PartySvc {
 	@Autowired
 	private PosSvc posSvc;
 
-	@Autowired
-	private OrderPaySvc orderPaySvc;
-
-	@Autowired
-	private PartySvc lESvc;
-
 	/**
-	 * 
+	 *
 	 * @param eOrg
 	 * @param user      - managing user
 	 * @param partyType - Legal or natural person

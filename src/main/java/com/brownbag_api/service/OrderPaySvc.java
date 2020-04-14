@@ -15,7 +15,6 @@ import com.brownbag_api.model.data.EOrderAction;
 import com.brownbag_api.model.data.EOrderStatus;
 import com.brownbag_api.model.data.EOrderType;
 import com.brownbag_api.repo.AssetRepo;
-import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.OrderRepo;
 
 @Service
@@ -23,9 +22,6 @@ public class OrderPaySvc extends OrderSvc {
 
 	@Autowired
 	private AssetRepo assetRepo;
-
-	@Autowired
-	private OrderPayRepo orderPayRepo;
 
 	@Autowired
 	private OrderSvc orderSvc;

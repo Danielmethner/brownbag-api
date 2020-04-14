@@ -9,7 +9,7 @@ import com.brownbag_api.repo.RoleRepo;
 public class RoleSvcImpl implements RoleSvc {
 
 	RoleRepo roleRepo;
-	
+
 	@Override
 	public void save(Role role) {
 		roleRepo.save(role);

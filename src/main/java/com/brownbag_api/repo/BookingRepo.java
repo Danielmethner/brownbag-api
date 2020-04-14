@@ -7,5 +7,5 @@ import com.brownbag_api.model.Booking;
 
 @Repository
 public interface BookingRepo extends JpaRepository<Booking, Long> {
-	
+
 }

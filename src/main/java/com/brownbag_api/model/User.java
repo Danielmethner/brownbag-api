@@ -21,7 +21,7 @@ import javax.validation.constraints.Size;
 @Table(name = "USER", uniqueConstraints = { @UniqueConstraint(columnNames = "username") })
 public class User implements Serializable {
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 4442311010636937427L;
 

@@ -12,6 +12,5 @@ public enum EParty {
 	public String getName() {
 		return name;
 	}
-	
-	
+
 }

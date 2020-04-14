@@ -25,6 +25,11 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Table(name = "BAL_SHEET")
 public class BalSheet implements Serializable {
 
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -1773057542765188702L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID")
