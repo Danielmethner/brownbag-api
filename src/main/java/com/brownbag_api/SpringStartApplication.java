@@ -26,11 +26,7 @@ public class SpringStartApplication {
 	}
 
 	public static void main(String[] args) {
-		System.out.println(UtilDate.minDate);
-		System.out.println(UtilDate.finDate);
-		System.out.println(UtilDate.incrFinYear());
-		System.out.println(UtilDate.finDate);
-//		SpringApplication.run(SpringStartApplication.class, args);
+		SpringApplication.run(SpringStartApplication.class, args);
 
 	}
 
