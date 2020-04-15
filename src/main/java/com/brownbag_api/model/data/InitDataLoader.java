@@ -136,7 +136,7 @@ public class InitDataLoader {
 	// ASSETS
 	// -----------------------------------------------------------
 	private void createAssets() {
-		createAsset(EAsset.GOVERNMENT_BOND);
+		createAsset(EAsset.BOND_GOVERNMENT);
 		createAsset(EAsset.DEUTSCHE_BANK);
 	}
 
@@ -188,7 +188,7 @@ public class InitDataLoader {
 	private void createOrdersStex() {
 
 		Asset deutscheBank = assetSvc.getByEnum(EAsset.DEUTSCHE_BANK);
-		Asset govBond = assetSvc.getByEnum(EAsset.GOVERNMENT_BOND);
+		Asset govBond = assetSvc.getByEnum(EAsset.BOND_GOVERNMENT);
 
 		User userTrader = userSvc.getByEnum(EUser.U_TRADER_1);
 		createOrderStex(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 10, 100.55, userTrader, EOrderStatus.NEW);

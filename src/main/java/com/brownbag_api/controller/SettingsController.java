@@ -1,5 +1,6 @@
 package com.brownbag_api.controller;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,17 +24,12 @@ public class SettingsController {
 
 	@GetMapping("/finyear")
 	public int getFinYear() {
-		return UtilDate.finYear;
+		return UtilDate.getFinYear();
 	}
 
 	@GetMapping("/finyear/increment")
-	public int incrementFinYear() {
-		return UtilDate.finYear += 1;
-	}
-
-	@GetMapping("/finyear/set/{year}")
-	public int setFinYear(@PathVariable int year) {
-		return UtilDate.finYear = year;
+	public LocalDate incrementFinYear() {
+		return UtilDate.incrFinYear();
 	}
 
 	@GetMapping("/log")

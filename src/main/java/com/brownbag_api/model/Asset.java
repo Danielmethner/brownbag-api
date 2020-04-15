@@ -1,6 +1,7 @@
 package com.brownbag_api.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,9 +15,13 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.CreationTimestamp;
 
 import com.brownbag_api.model.data.EAssetGrp;
 
@@ -36,6 +41,14 @@ public class Asset implements Serializable {
 	@Size(max = 50)
 	private String name;
 
+	@Column(name = "MAT_DATE")
+	private Date matDate;
+
+	@NotNull
+	@Column(name = "INTR_RATE")
+	private double intrRate;
+
+	@NotBlank
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
 	private EAssetGrp assetGrp;
@@ -45,6 +58,10 @@ public class Asset implements Serializable {
 	@JoinColumn(name = "ISSUER_ID")
 	private Party issuer;
 
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "TIMESTAMP", updatable = false)
+	private Date timestampCreate;
 
 	public Asset(@NotBlank @Size(max = 50) String name, EAssetGrp eAssetGrp, @NotNull Party issuer) {
 		super();
@@ -94,6 +111,38 @@ public class Asset implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public EAssetGrp getAssetGrp() {
+		return assetGrp;
+	}
+
+	public void setAssetGrp(EAssetGrp assetGrp) {
+		this.assetGrp = assetGrp;
+	}
+
+	public Date getTimestampCreate() {
+		return timestampCreate;
+	}
+
+	public void setTimestampCreate(Date timestampCreate) {
+		this.timestampCreate = timestampCreate;
+	}
+
+	public Date getMatDate() {
+		return matDate;
+	}
+
+	public void setMatDate(Date matDate) {
+		this.matDate = matDate;
+	}
+
+	public double getIntrRate() {
+		return intrRate;
+	}
+
+	public void setIntrRate(double intrRate) {
+		this.intrRate = intrRate;
 	}
 
 }

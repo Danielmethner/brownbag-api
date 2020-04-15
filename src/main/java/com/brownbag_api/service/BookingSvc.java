@@ -38,7 +38,7 @@ public class BookingSvc {
 //		pos = posRepo.findById(pos.getId()).orElse(null);
 //		System.out.println("Pos Qty from DB: " + pos.getQty());
 		double posQty = pos.getQty();
-		int finYear = UtilDate.finYear;
+		int finYear = UtilDate.getFinYear();
 
 		// GET BALANCE SHEET (Instanciate if not exists)
 		balSheetSvc.getBalSheet(pos.getParty(), finYear);
