@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +17,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.brownbag_api.model.data.EAssetGrp;
 
 @Entity
 @Table(name = "ASSET")
@@ -32,19 +36,20 @@ public class Asset implements Serializable {
 	@Size(max = 50)
 	private String name;
 
-	@NotNull
-	@Column(name = "IS_CURRY", columnDefinition = "tinyint default false")
-	private boolean isCurry = false;
+	@Enumerated(EnumType.STRING)
+	@Column(length = 10)
+	private EAssetGrp assetGrp;
 
 	@NotNull
 	@ManyToOne(targetEntity = Party.class)
 	@JoinColumn(name = "ISSUER_ID")
 	private Party issuer;
 
-	// CONSTRUCTOR
-	public Asset(String name, boolean isShare, Party issuer) {
+
+	public Asset(@NotBlank @Size(max = 50) String name, EAssetGrp eAssetGrp, @NotNull Party issuer) {
+		super();
 		this.name = name;
-		this.isCurry = isShare;
+		this.assetGrp = eAssetGrp;
 		this.issuer = issuer;
 	}
 
@@ -79,12 +84,12 @@ public class Asset implements Serializable {
 		this.issuer = issuer;
 	}
 
-	public boolean isCurry() {
-		return isCurry;
+	public EAssetGrp geteAssetGrp() {
+		return assetGrp;
 	}
 
-	public void setCurry(boolean isCurry) {
-		this.isCurry = isCurry;
+	public void seteAssetGrp(EAssetGrp eAssetGrp) {
+		this.assetGrp = eAssetGrp;
 	}
 
 	public static long getSerialversionuid() {

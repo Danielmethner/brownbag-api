@@ -21,21 +21,26 @@ public class PartySvc {
 	@Autowired
 	private PosSvc posSvc;
 
+	@Autowired
+	private UserSvc userSvc;
+
 	/**
 	 *
-	 * @param eOrg
+	 * @param eParty
 	 * @param user      - managing user
 	 * @param partyType - Legal or natural person
 	 * @param addMacc   - create MACC for newly created Legal Entity
 	 * @return
 	 */
-	public Party createParty(EParty eOrg, User user, EPartyType legalEntityType, boolean addMacc) {
-		Party le = new Party(eOrg.toString(), user, legalEntityType);
-		le = partyRepo.save(le);
-		if (addMacc) {
-			posSvc.createMacc(0, le, 0);
+	public Party createParty(EParty eParty) {
+		User mgr;
+		mgr = userSvc.getByEnum(eParty.getUser());
+		Party party = new Party(eParty.toString(), mgr, eParty.getPartyType());
+		party = partyRepo.save(party);
+		if (eParty.createMACC) {
+			posSvc.createMacc(0, party, 0);
 		}
-		return le;
+		return party;
 	}
 
 	public Party getNaturalPerson(User manager) {
@@ -56,7 +61,15 @@ public class PartySvc {
 
 	public Pos getMacc(Party le) {
 		return posSvc.findByPartyAndIsMacc(le, true);
-
+//TOOD: change to get by group
+	}
+	
+	public Party findByName(String name) {
+		return partyRepo.findByName(name);	
+	}
+	
+	public Party findByEnum(EParty eParty) {
+		return partyRepo.findByName(eParty.toString());	
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.brownbag_api.security.svc;
+package com.brownbag_api.service;
 
 import java.util.Set;
 
@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import com.brownbag_api.model.Party;
 import com.brownbag_api.model.User;
 import com.brownbag_api.model.data.ERole;
+import com.brownbag_api.model.data.EUser;
 
 public interface UserSvc {
 	public void save(User user);
@@ -20,4 +21,6 @@ public interface UserSvc {
 	Party getNaturalPerson(User user);
 
 	Party getOrganisation(User user);
+	
+	User getByEnum(EUser eUser );
 }

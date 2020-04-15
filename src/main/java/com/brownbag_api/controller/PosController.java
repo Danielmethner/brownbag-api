@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.brownbag_api.model.Pos;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.PosRepo;
-import com.brownbag_api.security.svc.UserSvc;
+import com.brownbag_api.service.UserSvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

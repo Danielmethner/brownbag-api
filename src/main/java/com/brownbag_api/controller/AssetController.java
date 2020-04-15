@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.Asset;
+import com.brownbag_api.model.data.EAssetGrp;
 import com.brownbag_api.repo.AssetRepo;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -20,13 +21,13 @@ public class AssetController {
 	private AssetRepo assetRepo;
 
 	@GetMapping("/sec/all")
-	public List<Asset> allSecurities() {
-		return assetRepo.findAllByIsCurry(false);
+	public List<Asset> allStocks() {
+		return assetRepo.findAllByAssetGrp(EAssetGrp.STOCK);
 	}
 
 	@GetMapping("/macc/all")
 	public List<Asset> allMaccs() {
-		return assetRepo.findAllByIsCurry(true);
+		return assetRepo.findAllByAssetGrp(EAssetGrp.CURRY);
 	}
 
 }

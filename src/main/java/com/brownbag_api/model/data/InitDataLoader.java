@@ -15,16 +15,14 @@ import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.Role;
 import com.brownbag_api.model.User;
-import com.brownbag_api.repo.AssetRepo;
-import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.RoleRepo;
-import com.brownbag_api.repo.UserRepo;
-import com.brownbag_api.security.svc.UserSvc;
+import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.OrderCreateMonSvc;
 import com.brownbag_api.service.OrderPaySvc;
 import com.brownbag_api.service.OrderSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
+import com.brownbag_api.service.UserSvc;
 
 @Component
 public class InitDataLoader {
@@ -35,13 +33,10 @@ public class InitDataLoader {
 	private UserSvc userSvc;
 
 	@Autowired
-	private AssetRepo assetRepo;
+	private AssetSvc assetSvc;
 
 	@Autowired
-	private PartySvc lESvc;
-
-	@Autowired
-	private PartyRepo lERepo;
+	private PartySvc partySvc;
 
 	@Autowired
 	private OrderSvc orderSvc;
@@ -51,9 +46,6 @@ public class InitDataLoader {
 
 	@Autowired
 	private PosSvc posSvc;
-
-	@Autowired
-	private UserRepo userRepo;
 
 	@Autowired
 	OrderCreateMonSvc orderCreateMonSvc;
@@ -93,17 +85,18 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 	// ASSET
 	// -----------------------------------------------------------
-	private void createAsset(String name, boolean isShare, Party issuer) {
-		Asset asset = new Asset(name, isShare, issuer);
-		assetRepo.save(asset);
+	private Asset createAsset(EAsset eAsset) {
+		Party issuer = partySvc.findByEnum(eAsset.getParty());
+		Asset asset = new Asset(eAsset.getName(), eAsset.getAssetGrp(), issuer);
+		return assetSvc.save(asset);
 	}
 
 	// -----------------------------------------------------------
 	// USER
 	// -----------------------------------------------------------
-	public void createUser(EUser eUser, ERole eRole) {
+	public void createUser(EUser eUser) {
 		Set<String> roles = new HashSet<>();
-		roles.add(eRole.getName());
+		roles.add(eUser.getRole().getName());
 		userSvc.registerUser(eUser.toString(), eUser.name(), eUser.toString(), roles);
 	}
 
@@ -112,60 +105,56 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 	private void createOrgUsers() {
 		// ORGANISATIONS
-		createUser(EUser.MGR_ECB, ERole.ROLE_ORG);
-		createUser(EUser.MGR_DEUTSCHE_BANK, ERole.ROLE_ORG);
-		createUser(EUser.MGR_GOVERNMENT, ERole.ROLE_ORG);
+		createUser(EUser.MGR_ECB);
+		createUser(EUser.MGR_DEUTSCHE_BANK);
+		createUser(EUser.MGR_GOVERNMENT);
 		// BROKER
-		createUser(EUser.U_BROKER, ERole.ROLE_BROKER);
+		createUser(EUser.U_BROKER);
 	}
+	
 
+	// -----------------------------------------------------------
+	// EUR CENTRAL BANK
+	// -----------------------------------------------------------
 	public void createCentralBank() {
-		User mgr;
-		mgr = userRepo.findByUsername(EUser.MGR_ECB.toString());
-		Party orgCentralBank = lESvc.createParty(EParty.ECB, mgr, EPartyType.ORG_GOVT, false);
-		createAsset(EAsset.EUR.getName(), true, orgCentralBank);
-		posSvc.createMacc(0, orgCentralBank, 100000000);
+		partySvc.createParty(EParty.ECB);
+		// ECB is issuer of EUR, hence needs to be created beforehand
+		Asset asset = createAsset(EAsset.EUR);
+		posSvc.createMacc(0, asset.getIssuer(), 100000000);
 	}
 
 	// -----------------------------------------------------------
 	// LEGAL ENTITIES
 	// -----------------------------------------------------------
 	public void createLegalEntities() {
-		User mgr;
-		mgr = userRepo.findByUsername(EUser.MGR_DEUTSCHE_BANK.toString());
-		lESvc.createParty(EParty.DEUTSCHE_BANK, mgr, EPartyType.PERSON_LEGAL, true);
-		mgr = userRepo.findByUsername(EUser.MGR_GOVERNMENT.toString());
-		lESvc.createParty(EParty.GOVERNMENT, mgr, EPartyType.ORG_GOVT, true);
-		mgr = userRepo.findByUsername(EUser.U_BROKER.toString());
-		lESvc.createParty(EParty.BROKER, mgr, EPartyType.PERSON_LEGAL, true);
+		partySvc.createParty(EParty.DEUTSCHE_BANK);
+		partySvc.createParty(EParty.GOVERNMENT);
+		partySvc.createParty(EParty.BROKER);
 	}
 
 	// -----------------------------------------------------------
 	// ASSETS
 	// -----------------------------------------------------------
 	private void createAssets() {
-		Party orgGovernment = lERepo.findByName(EParty.GOVERNMENT.toString());
-		createAsset(EAsset.GOVERNMENT_BOND.getName(), false, orgGovernment);
-		Party orgDeutscheBank = lERepo.findByName(EParty.DEUTSCHE_BANK.toString());
-		createAsset(EAsset.DEUTSCHE_BANK.getName(), false, orgDeutscheBank);
+		createAsset(EAsset.GOVERNMENT_BOND);
+		createAsset(EAsset.DEUTSCHE_BANK);
 	}
 
 	// -----------------------------------------------------------
-	// PERSONS
+	// PERSONS - created after central bank since they receive a money account by default
 	// -----------------------------------------------------------
 	public void createUsers() {
 		// MANAGERS
-		createUser(EUser.U_TRADER_1, ERole.ROLE_MGR);
-		createUser(EUser.U_TRADER_2, ERole.ROLE_MGR);
+		createUser(EUser.U_TRADER_1);
+		createUser(EUser.U_TRADER_2);
 	}
 
 	// -----------------------------------------------------------
 	// ORDERS
 	// -----------------------------------------------------------
-
 	private void createOrderPay(double qty, @NotNull EUser eUser, String bookText, Pos maccSend, Pos maccRcv) {
 
-		User user = userRepo.findByUsername(maccSend.getParty().getUser().getUsername());
+		User user = maccSend.getParty().getUser();
 
 		OrderPay orderPay = orderPaySvc.createPay(qty, user, null, bookText, maccSend, maccRcv);
 		orderSvc.execAction(orderPay, EOrderAction.HOLD);
@@ -179,13 +168,13 @@ public class InitDataLoader {
 		// CREATE MONEY
 		orderCreateMonSvc.createMon(EParty.ECB, amount);
 		// GET MACC - SENDER
-		Party leSend = lERepo.findByName(EParty.ECB.toString());
-		Pos maccSend = lESvc.getMacc(leSend);
+		Party leSend = partySvc.findByEnum(EParty.ECB);
+		Pos maccSend = partySvc.getMacc(leSend);
 
 		// GET MACC - RECIPIENT
-		User userRcv = userRepo.findByUsername(EUser.U_TRADER_1.toString());
+		User userRcv = userSvc.getByEnum(EUser.U_TRADER_1);
 		Party leRcv = userSvc.getNaturalPerson(userRcv);
-		Pos maccRcv = lESvc.getMacc(leRcv);
+		Pos maccRcv = partySvc.getMacc(leRcv);
 
 		createOrderPay(amount, EUser.U_TRADER_1, null, maccSend, maccRcv);
 	}
@@ -198,10 +187,10 @@ public class InitDataLoader {
 
 	private void createOrdersStex() {
 
-		Asset deutscheBank = assetRepo.findByName(EAsset.DEUTSCHE_BANK.getName());
-		Asset govBond = assetRepo.findByName(EAsset.GOVERNMENT_BOND.getName());
+		Asset deutscheBank = assetSvc.getByEnum(EAsset.DEUTSCHE_BANK);
+		Asset govBond = assetSvc.getByEnum(EAsset.GOVERNMENT_BOND);
 
-		User userTrader = userRepo.findByUsername(EUser.U_TRADER_1.toString());
+		User userTrader = userSvc.getByEnum(EUser.U_TRADER_1);
 		createOrderStex(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 10, 100.55, userTrader, EOrderStatus.NEW);
 		createOrderStex(EOrderDir.SELL, EOrderType.STEX, govBond, 20, 49.33, userTrader, EOrderStatus.NEW);
 	}

@@ -12,11 +12,11 @@ import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Role;
 import com.brownbag_api.model.User;
 import com.brownbag_api.model.data.ERole;
+import com.brownbag_api.model.data.EUser;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.payload.response.MsgResponse;
-import com.brownbag_api.security.svc.UserSvc;
 
 @Service
 public class UserSvcImpl implements UserSvc {
@@ -34,7 +34,7 @@ public class UserSvcImpl implements UserSvc {
 	PosSvc posSvc;
 
 	@Autowired
-	PartySvc lESvc;
+	PartySvc partySvc;
 
 	@Autowired
 	PasswordEncoder encoder;
@@ -103,7 +103,7 @@ public class UserSvcImpl implements UserSvc {
 		for (Role role : user.getRoles()) {
 			String roleName = role.getName();
 			if (roleName.equals(ERole.ROLE_MGR.getName())) {
-				lESvc.createNaturalPerson(user);
+				partySvc.createNaturalPerson(user);
 				break;
 			}
 		}
@@ -120,11 +120,16 @@ public class UserSvcImpl implements UserSvc {
 	@Override
 	public Party getOrganisation(User user) {
 
-		return lESvc.getNaturalPerson(user);
+		return partySvc.getNaturalPerson(user);
 	}
 
 	@Override
 	public Party getNaturalPerson(User user) {
-		return lESvc.getNaturalPerson(user);
+		return partySvc.getNaturalPerson(user);
+	}
+
+	@Override
+	public User getByEnum(EUser eUser) {
+		return userRepo.findByUsername(eUser.toString());
 	}
 }
