@@ -29,7 +29,5 @@ public enum EParty {
 	public EPartyType getPartyType() {
 		return partyType;
 	}
-	
-	
 
 }

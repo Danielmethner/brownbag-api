@@ -35,10 +35,21 @@ public class OrderPaySvc extends OrderSvc {
 	@Autowired
 	private LogSvc logSvc;
 
+	/**
+	 * Does not persist order! 
+	 * 
+	 * @param qty
+	 * @param user
+	 * @param assetCash
+	 * @param bookText
+	 * @param maccSend
+	 * @param maccRcv
+	 * @return
+	 */
 	public OrderPay createPay(double qty, @NotNull User user, Asset assetCash, String bookText, Pos maccSend,
 			Pos maccRcv) {
 		String userString = "User: " + user.getName();
-		String orderString = "Pay Order: Amount: " + qty + " MACC From: '" + maccSend.getName() + "' MACC To: '"
+		String orderString = "Pay Order: Amount: '" + qty + "'. MACC From: '" + maccSend.getName() + "'. MACC To: '"
 				+ maccRcv.getName() + "'";
 		if (maccSend == maccRcv) {
 			logSvc.write(userString + ": 'MACC From' and 'MACC to' must not be identical. " + orderString);
@@ -50,7 +61,7 @@ public class OrderPaySvc extends OrderSvc {
 			logSvc.write(userString + ": No Currency set. EUR will be set as default. " + orderString);
 		}
 		OrderPay orderPay = new OrderPay(qty, assetCash, EOrderType.PAY, EOrderStatus.NEW, user, maccSend, maccRcv,
-				null);
+				orderString);
 
 		return orderPay;
 	}

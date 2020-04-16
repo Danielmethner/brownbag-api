@@ -152,11 +152,12 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 	// ORDERS
 	// -----------------------------------------------------------
-	private void createOrderPay(double qty, @NotNull EUser eUser, String bookText, Pos maccSend, Pos maccRcv) {
+	private void createOrderPay(double qty, String bookText, Pos maccSend, Pos maccRcv) {
 
 		User user = maccSend.getParty().getUser();
 
 		OrderPay orderPay = orderPaySvc.createPay(qty, user, null, bookText, maccSend, maccRcv);
+//		System.out.println(orderPay.getAdvText());
 		orderSvc.execAction(orderPay, EOrderAction.HOLD);
 		orderPaySvc.execPay(orderPay);
 
@@ -164,24 +165,25 @@ public class InitDataLoader {
 
 	private void createOrdersPay() {
 
-		double amount = 10;
+		double amount = 25;
 		// CREATE MONEY
 		orderCreateMonSvc.createMon(EParty.ECB, amount);
 		// GET MACC - SENDER
-		Party leSend = partySvc.findByEnum(EParty.ECB);
+		User userSend = userSvc.getByEnum(EUser.U_TRADER_1);
+		Party leSend = userSvc.getNaturalPerson(userSend);
 		Pos maccSend = partySvc.getMacc(leSend);
 
 		// GET MACC - RECIPIENT
-		User userRcv = userSvc.getByEnum(EUser.U_TRADER_1);
+		User userRcv = userSvc.getByEnum(EUser.U_TRADER_2);
 		Party leRcv = userSvc.getNaturalPerson(userRcv);
 		Pos maccRcv = partySvc.getMacc(leRcv);
 
-		createOrderPay(amount, EUser.U_TRADER_1, null, maccSend, maccRcv);
+		createOrderPay(amount, "Test Payment from Trader_1 to Trader_2", maccSend, maccRcv);
 	}
 
 	private void createOrderStex(EOrderDir orderDir, EOrderType orderType, Asset asset, int qty, double price,
 			@NotNull User user, @NotNull EOrderStatus orderStatus) {
-		OrderStex orderStex = new OrderStex(qty, asset, orderType, orderStatus, user, price);
+		OrderStex orderStex = new OrderStex(orderDir, qty, asset, orderType, orderStatus, user, price);
 		orderSvc.execAction(orderStex, EOrderAction.HOLD);
 	}
 

@@ -84,7 +84,7 @@ public class OrderCreateMonSvc extends OrderSvc {
 	public OrderCreateMon createMon(Party partySend, @NotNull double amount) {
 		Pos maccCentralBank = partySvc.getMacc(partySend);
 		OrderCreateMon orderCreateMon = new OrderCreateMon(amount, maccCentralBank.getAsset(), EOrderType.CREATE_MONEY,
-				EOrderStatus.DONE, partySend.getUser(), maccCentralBank, null);
+				EOrderStatus.DONE, partySend.getUser(), maccCentralBank, "Money Creation: " + partySend.getName());
 		orderCreateMon = orderRepo.save(orderCreateMon);
 		orderCreateMon.setPosRcv(posSvc.crebitPos(orderCreateMon));
 		return (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.VERIFY);

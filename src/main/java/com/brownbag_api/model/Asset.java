@@ -48,7 +48,6 @@ public class Asset implements Serializable {
 	@Column(name = "INTR_RATE")
 	private double intrRate;
 
-	@NotBlank
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
 	private EAssetGrp assetGrp;
