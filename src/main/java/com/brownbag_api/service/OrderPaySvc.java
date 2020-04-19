@@ -36,8 +36,8 @@ public class OrderPaySvc extends OrderSvc {
 	private LogSvc logSvc;
 
 	/**
-	 * Does not persist order! 
-	 * 
+	 * Does not persist order!
+	 *
 	 * @param qty
 	 * @param user
 	 * @param assetCash

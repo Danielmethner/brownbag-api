@@ -18,12 +18,12 @@ public class OrderSvc {
 
 	@Autowired
 	private OrderTransRepo orderTransRepo;
-	
+
 	@Autowired
 	private LogSvc logSvc;
 
 	public Order execAction(Order order, EOrderAction orderAction) {
-		if(order.getOrderStatus() == orderAction.getNewStatus()) {
+		if (order.getOrderStatus() == orderAction.getNewStatus()) {
 			logSvc.write("Old WFC Status and New WFC Status are identical! Order cannot proceed");
 			return null;
 		}

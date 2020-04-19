@@ -18,7 +18,7 @@ public class UtilDate {
 	public static Date minDate = new GregorianCalendar(1000, 0, 1).getTime();
 	public static Date maxDate = new GregorianCalendar(3000, 11, 1).getTime();
 	public static LocalDate finDate = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-		
+
 	public static Calendar cal() {
 		Calendar cal = new GregorianCalendar();
 		return cal;
@@ -43,7 +43,7 @@ public class UtilDate {
 	public static int getFinYear() {
 		return finDate.getYear();
 	}
-	
+
 	public static LocalDate incrFinYear() {
 		return finDate = finDate.plusYears(1);
 	}

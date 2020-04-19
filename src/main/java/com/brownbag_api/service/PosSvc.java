@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.AssetLoan;
-import com.brownbag_api.model.BalTrx;
 import com.brownbag_api.model.BalTrxTransient;
 import com.brownbag_api.model.OrderCreateMon;
 import com.brownbag_api.model.OrderLoan;
@@ -35,8 +34,6 @@ public class PosSvc {
 	private PosRepo posRepo;
 	@Autowired
 	private BookingSvc bookingSvc;
-	@Autowired
-	private OrderPaySvc orderPaySvc;
 	@Autowired
 	private BAdminSvc bAdminSvc;
 	@Autowired
@@ -91,7 +88,7 @@ public class PosSvc {
 		balTrxList.add(new BalTrxTransient(EBalSheetItemType.CASH, orderPay.getQty(), EBookingDir.DEBIT, partyPayer));
 		// LIABILITIES
 		balTrxList.add(new BalTrxTransient(EBalSheetItemType.EQUITY, orderPay.getQty(), EBookingDir.DEBIT, partyPayer));
-		
+
 		// BOOKING
 		return bookingSvc.createBooking(orderPay, orderPay.getPosSend(), EBookingDir.DEBIT, balTrxList);
 
@@ -106,7 +103,7 @@ public class PosSvc {
 		// EQUITY
 		balTrxList.add(
 				new BalTrxTransient(EBalSheetItemType.EQUITY, orderPay.getQty(), EBookingDir.CREDIT, partyRecipient));
-		
+
 		// BOOKING
 		return bookingSvc.createBooking(orderPay, orderPay.getPosRcv(), EBookingDir.CREDIT, balTrxList);
 
@@ -120,7 +117,7 @@ public class PosSvc {
 		// EQUITY
 		balTrxList
 				.add(new BalTrxTransient(EBalSheetItemType.EQUITY, orderCreateMon.getQty(), EBookingDir.CREDIT, party));
-		
+
 		// BOOKING
 		return bookingSvc.createBooking(orderCreateMon, orderCreateMon.getPosRcv(), EBookingDir.CREDIT, balTrxList);
 	}

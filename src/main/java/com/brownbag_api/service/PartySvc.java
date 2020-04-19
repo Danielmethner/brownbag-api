@@ -63,13 +63,13 @@ public class PartySvc {
 		return posSvc.findByPartyAndIsMacc(party, true);
 //TOOD: change to get by group
 	}
-	
+
 	public Party findByName(String name) {
-		return partyRepo.findByName(name);	
+		return partyRepo.findByName(name);
 	}
-	
+
 	public Party findByEnum(EParty eParty) {
-		return partyRepo.findByName(eParty.toString());	
+		return partyRepo.findByName(eParty.toString());
 	}
 
 }

@@ -1,23 +1,21 @@
 package com.brownbag_api.service;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.BalSheetItem;
 import com.brownbag_api.model.BalTrx;
+import com.brownbag_api.model.BalTrxTransient;
 import com.brownbag_api.model.Booking;
 import com.brownbag_api.model.Order;
 import com.brownbag_api.model.Pos;
-import com.brownbag_api.model.data.EBalSheetItemType;
 import com.brownbag_api.model.data.EBalSheetSectionType;
 import com.brownbag_api.model.data.EBookingDir;
 import com.brownbag_api.repo.BalTrxRepo;
 import com.brownbag_api.repo.BookingRepo;
 import com.brownbag_api.repo.PosRepo;
-import com.brownbag_api.model.BalTrxTransient;
 import com.brownbag_api.util.UtilDate;
 
 @Service
@@ -65,19 +63,20 @@ public class BookingSvc {
 
 			double balTrxQty = balTrxTransient.getBookingDir() == EBookingDir.CREDIT ? balTrxTransient.getQty()
 					: (-1) * balTrxTransient.getQty();
-			
+
 			balTrxAssets = balTrxTransient.getItemType().getSection() == EBalSheetSectionType.ASSETS
 					? balTrxAssets + balTrxQty
 					: balTrxAssets;
 			balTrxLiabEquity = balTrxTransient.getItemType().getSection() != EBalSheetSectionType.ASSETS
 					? balTrxLiabEquity + balTrxQty
 					: balTrxLiabEquity;
-			
+
 			// UPDATE BALANCE SHEET ITEM
-			BalSheetItem bsi = balSheetItemSvc.getItem(balTrxTransient.getParty(), finYear, balTrxTransient.getItemType());
+			BalSheetItem bsi = balSheetItemSvc.getItem(balTrxTransient.getParty(), finYear,
+					balTrxTransient.getItemType());
 			bsi.setQty(bsi.getQty() + balTrxQty);
 			balSheetItemSvc.save(bsi);
-			
+
 			// BALANCE SHEET TRANSACTION
 			BalTrx balTrx = new BalTrx(order, bsi, booking, balTrxQty);
 			balTrxRepo.save(balTrx);

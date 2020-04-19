@@ -21,6 +21,6 @@ public interface UserSvc {
 	Party getNaturalPerson(User user);
 
 	Party getOrganisation(User user);
-	
-	User getByEnum(EUser eUser );
+
+	User getByEnum(EUser eUser);
 }

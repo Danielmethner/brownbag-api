@@ -24,7 +24,6 @@ import com.brownbag_api.service.OrderSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
 import com.brownbag_api.service.UserSvc;
-import com.brownbag_api.util.UtilBA;
 
 @Component
 public class InitDataLoader {
@@ -113,7 +112,6 @@ public class InitDataLoader {
 		// BROKER
 		createUser(EUser.U_BROKER);
 	}
-	
 
 	// -----------------------------------------------------------
 	// EUR CENTRAL BANK
@@ -146,7 +144,8 @@ public class InitDataLoader {
 	}
 
 	// -----------------------------------------------------------
-	// PERSONS - created after central bank since they receive a money account by default
+	// PERSONS - created after central bank since they receive a money account by
+	// default
 	// -----------------------------------------------------------
 	public void createUsers() {
 		// MANAGERS
@@ -171,7 +170,7 @@ public class InitDataLoader {
 	private void createOrdersPay() {
 
 		double amount = 25;
-		
+
 		// GET MACC - SENDER
 		User userSend = userSvc.getByEnum(EUser.U_TRADER_1);
 		Party leSend = userSvc.getNaturalPerson(userSend);

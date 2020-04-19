@@ -6,9 +6,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.AssetLoan;
 import com.brownbag_api.model.OrderLoan;
 import com.brownbag_api.model.OrderPay;
@@ -21,8 +19,6 @@ import com.brownbag_api.model.data.EAssetGrp;
 import com.brownbag_api.model.data.EOrderAction;
 import com.brownbag_api.model.data.EOrderStatus;
 import com.brownbag_api.model.data.EOrderType;
-import com.brownbag_api.repo.AssetRepo;
-import com.brownbag_api.repo.OrderRepo;
 
 @Service
 public class OrderLoanSvc extends OrderSvc {
@@ -40,14 +36,11 @@ public class OrderLoanSvc extends OrderSvc {
 	private PosSvc posSvc;
 
 	@Autowired
-	private OrderRepo orderRepo;
-
-	@Autowired
 	private LogSvc logSvc;
 
 	/**
 	 * Does not persist order!
-	 * 
+	 *
 	 */
 	public OrderLoan createLoan(double qty, @NotNull User user, Pos maccGrant, Pos maccRcv, Date matDate,
 			double intrRate) {
@@ -98,7 +91,7 @@ public class OrderLoanSvc extends OrderSvc {
 		// CREATE LOAN POSITION
 		PosLoan posLoan = posSvc.createPosLoan(0, assetLoan, partyLender, orderLoan.getMaccLender(),
 				orderLoan.getMaccDebtor());
-		
+
 		orderLoan.setPosLoan(posLoan);
 
 		posLoan = posSvc.crebitPos(orderLoan);

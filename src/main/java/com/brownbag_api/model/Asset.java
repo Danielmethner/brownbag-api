@@ -40,7 +40,7 @@ public class Asset implements Serializable {
 	@NotBlank
 	@Size(max = 50)
 	private String name;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
 	private EAssetGrp assetGrp;
@@ -120,6 +120,5 @@ public class Asset implements Serializable {
 	public void setTimestampCreate(Date timestampCreate) {
 		this.timestampCreate = timestampCreate;
 	}
-
 
 }

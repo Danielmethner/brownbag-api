@@ -15,7 +15,7 @@ public class BAdminSvc {
 	private AssetRepo assetRepo;
 
 	public Asset getByEnum(EAsset eAsset) {
-		return assetRepo.findByName(eAsset.getName());	
+		return assetRepo.findByName(eAsset.getName());
 	}
 
 	public Asset save(Asset asset) {

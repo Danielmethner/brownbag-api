@@ -32,7 +32,7 @@ public class Booking implements Serializable {
 	@ManyToOne(targetEntity = Order.class)
 	@JoinColumn(name = "ORDER_ID")
 	public Order order;
-	
+
 	@Column(name = "BOOK_TEXT")
 	private String bookText;
 
@@ -139,7 +139,5 @@ public class Booking implements Serializable {
 	public void setBookText(String bookText) {
 		this.bookText = bookText;
 	}
-	
-	
 
 }

@@ -27,10 +27,9 @@ public class BalSheetItemSvc {
 		balSheetItemRepo.save(bsi);
 
 	}
-	
+
 	public BalSheetItem getItem(Party party, int finYear, EBalSheetItemType eBalSheetItem) {
-		BalSheetItem balSheetItem = balSheetItemRepo.findByPartyAndFinYearAndItemType(party, finYear,
-				eBalSheetItem);
+		BalSheetItem balSheetItem = balSheetItemRepo.findByPartyAndFinYearAndItemType(party, finYear, eBalSheetItem);
 		return balSheetItem;
 	}
 
