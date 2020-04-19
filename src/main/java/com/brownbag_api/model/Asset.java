@@ -40,14 +40,7 @@ public class Asset implements Serializable {
 	@NotBlank
 	@Size(max = 50)
 	private String name;
-
-	@Column(name = "MAT_DATE")
-	private Date matDate;
-
-	@NotNull
-	@Column(name = "INTR_RATE")
-	private double intrRate;
-
+	
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
 	private EAssetGrp assetGrp;
@@ -128,20 +121,5 @@ public class Asset implements Serializable {
 		this.timestampCreate = timestampCreate;
 	}
 
-	public Date getMatDate() {
-		return matDate;
-	}
-
-	public void setMatDate(Date matDate) {
-		this.matDate = matDate;
-	}
-
-	public double getIntrRate() {
-		return intrRate;
-	}
-
-	public void setIntrRate(double intrRate) {
-		this.intrRate = intrRate;
-	}
 
 }

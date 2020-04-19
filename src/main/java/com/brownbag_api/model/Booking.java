@@ -32,6 +32,9 @@ public class Booking implements Serializable {
 	@ManyToOne(targetEntity = Order.class)
 	@JoinColumn(name = "ORDER_ID")
 	public Order order;
+	
+	@Column(name = "BOOK_TEXT")
+	private String bookText;
 
 	@NotNull
 	@Column(name = "POS_BAL_OLD")
@@ -55,23 +58,18 @@ public class Booking implements Serializable {
 	@Column(name = "TIMESTAMP", updatable = false)
 	private Date timestampCreate;
 
-	@NotNull
-	@ManyToOne(targetEntity = BalSheetItem.class)
-	@JoinColumn(name = "BAL_SHEET_ITEM_ID")
-	private BalSheetItem bsi;
-
 	public Booking() {
 	}
 
 	public Booking(@NotNull Order order, @NotNull double posBalOld, @NotNull double qty, @NotNull double posBalNew,
-			@NotNull Pos pos, @NotNull BalSheetItem bsi) {
+			@NotNull Pos pos, @NotNull String bookText) {
 		super();
 		this.order = order;
 		this.posBalOld = posBalOld;
 		this.qty = qty;
 		this.posBalNew = posBalNew;
 		this.pos = pos;
-		this.bsi = bsi;
+		this.bookText = bookText;
 	}
 
 	public Long getId() {
@@ -133,5 +131,15 @@ public class Booking implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	public String getBookText() {
+		return bookText;
+	}
+
+	public void setBookText(String bookText) {
+		this.bookText = bookText;
+	}
+	
+	
 
 }

@@ -3,7 +3,7 @@ package com.brownbag_api.model.data;
 public enum EAsset {
 	EUR("Euro", EAssetGrp.CURRY, EParty.ECB), DEUTSCHE_BANK("Deutsche Bank", EAssetGrp.STOCK, EParty.DEUTSCHE_BANK),
 	BOND_GOVERNMENT("Government Bond", EAssetGrp.BOND, EParty.GOVERNMENT),
-	LOAN_ECB("Central Bank Loan", EAssetGrp.BOND, EParty.ECB);
+	LOAN_GENERIC("Generic Loan", EAssetGrp.LOAN, EParty.ECB);
 
 	public final String name;
 	public final EAssetGrp assetGrp;

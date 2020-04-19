@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.brownbag_api.model.Asset;
+import com.brownbag_api.model.AssetLoan;
 import com.brownbag_api.model.OrderPay;
 import com.brownbag_api.model.OrderStex;
 import com.brownbag_api.model.Party;
@@ -23,6 +24,7 @@ import com.brownbag_api.service.OrderSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
 import com.brownbag_api.service.UserSvc;
+import com.brownbag_api.util.UtilBA;
 
 @Component
 public class InitDataLoader {
@@ -117,10 +119,13 @@ public class InitDataLoader {
 	// EUR CENTRAL BANK
 	// -----------------------------------------------------------
 	public void createCentralBank() {
-		partySvc.createParty(EParty.ECB);
+		Party ecb = partySvc.createParty(EParty.ECB);
 		// ECB is issuer of EUR, hence needs to be created beforehand
-		Asset asset = createAsset(EAsset.EUR);
-		posSvc.createMacc(0, asset.getIssuer(), 100000000);
+		Asset assetEUR = createAsset(EAsset.EUR);
+		posSvc.createMacc(0, assetEUR.getIssuer(), 100000000);
+		Asset assetLoanVanilla = new Asset(EAsset.LOAN_GENERIC.getName(), EAsset.LOAN_GENERIC.getAssetGrp(), ecb);
+		AssetLoan assetLoan = new AssetLoan(assetLoanVanilla);
+		assetSvc.save(assetLoan);
 	}
 
 	// -----------------------------------------------------------
@@ -146,7 +151,7 @@ public class InitDataLoader {
 	public void createUsers() {
 		// MANAGERS
 		createUser(EUser.U_TRADER_1);
-		createUser(EUser.U_TRADER_2);
+//		createUser(EUser.U_TRADER_2);
 	}
 
 	// -----------------------------------------------------------
@@ -166,8 +171,7 @@ public class InitDataLoader {
 	private void createOrdersPay() {
 
 		double amount = 25;
-		// CREATE MONEY
-		orderCreateMonSvc.createMon(EParty.ECB, amount);
+		
 		// GET MACC - SENDER
 		User userSend = userSvc.getByEnum(EUser.U_TRADER_1);
 		Party leSend = userSvc.getNaturalPerson(userSend);
@@ -198,7 +202,7 @@ public class InitDataLoader {
 	}
 
 	private void createOrders() {
-		createOrdersPay();
+//		createOrdersPay();
 		createOrdersStex();
 	}
 

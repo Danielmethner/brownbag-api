@@ -59,8 +59,8 @@ public class PartySvc {
 		}
 	}
 
-	public Pos getMacc(Party le) {
-		return posSvc.findByPartyAndIsMacc(le, true);
+	public Pos getMacc(Party party) {
+		return posSvc.findByPartyAndIsMacc(party, true);
 //TOOD: change to get by group
 	}
 	

@@ -4,7 +4,8 @@ import java.util.stream.Stream;
 
 public enum EBalSheetItemType {
 	CASH("Cash", EBalSheetSectionType.ASSETS), STOCKS("Stocks", EBalSheetSectionType.ASSETS),
-	LOANS("Loans", EBalSheetSectionType.LIABILITIES), EQUITY("Equity", EBalSheetSectionType.EQUITY);
+	LOANS_ASSET("Loans granted", EBalSheetSectionType.ASSETS),
+	LOANS_LIAB("Loans raised", EBalSheetSectionType.LIABILITIES), EQUITY("Equity", EBalSheetSectionType.EQUITY);
 
 	public final String name;
 	public final EBalSheetSectionType section;

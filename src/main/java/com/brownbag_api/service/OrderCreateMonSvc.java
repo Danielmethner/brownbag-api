@@ -75,7 +75,7 @@ public class OrderCreateMonSvc extends OrderSvc {
 			orderPay = orderRepo.save(orderPay);
 		}
 		posSvc.debitPos(orderPay);
-		posSvc.crebitPos(orderPay);
+//		posSvc.crebitPos(orderPay);
 
 		return (OrderPay) orderSvc.execAction(orderPay, EOrderAction.VERIFY);
 	}
@@ -84,8 +84,8 @@ public class OrderCreateMonSvc extends OrderSvc {
 	public OrderCreateMon createMon(Party partySend, @NotNull double amount) {
 		Pos maccCentralBank = partySvc.getMacc(partySend);
 		OrderCreateMon orderCreateMon = new OrderCreateMon(amount, maccCentralBank.getAsset(), EOrderType.CREATE_MONEY,
-				EOrderStatus.DONE, partySend.getUser(), maccCentralBank, "Money Creation: " + partySend.getName());
-		orderCreateMon = orderRepo.save(orderCreateMon);
+				EOrderStatus.NEW, partySend.getUser(), maccCentralBank, "Money Creation: " + partySend.getName());
+		orderCreateMon = (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.HOLD);
 		orderCreateMon.setPosRcv(posSvc.crebitPos(orderCreateMon));
 		return (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.VERIFY);
 	}
