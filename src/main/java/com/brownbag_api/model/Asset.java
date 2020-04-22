@@ -41,6 +41,9 @@ public class Asset implements Serializable {
 	@Size(max = 50)
 	private String name;
 
+	@Size(max = 12)
+	private String isin;
+
 	@Enumerated(EnumType.STRING)
 	@Column(length = 10)
 	private EAssetGrp assetGrp;
@@ -55,11 +58,17 @@ public class Asset implements Serializable {
 	@Column(name = "TIMESTAMP", updatable = false)
 	private Date timestampCreate;
 
-	public Asset(@NotBlank @Size(max = 50) String name, EAssetGrp eAssetGrp, @NotNull Party issuer) {
+	@NotNull
+	private double nomVal;
+
+	public Asset(@NotBlank @Size(max = 50) String name, @Size(max = 50) String isin, EAssetGrp assetGrp,
+			@NotNull Party issuer, @NotNull double nomVal) {
 		super();
 		this.name = name;
-		this.assetGrp = eAssetGrp;
+		this.isin = isin;
+		this.assetGrp = assetGrp;
 		this.issuer = issuer;
+		this.nomVal = nomVal;
 	}
 
 	public Asset() {
@@ -119,6 +128,22 @@ public class Asset implements Serializable {
 
 	public void setTimestampCreate(Date timestampCreate) {
 		this.timestampCreate = timestampCreate;
+	}
+
+	public double getNomVal() {
+		return nomVal;
+	}
+
+	public void setNomVal(double nomVal) {
+		this.nomVal = nomVal;
+	}
+
+	public String getIsin() {
+		return isin;
+	}
+
+	public void setIsin(String isin) {
+		this.isin = isin;
 	}
 
 }

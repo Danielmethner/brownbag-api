@@ -18,8 +18,8 @@ public class OrderStex extends Order implements Serializable {
 	private static final long serialVersionUID = 4643589803146964779L;
 
 	@NotNull
-	@Column(name = "PRICE")
-	private double price;
+	@Column(name = "PRICE_LIMIT")
+	private double priceLimit;
 
 	@NotNull
 	@Column(name = "DIRECTION")
@@ -30,23 +30,23 @@ public class OrderStex extends Order implements Serializable {
 
 	public OrderStex(@NotNull double price) {
 		super();
-		this.price = price;
+		this.priceLimit = price;
 	}
 
 	public OrderStex(EOrderDir orderDir, @NotNull int qty, @NotNull Asset asset, EOrderType orderType,
 			EOrderStatus orderStatus, @NotNull User user, @NotNull double price) {
 		super(qty, asset, orderType, orderStatus, user, "STEX Order: '" + orderDir.toString() + "'; User: '"
-				+ user.getName() + "'; Asset: '" + asset.getName() + "'; Qty: '" + qty);
+				+ user.getName() + "'; Asset: '" + asset.getName() + "'; Qty: '" + qty + "'");
 		this.orderDir = orderDir;
-		this.price = price;
+		this.priceLimit = price;
 	}
 
 	public double getPrice() {
-		return price;
+		return priceLimit;
 	}
 
 	public void setPrice(double price) {
-		this.price = price;
+		this.priceLimit = price;
 	}
 
 	public static long getSerialversionuid() {

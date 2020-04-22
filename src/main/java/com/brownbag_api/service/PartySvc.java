@@ -5,9 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Pos;
+import com.brownbag_api.model.PosMacc;
 import com.brownbag_api.model.User;
+import com.brownbag_api.model.data.EAssetGrp;
 import com.brownbag_api.model.data.EParty;
 import com.brownbag_api.model.data.EPartyType;
 import com.brownbag_api.repo.PartyRepo;
@@ -20,6 +23,9 @@ public class PartySvc {
 
 	@Autowired
 	private PosSvc posSvc;
+	
+	@Autowired
+	private AssetSvc assetSvc;
 
 	@Autowired
 	private UserSvc userSvc;
@@ -59,17 +65,25 @@ public class PartySvc {
 		}
 	}
 
-	public Pos getMacc(Party party) {
-		return posSvc.findByPartyAndIsMacc(party, true);
-//TOOD: change to get by group
+	public PosMacc getMacc(Party party) {
+		return posSvc.findByParty(party);
 	}
 
-	public Party findByName(String name) {
+	public Party getByName(String name) {
 		return partyRepo.findByName(name);
 	}
 
-	public Party findByEnum(EParty eParty) {
+	public Party getByEnum(EParty eParty) {
 		return partyRepo.findByName(eParty.toString());
 	}
+	
+	public Asset goPublic(Party party) {
+		Asset asset = assetSvc.createAssetStex(party.getName(), null, EAssetGrp.STOCK, party, 10);
+		return asset;
+	}
 
+	public Asset goPublic(Party party, String isin) {
+		Asset asset = assetSvc.createAssetStex(party.getName(), isin, EAssetGrp.STOCK, party, 10);
+		return asset;
+	}
 }

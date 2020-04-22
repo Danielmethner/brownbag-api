@@ -21,6 +21,10 @@ public class AssetSvc {
 	public Asset getByEnum(EAsset eAsset) {
 		return assetRepo.findByName(eAsset.getName());
 	}
+	
+	public Asset getByIssuer(Party party) {
+		return assetRepo.findByIssuer(party);
+	}
 
 	public Asset save(Asset asset) {
 		return assetRepo.save(asset);
@@ -29,5 +33,10 @@ public class AssetSvc {
 	public AssetLoan createAssetLoan(String advText, EAssetGrp loan, Party partyLender, Date matDate, double intrRate) {
 		AssetLoan assetLoan = new AssetLoan(advText, EAssetGrp.LOAN, partyLender, matDate, intrRate);
 		return assetRepo.save(assetLoan);
+	}
+
+	public Asset createAssetStex(String name, String isin, EAssetGrp assetGrp, Party issuer, double nomVal) {
+		Asset asset = new Asset(name, isin, assetGrp, issuer, nomVal);
+		return save(asset);
 	}
 }

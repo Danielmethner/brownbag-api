@@ -29,7 +29,7 @@ public class PosLoan extends Pos implements Serializable {
 
 	public PosLoan(@NotNull double qty, @NotNull Asset asset, @NotNull Party owner, @NotNull Pos maccGrant,
 			@NotNull Pos maccRcv) {
-		super(1, qty, 0, 0, asset, owner, false);
+		super(qty, 0, asset, owner);
 		this.maccLender = maccGrant;
 		this.maccDebtor = maccRcv;
 	}

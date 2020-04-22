@@ -16,10 +16,12 @@ import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.Role;
 import com.brownbag_api.model.User;
+import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.OrderCreateMonSvc;
 import com.brownbag_api.service.OrderPaySvc;
+import com.brownbag_api.service.OrderStexSvc;
 import com.brownbag_api.service.OrderSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
@@ -41,6 +43,9 @@ public class InitDataLoader {
 
 	@Autowired
 	private OrderSvc orderSvc;
+	
+	@Autowired
+	private OrderStexSvc orderStexSvc;
 
 	@Autowired
 	private OrderPaySvc orderPaySvc;
@@ -87,9 +92,8 @@ public class InitDataLoader {
 	// ASSET
 	// -----------------------------------------------------------
 	private Asset createAsset(EAsset eAsset) {
-		Party issuer = partySvc.findByEnum(eAsset.getParty());
-		Asset asset = new Asset(eAsset.getName(), eAsset.getAssetGrp(), issuer);
-		return assetSvc.save(asset);
+		Party issuer = partySvc.getByEnum(eAsset.getParty());
+		return assetSvc.createAssetStex(eAsset.getName(), null, eAsset.getAssetGrp(), issuer, 1);
 	}
 
 	// -----------------------------------------------------------
@@ -121,7 +125,7 @@ public class InitDataLoader {
 		// ECB is issuer of EUR, hence needs to be created beforehand
 		Asset assetEUR = createAsset(EAsset.EUR);
 		posSvc.createMacc(0, assetEUR.getIssuer(), 100000000);
-		Asset assetLoanVanilla = new Asset(EAsset.LOAN_GENERIC.getName(), EAsset.LOAN_GENERIC.getAssetGrp(), ecb);
+		Asset assetLoanVanilla = new Asset(EAsset.LOAN_GENERIC.getName(), null, EAsset.LOAN_GENERIC.getAssetGrp(), ecb, 1);
 		AssetLoan assetLoan = new AssetLoan(assetLoanVanilla);
 		assetSvc.save(assetLoan);
 	}
@@ -140,7 +144,8 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 	private void createAssets() {
 		createAsset(EAsset.BOND_GOVERNMENT);
-		createAsset(EAsset.DEUTSCHE_BANK);
+		Party deutscheBank = partySvc.getByEnum(EParty.DEUTSCHE_BANK);
+		partySvc.goPublic(deutscheBank, "DE0005140008");
 	}
 
 	// -----------------------------------------------------------
@@ -150,61 +155,35 @@ public class InitDataLoader {
 	public void createUsers() {
 		// MANAGERS
 		createUser(EUser.U_TRADER_1);
-//		createUser(EUser.U_TRADER_2);
+		createUser(EUser.U_TRADER_2);
 	}
 
 	// -----------------------------------------------------------
 	// ORDERS
 	// -----------------------------------------------------------
-	private void createOrderPay(double qty, String bookText, Pos maccSend, Pos maccRcv) {
 
-		User user = maccSend.getParty().getUser();
-
-		OrderPay orderPay = orderPaySvc.createPay(qty, user, null, bookText, maccSend, maccRcv);
-//		System.out.println(orderPay.getAdvText());
-		orderSvc.execAction(orderPay, EOrderAction.HOLD);
-		orderPaySvc.execPay(orderPay);
-
-	}
-
-	private void createOrdersPay() {
-
-		double amount = 25;
-
-		// GET MACC - SENDER
-		User userSend = userSvc.getByEnum(EUser.U_TRADER_1);
-		Party leSend = userSvc.getNaturalPerson(userSend);
-		Pos maccSend = partySvc.getMacc(leSend);
-
-		// GET MACC - RECIPIENT
-		User userRcv = userSvc.getByEnum(EUser.U_TRADER_2);
-		Party leRcv = userSvc.getNaturalPerson(userRcv);
-		Pos maccRcv = partySvc.getMacc(leRcv);
-
-		createOrderPay(amount, "Test Payment from Trader_1 to Trader_2", maccSend, maccRcv);
-	}
-
-	private void createOrderStex(EOrderDir orderDir, EOrderType orderType, Asset asset, int qty, double price,
-			@NotNull User user, @NotNull EOrderStatus orderStatus) {
-		OrderStex orderStex = new OrderStex(orderDir, qty, asset, orderType, orderStatus, user, price);
-		orderSvc.execAction(orderStex, EOrderAction.HOLD);
-	}
 
 	private void createOrdersStex() {
 
-		Asset deutscheBank = assetSvc.getByEnum(EAsset.DEUTSCHE_BANK);
+		Party pDeutscheBank = partySvc.getByEnum(EParty.DEUTSCHE_BANK);
+		Asset deutscheBank = assetSvc.getByIssuer(pDeutscheBank);
 		Asset govBond = assetSvc.getByEnum(EAsset.BOND_GOVERNMENT);
 
-		User userTrader = userSvc.getByEnum(EUser.U_TRADER_1);
-		createOrderStex(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 10, 100.55, userTrader, EOrderStatus.NEW);
-		createOrderStex(EOrderDir.SELL, EOrderType.STEX, govBond, 20, 49.33, userTrader, EOrderStatus.NEW);
+		User userTrader1 = userSvc.getByEnum(EUser.U_TRADER_1);
+		orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 100, 100.55, userTrader1, EOrderStatus.NEW);
+		User userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
+		orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.55, userTrader2, EOrderStatus.NEW);
 	}
 
 	private void createOrders() {
-//		createOrdersPay();
 		createOrdersStex();
 	}
 
+
+	private void createExecuteStexOrder() {
+		
+	}
+	
 	public void createDemoData() {
 		createOrgUsers();
 		createCentralBank();
@@ -212,6 +191,8 @@ public class InitDataLoader {
 		createAssets();
 		createUsers();
 		createOrders();
+		createExecuteStexOrder();
 	}
+
 
 }

@@ -11,7 +11,7 @@ import com.brownbag_api.repo.OrderRepo;
 import com.brownbag_api.repo.OrderTransRepo;
 
 @Service
-public class OrderSvc {
+public class OrderSvc implements OrderSvcIntf {
 
 	@Autowired
 	private OrderRepo orderRepo;
@@ -22,6 +22,7 @@ public class OrderSvc {
 	@Autowired
 	private LogSvc logSvc;
 
+	@Override
 	public Order execAction(Order order, EOrderAction orderAction) {
 		if (order.getOrderStatus() == orderAction.getNewStatus()) {
 			logSvc.write("Old WFC Status and New WFC Status are identical! Order cannot proceed");

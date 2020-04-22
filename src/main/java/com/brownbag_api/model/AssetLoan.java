@@ -32,13 +32,13 @@ public class AssetLoan extends Asset implements Serializable {
 	}
 
 	public AssetLoan(Asset asset) {
-		super(asset.getName(), asset.getAssetGrp(), asset.getIssuer());
+		super(asset.getName(), null, asset.getAssetGrp(), asset.getIssuer(), 1);
 		this.intrRate = 0;
 	}
 
 	public AssetLoan(@NotBlank @Size(max = 50) String name, EAssetGrp eAssetGrp, @NotNull Party issuer, Date matDate,
 			@NotNull double intrRate) {
-		super(name, eAssetGrp, issuer);
+		super(name, null, eAssetGrp, issuer, 1);
 		this.matDate = matDate;
 		this.intrRate = intrRate;
 	}

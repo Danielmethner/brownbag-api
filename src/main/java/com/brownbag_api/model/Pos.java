@@ -32,9 +32,6 @@ public class Pos implements Serializable {
 	@Size(max = 100)
 	private String name;
 
-	@Column(name = "PRICE_AVG")
-	private double priceAvg;
-
 	@NotNull
 	@Column(name = "QTY")
 	private double qty;
@@ -42,10 +39,6 @@ public class Pos implements Serializable {
 	@NotNull
 	@Column(name = "QTY_BLOCKED")
 	private double qtyBlocked;
-
-	@NotNull
-	@Column(name = "OVERDRAFT_LIMIT")
-	private double odLimit;
 
 	@NotNull
 	@ManyToOne(targetEntity = Asset.class)
@@ -64,29 +57,17 @@ public class Pos implements Serializable {
 	public Pos() {
 	}
 
-	public Pos(double priceAvg, @NotNull double qty, @NotNull double qtyBlocked, @NotNull double odLimit,
-			@NotNull Asset asset, @NotNull Party owner, @NotNull boolean isMacc) {
+	public Pos(@NotNull double qty, @NotNull double qtyBlocked, @NotNull Asset asset, @NotNull Party owner) {
 		super();
-		this.priceAvg = priceAvg;
 		this.qty = qty;
 		this.qtyBlocked = qtyBlocked;
-		this.odLimit = odLimit;
 		this.asset = asset;
 		this.party = owner;
 		this.name = genName();
-		this.isMacc = isMacc;
 	}
 
 	private String genName() {
 		return this.party.getName() + ": " + this.asset.getName();
-	}
-
-	public double getPriceAvg() {
-		return priceAvg;
-	}
-
-	public void setPriceAvg(double priceAvg) {
-		this.priceAvg = priceAvg;
 	}
 
 	public Long getId() {
@@ -139,14 +120,6 @@ public class Pos implements Serializable {
 
 	public void setQtyBlocked(double qtyBlocked) {
 		this.qtyBlocked = qtyBlocked;
-	}
-
-	public double getOdLimit() {
-		return odLimit;
-	}
-
-	public void setOdLimit(double odLimit) {
-		this.odLimit = odLimit;
 	}
 
 	public boolean isMacc() {
