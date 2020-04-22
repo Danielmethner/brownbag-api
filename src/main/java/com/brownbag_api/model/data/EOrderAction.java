@@ -1,7 +1,9 @@
 package com.brownbag_api.model.data;
 
 public enum EOrderAction {
-	HOLD("hold", EOrderStatus.HOLD), PLACE("place", EOrderStatus.PLACED), VERIFY("vfy", EOrderStatus.DONE);
+	HOLD("hold", EOrderStatus.HOLD), PLACE("place", EOrderStatus.PLACED),
+	EXECUTE_PART("partially execute", EOrderStatus.EXEC_PART), 
+	EXECUTE_FULL("fully execute", EOrderStatus.EXEC_FULL), VERIFY("vfy", EOrderStatus.DONE);
 
 	public final String name;
 	public final String intlId;

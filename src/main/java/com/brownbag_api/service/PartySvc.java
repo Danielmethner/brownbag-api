@@ -9,6 +9,7 @@ import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.PosMacc;
+import com.brownbag_api.model.PosStex;
 import com.brownbag_api.model.User;
 import com.brownbag_api.model.data.EAssetGrp;
 import com.brownbag_api.model.data.EParty;
@@ -77,13 +78,14 @@ public class PartySvc {
 		return partyRepo.findByName(eParty.toString());
 	}
 	
-	public Asset goPublic(Party party) {
-		Asset asset = assetSvc.createAssetStex(party.getName(), null, EAssetGrp.STOCK, party, 10);
-		return asset;
+	public Asset goPublic(Party party, double nomVal, int qty) {
+		return goPublic(party, null, nomVal, qty);
 	}
 
-	public Asset goPublic(Party party, String isin) {
-		Asset asset = assetSvc.createAssetStex(party.getName(), isin, EAssetGrp.STOCK, party, 10);
+	public Asset goPublic(Party party, String isin, double nomVal, int qty) {
+		Asset asset = assetSvc.createAssetStex(party.getName(), isin, EAssetGrp.STOCK, party, nomVal);
+		posSvc.createPosStex(asset, party);
+		
 		return asset;
 	}
 }

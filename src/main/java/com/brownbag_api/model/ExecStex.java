@@ -34,31 +34,31 @@ public class ExecStex implements Serializable {
 	private Date timestampCreate;
 
 	@NotNull
-	@ManyToOne(targetEntity = Pos.class)
+	@ManyToOne(targetEntity = PosStex.class)
 	@JoinColumn(name = "POS_SEND_ID")
-	private Pos posSend;
+	private PosStex posSend;
 
 	@NotNull
-	@ManyToOne(targetEntity = Pos.class)
+	@ManyToOne(targetEntity = PosStex.class)
 	@JoinColumn(name = "POS_RCV_ID")
-	private Pos posRcv;
+	private PosStex posRcv;
 
 	@NotNull
-	@ManyToOne(targetEntity = Order.class)
-	@JoinColumn(name = "ORDER_BUY_ID")
-	public Order orderBuy;
-
-	@NotNull
-	@ManyToOne(targetEntity = Order.class)
+	@ManyToOne(targetEntity = OrderStex.class)
 	@JoinColumn(name = "ORDER_SELL_ID")
-	public Order orderSell;
+	public OrderStex orderSell;
+
+	@NotNull
+	@ManyToOne(targetEntity = OrderStex.class)
+	@JoinColumn(name = "ORDER_BUY_ID")
+	public OrderStex orderBuy;
 
 	@Column(name = "BOOK_TEXT")
 	private String bookText;
 
 	@NotNull
-	@Column(name = "QTY")
-	private double qty;
+	@Column(name = "QTY_EXEC")
+	private int qtyExec;
 
 	@NotNull
 	@Column(name = "PRICE")
@@ -67,15 +67,15 @@ public class ExecStex implements Serializable {
 	public ExecStex() {
 	}
 
-	public ExecStex(@NotNull Pos posSend, @NotNull Pos posRcv, @NotNull Order orderBuy, @NotNull Order orderSell,
-			String bookText, @NotNull double qty, @NotNull double price) {
+	public ExecStex(@NotNull PosStex posSend, @NotNull PosStex posRcv, @NotNull OrderStex orderSell,
+			@NotNull OrderStex orderBuy, String bookText, @NotNull int qtyExec, @NotNull double price) {
 		super();
 		this.posSend = posSend;
 		this.posRcv = posRcv;
-		this.orderBuy = orderBuy;
 		this.orderSell = orderSell;
+		this.orderBuy = orderBuy;
 		this.bookText = bookText;
-		this.qty = qty;
+		this.qtyExec = qtyExec;
 		this.price = price;
 	}
 
@@ -95,36 +95,36 @@ public class ExecStex implements Serializable {
 		this.timestampCreate = timestampCreate;
 	}
 
-	public Pos getPosSend() {
+	public PosStex getPosSend() {
 		return posSend;
 	}
 
-	public void setPosSend(Pos posSend) {
+	public void setPosSend(PosStex posSend) {
 		this.posSend = posSend;
 	}
 
-	public Pos getPosRcv() {
+	public PosStex getPosRcv() {
 		return posRcv;
 	}
 
-	public void setPosRcv(Pos posRcv) {
+	public void setPosRcv(PosStex posRcv) {
 		this.posRcv = posRcv;
 	}
 
-	public Order getOrderBuy() {
-		return orderBuy;
-	}
-
-	public void setOrderBuy(Order orderBuy) {
-		this.orderBuy = orderBuy;
-	}
-
-	public Order getOrderSell() {
+	public OrderStex getOrderSell() {
 		return orderSell;
 	}
 
-	public void setOrderSell(Order orderSell) {
+	public void setOrderSell(OrderStex orderSell) {
 		this.orderSell = orderSell;
+	}
+
+	public OrderStex getOrderBuy() {
+		return orderBuy;
+	}
+
+	public void setOrderBuy(OrderStex orderBuy) {
+		this.orderBuy = orderBuy;
 	}
 
 	public String getBookText() {
@@ -135,12 +135,12 @@ public class ExecStex implements Serializable {
 		this.bookText = bookText;
 	}
 
-	public double getQty() {
-		return qty;
+	public int getQtyExec() {
+		return qtyExec;
 	}
 
-	public void setQty(double qty) {
-		this.qty = qty;
+	public void setQtyExec(int qtyExec) {
+		this.qtyExec = qtyExec;
 	}
 
 	public double getPrice() {
@@ -153,6 +153,10 @@ public class ExecStex implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public double getAmtExec() {
+		return this.price * this.qtyExec;
 	}
 
 }

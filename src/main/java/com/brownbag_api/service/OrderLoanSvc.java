@@ -80,7 +80,7 @@ public class OrderLoanSvc extends OrderSvc {
 
 		// TRANSFER CASH
 		OrderPay orderPay = orderPaySvc.createPay(orderLoan.getQty(), orderLoan.getUser(),
-				orderLoan.getMaccLender().getAsset(), orderLoan.getAdvText(), orderLoan.getMaccLender(),
+				orderLoan.getMaccLender().getAsset(), "Payout for: " + orderLoan.getAdvText(), orderLoan.getMaccLender(),
 				orderLoan.getMaccDebtor());
 		orderPay = orderPaySvc.execPay(orderPay);
 
@@ -94,7 +94,7 @@ public class OrderLoanSvc extends OrderSvc {
 
 		orderLoan.setPosLoan(posLoan);
 
-		posLoan = posSvc.crebitPos(orderLoan);
+		posLoan = posSvc.creditPos(orderLoan);
 
 		orderLoan.setPosLoan(posLoan);
 

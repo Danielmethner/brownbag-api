@@ -50,10 +50,6 @@ public class Pos implements Serializable {
 	@JoinColumn(name = "PARTY_ID")
 	private Party party;
 
-	@NotNull
-	@Column(name = "IS_MACC", columnDefinition = "tinyint default false")
-	private boolean isMacc = false;
-
 	public Pos() {
 	}
 
@@ -121,13 +117,4 @@ public class Pos implements Serializable {
 	public void setQtyBlocked(double qtyBlocked) {
 		this.qtyBlocked = qtyBlocked;
 	}
-
-	public boolean isMacc() {
-		return isMacc;
-	}
-
-	public void setMacc(boolean isMacc) {
-		this.isMacc = isMacc;
-	}
-
 }

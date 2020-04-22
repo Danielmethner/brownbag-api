@@ -145,7 +145,7 @@ public class InitDataLoader {
 	private void createAssets() {
 		createAsset(EAsset.BOND_GOVERNMENT);
 		Party deutscheBank = partySvc.getByEnum(EParty.DEUTSCHE_BANK);
-		partySvc.goPublic(deutscheBank, "DE0005140008");
+		partySvc.goPublic(deutscheBank, "DE0005140008", 10, 10000);
 	}
 
 	// -----------------------------------------------------------
@@ -170,9 +170,11 @@ public class InitDataLoader {
 		Asset govBond = assetSvc.getByEnum(EAsset.BOND_GOVERNMENT);
 
 		User userTrader1 = userSvc.getByEnum(EUser.U_TRADER_1);
-		orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 100, 100.55, userTrader1, EOrderStatus.NEW);
+		Party partyTrader1 = userSvc.getNaturalPerson(userTrader1);
+		orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 100, 100.55, userTrader1, EOrderStatus.NEW, partyTrader1);
 		User userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
-		orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.55, userTrader2, EOrderStatus.NEW);
+		Party partyTrader2 = userSvc.getNaturalPerson(userTrader2);
+		orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.55, userTrader2, EOrderStatus.NEW, partyTrader2);
 	}
 
 	private void createOrders() {

@@ -49,19 +49,20 @@ public class OrderPaySvc extends OrderSvc {
 	public OrderPay createPay(double qty, @NotNull User user, Asset assetCash, String bookText, Pos maccSend,
 			Pos maccRcv) {
 		String userString = "User: " + user.getName();
-		String orderString = "Pay Order: Amount: '" + qty + "'. MACC From: '" + maccSend.getName() + "'. MACC To: '"
-				+ maccRcv.getName() + "'";
+		bookText = bookText != null ? bookText
+				: "Pay Order: Amount: '" + qty + "'. MACC From: '" + maccSend.getName() + "'. MACC To: '"
+						+ maccRcv.getName() + "'";
 		if (maccSend == maccRcv) {
-			logSvc.write(userString + ": 'MACC From' and 'MACC to' must not be identical. " + orderString);
+			logSvc.write(userString + ": 'MACC From' and 'MACC to' must not be identical. " + bookText);
 			return null;
 		}
 		assetCash = assetCash == null ? assetRepo.findByName(EAsset.EUR.getName()) : assetCash;
 		if (assetCash == null) {
 			assetCash = assetRepo.findByName(EAsset.EUR.getName());
-			logSvc.write(userString + ": No Currency set. EUR will be set as default. " + orderString);
+			logSvc.write(userString + ": No Currency set. EUR will be set as default. " + bookText);
 		}
 		OrderPay orderPay = new OrderPay(qty, assetCash, EOrderType.PAY, EOrderStatus.NEW, user, maccSend, maccRcv,
-				orderString);
+				bookText);
 
 		return orderPay;
 	}
@@ -77,7 +78,7 @@ public class OrderPaySvc extends OrderSvc {
 			orderPay = orderRepo.save(orderPay);
 		}
 		orderPay.setPosSend(posSvc.debitPos(orderPay));
-		orderPay.setPosRcv(posSvc.crebitPos(orderPay));
+		orderPay.setPosRcv(posSvc.creditPos(orderPay));
 
 		return (OrderPay) orderSvc.execAction(orderPay, EOrderAction.VERIFY);
 	}
