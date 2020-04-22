@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Asset;
+import com.brownbag_api.model.ExecStex;
 import com.brownbag_api.model.Order;
 import com.brownbag_api.model.OrderStex;
 import com.brownbag_api.model.OrderTrans;
@@ -56,7 +57,7 @@ public class OrderStexSvc extends OrderSvc  {
 
 	}
 
-//	public Order matchOrders(OrderStex orderBuy, OrderStex orderSell) {
-//		
-//	}
+	public void matchOrders(OrderStex orderBuy, OrderStex orderSell) {
+		ExecStex execStex;
+	}
 }
