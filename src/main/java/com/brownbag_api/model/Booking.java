@@ -37,15 +37,15 @@ public class Booking implements Serializable {
 	private String bookText;
 
 	@NotNull
-	@Column(name = "POS_BAL_OLD")
+	@Column(name = "POS_BAL_OLD", columnDefinition = "Decimal(20,2)")
 	private double posBalOld;
 
 	@NotNull
-	@Column(name = "QTY")
+	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
 	private double qty;
 
 	@NotNull
-	@Column(name = "POS_BAL_NEW")
+	@Column(name = "POS_BAL_NEW", columnDefinition = "Decimal(20,2)")
 	private double posBalNew;
 
 	@NotNull

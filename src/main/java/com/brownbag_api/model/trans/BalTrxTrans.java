@@ -1,16 +1,17 @@
-package com.brownbag_api.model;
+package com.brownbag_api.model.trans;
 
+import com.brownbag_api.model.Party;
 import com.brownbag_api.model.enums.EBalSheetItemType;
 import com.brownbag_api.model.enums.EBookingDir;
 
-public class BalTrxTransient {
+public class BalTrxTrans {
 
 	private EBalSheetItemType itemType;
 	private double qty;
 	private EBookingDir bookingDir;
 	private Party party;
 
-	public BalTrxTransient(EBalSheetItemType itemType, double qty, EBookingDir bookingDir, Party party) {
+	public BalTrxTrans(EBalSheetItemType itemType, double qty, EBookingDir bookingDir, Party party) {
 		this.itemType = itemType;
 		this.qty = qty;
 		this.bookingDir = bookingDir;

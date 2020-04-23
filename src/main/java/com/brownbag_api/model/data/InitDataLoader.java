@@ -164,12 +164,10 @@ public class InitDataLoader {
 		createUser(EUser.U_TRADER_1);
 		createUser(EUser.U_TRADER_2);
 	}
-
+	
 	// -----------------------------------------------------------
 	// ORDERS
 	// -----------------------------------------------------------
-
-
 	private void createOrdersStex() {
 
 		Party pDeutscheBank = partySvc.getByEnum(EParty.DEUTSCHE_BANK);
@@ -178,10 +176,12 @@ public class InitDataLoader {
 
 		User userTrader1 = userSvc.getByEnum(EUser.U_TRADER_1);
 		Party partyTrader1 = userSvc.getNaturalPerson(userTrader1);
-		orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 100, 100.55, userTrader1, EOrderStatus.NEW, partyTrader1);
+		OrderStex orderBuy = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 100, 100.55, userTrader1, EOrderStatus.NEW, partyTrader1);
 		User userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
 		Party partyTrader2 = userSvc.getNaturalPerson(userTrader2);
-		orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.55, userTrader2, EOrderStatus.NEW, partyTrader2);
+		posSvc.createPosStex(deutscheBank, partyTrader2, 100); // TODO: Change to IPO
+		OrderStex orderSell = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.00, userTrader2, EOrderStatus.NEW, partyTrader2);
+		orderStexSvc.matchOrders(orderBuy, orderSell);
 	}
 
 	private void createOrders() {
@@ -201,6 +201,7 @@ public class InitDataLoader {
 		createUsers();
 		createOrders();
 		createExecuteStexOrder();
+		System.err.println("Demo Data Loaded Succesfully");
 	}
 
 

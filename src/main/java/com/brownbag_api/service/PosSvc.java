@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.AssetLoan;
-import com.brownbag_api.model.BalTrxTransient;
 import com.brownbag_api.model.ExecStex;
 import com.brownbag_api.model.OrderCreateMon;
 import com.brownbag_api.model.OrderLoan;
@@ -25,6 +24,7 @@ import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EBalSheetItemType;
 import com.brownbag_api.model.enums.EBookingDir;
 import com.brownbag_api.model.enums.EParty;
+import com.brownbag_api.model.trans.BalTrxTrans;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.PosMaccRepo;
@@ -73,6 +73,11 @@ public class PosSvc {
 		PosStex posStex = new PosStex(0, 0, asset, party, 0);
 		return posRepo.save(posStex);
 	}
+	
+	public PosStex createPosStex(Asset asset, Party party, int qty) {
+		PosStex posStex = new PosStex(100, 0, asset, party, 50);
+		return posRepo.save(posStex);
+	}
 
 	public Pos createMacc(@NotNull double initialDeposit, @NotNull Party owner, double odLimit) {
 		Asset assetCash = assetRepo.findByName(EAsset.EUR.getName());
@@ -117,11 +122,11 @@ public class PosSvc {
 	// -----------------------------------------------------------------
 	public Pos debitPos(OrderPay orderPay) {
 		Party partyPayer = orderPay.getPosSend().getParty();
-		ArrayList<BalTrxTransient> balTrxList = new ArrayList<BalTrxTransient>();
+		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
 		// ASSETS
-		balTrxList.add(new BalTrxTransient(EBalSheetItemType.CASH, orderPay.getQty(), EBookingDir.DEBIT, partyPayer));
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.CASH, orderPay.getQty(), EBookingDir.DEBIT, partyPayer));
 		// LIABILITIES
-		balTrxList.add(new BalTrxTransient(EBalSheetItemType.EQUITY, orderPay.getQty(), EBookingDir.DEBIT, partyPayer));
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, orderPay.getQty(), EBookingDir.DEBIT, partyPayer));
 
 		// BOOKING
 		return bookingSvc.createBooking(orderPay, orderPay.getPosSend(), EBookingDir.DEBIT, balTrxList);
@@ -133,13 +138,13 @@ public class PosSvc {
 	// -----------------------------------------------------------------
 	public Pos creditPos(OrderPay orderPay) {
 		Party partyRecipient = orderPay.getPosRcv().getParty();
-		ArrayList<BalTrxTransient> balTrxList = new ArrayList<BalTrxTransient>();
+		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
 		// ASSETS
 		balTrxList.add(
-				new BalTrxTransient(EBalSheetItemType.CASH, orderPay.getQty(), EBookingDir.CREDIT, partyRecipient));
+				new BalTrxTrans(EBalSheetItemType.CASH, orderPay.getQty(), EBookingDir.CREDIT, partyRecipient));
 		// EQUITY
 		balTrxList.add(
-				new BalTrxTransient(EBalSheetItemType.EQUITY, orderPay.getQty(), EBookingDir.CREDIT, partyRecipient));
+				new BalTrxTrans(EBalSheetItemType.EQUITY, orderPay.getQty(), EBookingDir.CREDIT, partyRecipient));
 
 		// BOOKING
 		return bookingSvc.createBooking(orderPay, orderPay.getPosRcv(), EBookingDir.CREDIT, balTrxList);
@@ -151,12 +156,12 @@ public class PosSvc {
 	// -----------------------------------------------------------------
 	public Pos creditPos(OrderCreateMon orderCreateMon) {
 		Party party = orderCreateMon.getPosRcv().getParty();
-		ArrayList<BalTrxTransient> balTrxList = new ArrayList<BalTrxTransient>();
+		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
 		// ASSETS
-		balTrxList.add(new BalTrxTransient(EBalSheetItemType.CASH, orderCreateMon.getQty(), EBookingDir.CREDIT, party));
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.CASH, orderCreateMon.getQty(), EBookingDir.CREDIT, party));
 		// EQUITY
 		balTrxList
-				.add(new BalTrxTransient(EBalSheetItemType.EQUITY, orderCreateMon.getQty(), EBookingDir.CREDIT, party));
+				.add(new BalTrxTrans(EBalSheetItemType.EQUITY, orderCreateMon.getQty(), EBookingDir.CREDIT, party));
 
 		// BOOKING
 		return bookingSvc.createBooking(orderCreateMon, orderCreateMon.getPosRcv(), EBookingDir.CREDIT, balTrxList);
@@ -170,16 +175,16 @@ public class PosSvc {
 		Party partyDebtor = orderLoan.getMaccDebtor().getParty();
 		double qty = orderLoan.getQty();
 
-		ArrayList<BalTrxTransient> balTrxList = new ArrayList<BalTrxTransient>();
+		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
 		// ASSETS - LENDER
-		balTrxList.add(new BalTrxTransient(EBalSheetItemType.LOANS_ASSET, qty, EBookingDir.CREDIT, partyLender));
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.LOANS_ASSET, qty, EBookingDir.CREDIT, partyLender));
 		// EQUITY - LENDER
-		balTrxList.add(new BalTrxTransient(EBalSheetItemType.EQUITY, qty, EBookingDir.CREDIT, partyLender));
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, qty, EBookingDir.CREDIT, partyLender));
 
 		// LIABILITIES - DEBTOR
-		balTrxList.add(new BalTrxTransient(EBalSheetItemType.LOANS_LIAB, qty, EBookingDir.CREDIT, partyDebtor));
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.LOANS_LIAB, qty, EBookingDir.CREDIT, partyDebtor));
 		// EQUITY - DEBTOR
-		balTrxList.add(new BalTrxTransient(EBalSheetItemType.EQUITY, qty, EBookingDir.DEBIT, partyDebtor));
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, qty, EBookingDir.DEBIT, partyDebtor));
 
 		// BOOKING
 		return (PosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoan(), EBookingDir.CREDIT, balTrxList);
@@ -190,27 +195,28 @@ public class PosSvc {
 	// -----------------------------------------------------------------
 	public PosStex creditPos(OrderStex orderStex, ExecStex execStex) {
 
-		ArrayList<BalTrxTransient> balTrxList = new ArrayList<BalTrxTransient>();
+		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
 		// CREDIT STOCKS - BUYER
-		balTrxList.add(new BalTrxTransient(EBalSheetItemType.STOCKS, execStex.getAmtExec(), EBookingDir.CREDIT,
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.STOCKS, execStex.getAmtExec(), EBookingDir.CREDIT,
 				orderStex.getParty()));
 
 		// CREDIT EQUITY - BUYER
-		balTrxList.add(new BalTrxTransient(EBalSheetItemType.EQUITY, execStex.getAmtExec(), EBookingDir.CREDIT,
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, execStex.getAmtExec(), EBookingDir.CREDIT,
 				orderStex.getParty()));
 
+		// BOOKING
 		return (PosStex) bookingSvc.createBooking(orderStex, execStex.getPosRcv(), EBookingDir.CREDIT, balTrxList);
 
 	}
 
 	public PosStex debitPos(OrderStex orderSell, ExecStex execStex) {
-		ArrayList<BalTrxTransient> balTrxList = new ArrayList<BalTrxTransient>();
+		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
 		// DEBIT STOCKS - BUYER
-		balTrxList.add(new BalTrxTransient(EBalSheetItemType.STOCKS, execStex.getAmtExec(), EBookingDir.DEBIT,
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.STOCKS, execStex.getAmtExec(), EBookingDir.DEBIT,
 				orderSell.getParty()));
 
 		// DEBIT EQUITY
-		balTrxList.add(new BalTrxTransient(EBalSheetItemType.EQUITY, execStex.getAmtExec(), EBookingDir.DEBIT,
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, execStex.getAmtExec(), EBookingDir.DEBIT,
 				orderSell.getParty()));
 
 		// BOOKING

@@ -3,8 +3,10 @@ package com.brownbag_api.model.enums;
 import java.util.stream.Stream;
 
 public enum EBalSheetItemType {
+	// ASSETS
 	CASH("Cash", EBalSheetSectionType.ASSETS), STOCKS("Stocks", EBalSheetSectionType.ASSETS),
 	LOANS_ASSET("Loans granted", EBalSheetSectionType.ASSETS),
+	// FINANCING: LIABILITIES + EQUITY
 	LOANS_LIAB("Loans raised", EBalSheetSectionType.LIABILITIES), EQUITY("Equity", EBalSheetSectionType.EQUITY);
 
 	public final String name;

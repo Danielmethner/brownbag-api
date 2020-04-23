@@ -57,11 +57,11 @@ public class ExecStex implements Serializable {
 	private String bookText;
 
 	@NotNull
-	@Column(name = "QTY_EXEC")
+	@Column(name = "QTY_EXEC", columnDefinition = "Decimal(20,2)")
 	private int qtyExec;
 
 	@NotNull
-	@Column(name = "PRICE")
+	@Column(name = "PRICE", columnDefinition = "Decimal(20,2)")
 	private double price;
 
 	public ExecStex() {

@@ -43,7 +43,7 @@ public class BalSheetItem implements Serializable {
 	private String name;
 
 	@NotNull
-	@Column(name = "QTY")
+	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
 	private double qty;
 
 	@Enumerated(EnumType.STRING)
@@ -66,16 +66,16 @@ public class BalSheetItem implements Serializable {
 	private Date timestampCreate;
 
 	@NotNull
-	@ManyToOne(targetEntity = BalSheetSectionType.class)
+	@ManyToOne(targetEntity = BalSheetSection.class)
 	@JoinColumn(name = "BAL_SHEET_SECTION_ID")
 	@JsonBackReference
-	private BalSheetSectionType balSheetSection;
+	private BalSheetSection balSheetSection;
 
 	public BalSheetItem() {
 	}
 
 	public BalSheetItem(@NotNull double qty, EBalSheetItemType itemType, @NotNull int finYear, @NotNull Party party,
-			@NotNull BalSheetSectionType balSheetSection) {
+			@NotNull BalSheetSection balSheetSection) {
 		super();
 		this.name = balSheetSection.getName() + ": " + itemType.getName();
 		this.qty = qty;
@@ -85,11 +85,11 @@ public class BalSheetItem implements Serializable {
 		this.balSheetSection = balSheetSection;
 	}
 
-	public BalSheetSectionType getBalSheetSection() {
+	public BalSheetSection getBalSheetSection() {
 		return balSheetSection;
 	}
 
-	public void setBalSheetSection(BalSheetSectionType balSheetSection) {
+	public void setBalSheetSection(BalSheetSection balSheetSection) {
 		this.balSheetSection = balSheetSection;
 	}
 

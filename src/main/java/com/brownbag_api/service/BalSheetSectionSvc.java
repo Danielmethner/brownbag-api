@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.BalSheet;
-import com.brownbag_api.model.BalSheetSectionType;
+import com.brownbag_api.model.BalSheetSection;
 import com.brownbag_api.model.enums.EBalSheetItemType;
 import com.brownbag_api.model.enums.EBalSheetSectionType;
 import com.brownbag_api.repo.BalSheetSectionRepo;
@@ -30,13 +30,18 @@ public class BalSheetSectionSvc {
 		return items;
 	}
 
-	public BalSheetSectionType createBalSheetSection(BalSheet balSheet, EBalSheetSectionType eBalSheetSection) {
-		BalSheetSectionType balSheetSection = new BalSheetSectionType(balSheet, eBalSheetSection);
-		BalSheetSectionType balSheetSectionDb = balSheetSectionRepo.save(balSheetSection);
+	public BalSheetSection createBalSheetSection(BalSheet balSheet, EBalSheetSectionType eBalSheetSection) {
+		BalSheetSection balSheetSection = new BalSheetSection(balSheet, eBalSheetSection, 0);
+		BalSheetSection balSheetSectionDb = balSheetSectionRepo.save(balSheetSection);
 		List<EBalSheetItemType> items = getItemsBySection(eBalSheetSection);
 		items.forEach(eBalSheetItem -> {
 			balSheetItemSvc.createItem(eBalSheetItem, balSheetSectionDb, balSheet.getFinYear(), balSheet.getParty());
 		});
 		return balSheetSection;
+	}
+
+	public BalSheetSection save(BalSheetSection bss) {
+		return balSheetSectionRepo.save(bss);
+		
 	}
 }

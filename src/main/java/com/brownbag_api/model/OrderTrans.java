@@ -42,7 +42,7 @@ public class OrderTrans implements Serializable {
 	public Order order;
 
 	@Enumerated(EnumType.STRING)
-	@Column(length = 10)
+	@Column(length = 15)
 	private EOrderAction orderAction;
 
 	@Enumerated(EnumType.STRING)

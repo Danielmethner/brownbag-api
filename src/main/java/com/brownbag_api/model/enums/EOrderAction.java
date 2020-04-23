@@ -2,8 +2,8 @@ package com.brownbag_api.model.enums;
 
 public enum EOrderAction {
 	HOLD("hold", EOrderStatus.HOLD), PLACE("place", EOrderStatus.PLACED),
-	EXECUTE_PART("partially execute", EOrderStatus.EXEC_PART), 
-	EXECUTE_FULL("fully execute", EOrderStatus.EXEC_FULL), VERIFY("vfy", EOrderStatus.DONE);
+	EXECUTE_PART("partially execute", EOrderStatus.EXEC_PART), EXECUTE_FULL("fully execute", EOrderStatus.EXEC_FULL),
+	VERIFY("vfy", EOrderStatus.DONE), DISCARD("discard", EOrderStatus.DISC);
 
 	public final String name;
 	public final String intlId;

@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "BAL_SHEET_SECTION")
-public class BalSheetSectionType implements Serializable {
+public class BalSheetSection implements Serializable {
 
 	private static final long serialVersionUID = 7386741814449599918L;
 
@@ -44,14 +44,19 @@ public class BalSheetSectionType implements Serializable {
 	@Size(max = 100)
 	private String name;
 
-	public BalSheetSectionType() {
+	@NotNull
+	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
+	private double qty;
+
+	public BalSheetSection() {
 
 	}
 
-	public BalSheetSectionType(@NotNull BalSheet balSheet, EBalSheetSectionType eBalSheetSection) {
+	public BalSheetSection(@NotNull BalSheet balSheet, EBalSheetSectionType eBalSheetSection, double qty) {
 		super();
 		this.balSheet = balSheet;
 		this.section = eBalSheetSection;
+		this.qty = qty;
 		this.name = balSheet.getParty().getName() + ": " + eBalSheetSection.getName() + ": " + "Year: "
 				+ balSheet.getFinYear();
 	}
@@ -90,6 +95,18 @@ public class BalSheetSectionType implements Serializable {
 
 	public void setSection(EBalSheetSectionType section) {
 		this.section = section;
+	}
+
+	public double getQty() {
+		return qty;
+	}
+
+	public void setQty(double qty) {
+		this.qty = qty;
+	}
+	
+	public void increaseQty(double qty) {
+		this.qty = this.qty + qty;
 	}
 
 }

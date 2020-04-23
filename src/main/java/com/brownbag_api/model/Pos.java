@@ -33,11 +33,11 @@ public class Pos implements Serializable {
 	private String name;
 
 	@NotNull
-	@Column(name = "QTY")
+	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
 	private double qty;
 
 	@NotNull
-	@Column(name = "QTY_BLOCKED")
+	@Column(name = "QTY_BLOCKED", columnDefinition = "Decimal(20,2)")
 	private double qtyBlocked;
 
 	@NotNull

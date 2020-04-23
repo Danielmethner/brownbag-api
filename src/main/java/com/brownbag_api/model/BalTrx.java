@@ -58,7 +58,7 @@ public class BalTrx implements Serializable {
 	private Booking booking;
 
 	@NotNull
-	@Column(name = "QTY")
+	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
 	private double qty;
 
 	public BalTrx() {

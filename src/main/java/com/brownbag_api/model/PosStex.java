@@ -23,7 +23,7 @@ public class PosStex extends Pos implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@NotNull
-	@Column(name = "QTY")
+	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
 	private double priceAvg;
 
 	public PosStex() {

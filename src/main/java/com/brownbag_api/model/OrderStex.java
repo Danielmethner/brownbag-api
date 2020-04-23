@@ -26,11 +26,14 @@ public class OrderStex extends Order implements Serializable {
 	@NotNull
 	@Column(name = "DIRECTION")
 	private EOrderDir orderDir;
-	
+
 	@NotNull
 	@ManyToOne(targetEntity = Party.class)
 	@JoinColumn(name = "PARTY_ID")
 	private Party party;
+
+	@Column(name = "QTY_EXEC", columnDefinition = "Decimal(20,2)")
+	private double qtyExec;
 
 	public OrderStex() {
 	}
@@ -41,12 +44,13 @@ public class OrderStex extends Order implements Serializable {
 	}
 
 	public OrderStex(EOrderDir orderDir, @NotNull int qty, @NotNull Asset asset, EOrderType orderType,
-			EOrderStatus orderStatus, @NotNull User user, @NotNull double price, @NotNull Party party) {
+			EOrderStatus orderStatus, @NotNull User user, @NotNull double price, @NotNull Party party, double qtyExec) {
 		super(qty, asset, orderType, orderStatus, user, "STEX Order: '" + orderDir.toString() + "'; User: '"
 				+ user.getName() + "'; Asset: '" + asset.getName() + "'; Qty: '" + qty + "'");
 		this.orderDir = orderDir;
 		this.priceLimit = price;
 		this.party = party;
+		this.qtyExec = qtyExec;
 	}
 
 	public double getPrice() {
@@ -84,7 +88,13 @@ public class OrderStex extends Order implements Serializable {
 	public void setParty(Party party) {
 		this.party = party;
 	}
-	
-	
+
+	public double getQtyExec() {
+		return qtyExec;
+	}
+
+	public void setQtyExec(double qtyExec) {
+		this.qtyExec = qtyExec;
+	}
 
 }

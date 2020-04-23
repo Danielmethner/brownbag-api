@@ -54,52 +54,72 @@ public class OrderStexSvc extends OrderSvc {
 
 	@Autowired
 	private LogSvc logSvc;
-	
 
-	public Order placeOrder(OrderStex orderStex) {
+	public OrderStex placeOrder(OrderStex orderStex) {
 		if (orderStex.getId() == null) {
-			orderStex = orderRepo.save(orderStex);
-		}
-		if (orderStex.getQty() <= 0 || orderStex.getPrice() <= 0) {
-			logSvc.write("OrderStexSvc.placeOrder: Order with ID: " + orderStex.getId()
-					+ " must have a qty and price greater 0.");
+			logSvc.write("OrderStexSvc.placeOrder: Order must be persisted before placed.");
+			orderSvc.execAction(orderStex, EOrderAction.DISCARD);
 			return null;
 		}
-		return orderSvc.execAction(orderStex, EOrderAction.PLACE);
+
+		return (OrderStex) orderSvc.execAction(orderStex, EOrderAction.PLACE);
 	}
 
-	public Order placeNewOrder(EOrderDir orderDir, EOrderType orderType, Asset asset, int qty, double price, User user,
-			EOrderStatus orderStatus, Party party) {
+	public OrderStex placeNewOrder(EOrderDir orderDir, EOrderType orderType, Asset asset, int qty, double price,
+			User user, EOrderStatus orderStatus, Party party) {
+
+		OrderStex orderStex = new OrderStex(orderDir, qty, asset, orderType, orderStatus, user, price, party, 0);
+		orderStex = orderRepo.save(orderStex);
+
+		if (orderStex.getQty() <= 0 || orderStex.getPrice() <= 0) {
+			logSvc.write("OrderStexSvc.placeNewOrder: Order with ID: " + orderStex.getId()
+					+ " must have a qty and price greater 0.");
+			orderSvc.execAction(orderStex, EOrderAction.DISCARD);
+			return null;
+		}
+
 		if (orderDir == EOrderDir.BUY) {
 			// check if capital is sufficient
 			PosMacc posMacc = partySvc.getMacc(party);
 			double qtyAvbl = posSvc.getQtyAvbl(posMacc);
-			if (qtyAvbl < qty * price) {
+			double orderVol = qty * price;
+			if (qtyAvbl < orderVol) {
 				logSvc.write("OrderStexSvc.placeNewOrder: Insufficient Funds! Party: " + party.getName() + " Asset: "
-						+ asset.getName() + " Order Volume: " + qty * price + " Available Funds: " + qtyAvbl);
+						+ asset.getName() + " Order Volume: " + orderVol + " Available Funds: " + qtyAvbl);
+				orderSvc.execAction(orderStex, EOrderAction.DISCARD);
 				return null;
 			}
-		} else {
+			posMacc.setQtyBlocked(posMacc.getQtyBlocked() + orderVol);
+			posSvc.save(posMacc);
+		}
+		if (orderDir == EOrderDir.SELL) {
 			// check if asset amount is sufficient
 			PosStex posStex = posSvc.getByAssetAndParty(asset, party);
 			double qtyAvbl = posSvc.getQtyAvbl(posStex);
 			if (qtyAvbl < qty) {
-				logSvc.write("OrderStexSvc.placeNewOrder: Not enough Assets! Party: " + party.getName() + " Asset: "
-						+ asset.getName() + " Order Quantity: " + qty + " Available Funds: " + qtyAvbl);
+				logSvc.write("OrderStexSvc.placeNewOrder: Not enough Shares! Party: " + party.getName() + " Asset: "
+						+ asset.getName() + " Order Quantity: " + qty + " Available Shares: " + qtyAvbl);
+				orderSvc.execAction(orderStex, EOrderAction.DISCARD);
 				return null;
 			}
+			posStex.setQtyBlocked(posStex.getQtyBlocked() + qty);
+			posSvc.save(posStex);
 		}
 
-		OrderStex orderStex = new OrderStex(orderDir, qty, asset, orderType, orderStatus, user, price, party);
 		return placeOrder(orderStex);
 
 	}
 
 	public void matchOrders(OrderStex orderBuy, OrderStex orderSell) {
+		if (orderBuy.getOrderDir() == EOrderDir.SELL || orderSell.getOrderDir() == EOrderDir.BUY) {
+			logSvc.write(
+					"OrderStexSvc.matchOrders: Cannot match orders: Buy Order has Direction 'SELL' or Sell Order has Direciton 'BUY'.");
+			return;
+		}
 		Party partySeller = orderSell.getParty();
 		Party partyBuyer = orderBuy.getParty();
-		PosStex posSend = posSvc.getByAssetAndParty(orderSell.getAsset(), partySeller); // Instanciate if not exists
-		PosStex posRcv = posSvc.getByAssetAndParty(orderBuy.getAsset(), partyBuyer); // Instanciate if not exists
+		PosStex posSend = posSvc.getByAssetAndParty(orderSell.getAsset(), partySeller); // Instanciates if not exists
+		PosStex posRcv = posSvc.getByAssetAndParty(orderBuy.getAsset(), partyBuyer); // Instanciates if not exists
 
 		int qty = (int) (orderBuy.getQty() < orderSell.getQty() ? orderBuy.getQty() : orderSell.getQty());
 
@@ -107,7 +127,7 @@ public class OrderStexSvc extends OrderSvc {
 
 		// ENSURE PRICE LIMITS ARE COMPATIBLE
 		if (orderBuy.getPriceLimit() < orderSell.getPriceLimit()) {
-			logSvc.write("OrderStexSvc.matchOrders: Buy order Price: '" + orderBuy.getPriceLimit()
+			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: Buy order Price: '" + orderBuy.getPriceLimit()
 					+ " is lower than Sell order Price: '" + orderSell.getPriceLimit() + "'");
 			return;
 		}
@@ -115,20 +135,23 @@ public class OrderStexSvc extends OrderSvc {
 		// CALCULATE EXECUTION PRICE
 		double execPrice = (orderBuy.getPrice() / orderSell.getPrice()) / 2;
 
-
 		// ADJUST AVG_PRICE - BUYORDER
 		double newAvgBuyPrice = (posRcv.getQty() * posRcv.getPriceAvg() + orderBuy.getQty() * orderBuy.getPrice())
 				/ (posRcv.getQty() + orderBuy.getQty());
 		posRcv.setPriceAvg(newAvgBuyPrice);
-		posRcv = (PosStex) posSvc.save(posRcv);		
+		posRcv = (PosStex) posSvc.save(posRcv);
 
 		// CREATE EXECUTION
 		ExecStex execStex = new ExecStex(posSend, posRcv, orderSell, orderBuy, book_text, qty, execPrice);
 		execStexRepo.save(execStex);
-		
+
 		// BOOK POSITIONS
 		posSvc.creditPos(orderBuy, execStex);
 		posSvc.debitPos(orderSell, execStex);
+
+		// ADJUST EXEC QTY - ORDER
+		orderSell.setQtyExec(orderSell.getQtyExec() + execStex.getQtyExec());
+		orderBuy.setQtyExec(orderBuy.getQtyExec() + execStex.getQtyExec());
 
 		// TRANSFER MONEY
 		PosMacc maccSend = partySvc.getMacc(partyBuyer);
@@ -140,6 +163,17 @@ public class OrderStexSvc extends OrderSvc {
 		orderPaySvc.execPay(payment);
 
 		// TODO move order to next WFC status
-//		if(orderBuy.getQty())
+		if (orderBuy.getQty() == orderBuy.getQtyExec()) {
+			orderSvc.execAction(orderBuy, EOrderAction.EXECUTE_FULL);
+		} else {
+			orderSvc.execAction(orderBuy, EOrderAction.EXECUTE_PART);
+		}
+
+		if (orderSell.getQty() == orderSell.getQtyExec()) {
+			orderSvc.execAction(orderSell, EOrderAction.EXECUTE_FULL);
+		} else {
+			orderSvc.execAction(orderSell, EOrderAction.EXECUTE_PART);
+		}
 	}
+
 }
