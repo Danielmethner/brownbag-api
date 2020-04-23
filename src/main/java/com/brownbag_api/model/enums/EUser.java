@@ -1,4 +1,4 @@
-package com.brownbag_api.model.data;
+package com.brownbag_api.model.enums;
 
 public enum EUser {
 	MGR_ECB("European Central Bank", ERole.ROLE_ORG), MGR_DEUTSCHE_BANK("Deutsche Bank", ERole.ROLE_ORG),

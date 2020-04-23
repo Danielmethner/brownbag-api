@@ -1,4 +1,4 @@
-package com.brownbag_api.model.data;
+package com.brownbag_api.model.enums;
 
 public enum EAsset {
 	EUR("Euro", EAssetGrp.CURRY, EParty.ECB), BOND_GOVERNMENT("Government Bond", EAssetGrp.BOND, EParty.GOVERNMENT),

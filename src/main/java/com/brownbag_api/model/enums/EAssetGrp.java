@@ -1,4 +1,4 @@
-package com.brownbag_api.model.data;
+package com.brownbag_api.model.enums;
 
 public enum EAssetGrp {
 	BOND("Bond"), CURRY("Currency"), LOAN("Loan"), STOCK("Stock");

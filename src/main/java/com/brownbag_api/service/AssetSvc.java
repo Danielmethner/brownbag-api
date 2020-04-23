@@ -8,8 +8,8 @@ import org.springframework.stereotype.Service;
 import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.AssetLoan;
 import com.brownbag_api.model.Party;
-import com.brownbag_api.model.data.EAsset;
-import com.brownbag_api.model.data.EAssetGrp;
+import com.brownbag_api.model.enums.EAsset;
+import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.repo.AssetRepo;
 
 @Service

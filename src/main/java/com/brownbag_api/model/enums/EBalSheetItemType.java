@@ -1,4 +1,4 @@
-package com.brownbag_api.model.data;
+package com.brownbag_api.model.enums;
 
 import java.util.stream.Stream;
 

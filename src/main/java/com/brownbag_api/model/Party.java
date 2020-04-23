@@ -18,7 +18,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.brownbag_api.model.data.EPartyType;
+import com.brownbag_api.model.enums.EPartyType;
 
 @Entity
 @Table(name = "PARTY")

@@ -1,7 +1,7 @@
 package com.brownbag_api.model;
 
-import com.brownbag_api.model.data.EBalSheetItemType;
-import com.brownbag_api.model.data.EBookingDir;
+import com.brownbag_api.model.enums.EBalSheetItemType;
+import com.brownbag_api.model.enums.EBookingDir;
 
 public class BalTrxTransient {
 

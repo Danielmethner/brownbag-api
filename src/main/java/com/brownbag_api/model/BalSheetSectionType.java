@@ -16,7 +16,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.brownbag_api.model.data.EBalSheetSectionType;
+import com.brownbag_api.model.enums.EBalSheetSectionType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity

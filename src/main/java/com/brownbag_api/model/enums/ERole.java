@@ -1,4 +1,4 @@
-package com.brownbag_api.model.data;
+package com.brownbag_api.model.enums;
 
 public enum ERole {
 	ROLE_MGR("Manager"), ROLE_BROKER("Broker"), ROLE_ORG("Organisation");

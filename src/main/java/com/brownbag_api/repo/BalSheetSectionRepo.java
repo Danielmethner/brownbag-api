@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.brownbag_api.model.BalSheet;
 import com.brownbag_api.model.BalSheetSectionType;
-import com.brownbag_api.model.data.EBalSheetSectionType;
+import com.brownbag_api.model.enums.EBalSheetSectionType;
 
 @Repository
 public interface BalSheetSectionRepo extends JpaRepository<BalSheetSectionType, Long> {

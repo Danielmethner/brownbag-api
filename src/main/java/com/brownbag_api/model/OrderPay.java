@@ -8,8 +8,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.brownbag_api.model.data.EOrderStatus;
-import com.brownbag_api.model.data.EOrderType;
+import com.brownbag_api.model.enums.EOrderStatus;
+import com.brownbag_api.model.enums.EOrderType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity

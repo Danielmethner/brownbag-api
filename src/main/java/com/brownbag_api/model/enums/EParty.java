@@ -1,4 +1,4 @@
-package com.brownbag_api.model.data;
+package com.brownbag_api.model.enums;
 
 public enum EParty {
 	ECB("European  Central Bank", EUser.MGR_ECB, EPartyType.ORG_GOVT, false),

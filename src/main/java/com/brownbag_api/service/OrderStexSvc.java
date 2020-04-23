@@ -14,10 +14,10 @@ import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.PosMacc;
 import com.brownbag_api.model.PosStex;
 import com.brownbag_api.model.User;
-import com.brownbag_api.model.data.EOrderAction;
-import com.brownbag_api.model.data.EOrderDir;
-import com.brownbag_api.model.data.EOrderStatus;
-import com.brownbag_api.model.data.EOrderType;
+import com.brownbag_api.model.enums.EOrderAction;
+import com.brownbag_api.model.enums.EOrderDir;
+import com.brownbag_api.model.enums.EOrderStatus;
+import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.ExecStexRepo;
 import com.brownbag_api.repo.OrderRepo;
@@ -104,7 +104,6 @@ public class OrderStexSvc extends OrderSvc {
 		int qty = (int) (orderBuy.getQty() < orderSell.getQty() ? orderBuy.getQty() : orderSell.getQty());
 
 		String book_text = "Buyer: " + partyBuyer.getName() + " Seller: " + partySeller.getName() + " Qty: " + qty;
-//TODO: adjust positions, adjust balance sheet, move orders to next state
 
 		// ENSURE PRICE LIMITS ARE COMPATIBLE
 		if (orderBuy.getPriceLimit() < orderSell.getPriceLimit()) {

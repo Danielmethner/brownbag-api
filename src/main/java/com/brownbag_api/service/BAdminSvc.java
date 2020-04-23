@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Asset;
-import com.brownbag_api.model.data.EAsset;
+import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.util.UtilBA;
 

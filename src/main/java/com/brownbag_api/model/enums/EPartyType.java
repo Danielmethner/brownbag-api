@@ -1,4 +1,4 @@
-package com.brownbag_api.model.data;
+package com.brownbag_api.model.enums;
 
 public enum EPartyType {
 	PERSON_NATURAL("Natural Person"), PERSON_LEGAL("Legal Person"), ORG_GOVT("Government Organisation");

@@ -11,9 +11,9 @@ import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.PosMacc;
 import com.brownbag_api.model.PosStex;
 import com.brownbag_api.model.User;
-import com.brownbag_api.model.data.EAssetGrp;
-import com.brownbag_api.model.data.EParty;
-import com.brownbag_api.model.data.EPartyType;
+import com.brownbag_api.model.enums.EAssetGrp;
+import com.brownbag_api.model.enums.EParty;
+import com.brownbag_api.model.enums.EPartyType;
 import com.brownbag_api.repo.PartyRepo;
 
 @Service

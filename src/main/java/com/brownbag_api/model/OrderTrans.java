@@ -19,8 +19,8 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.brownbag_api.model.data.EOrderAction;
-import com.brownbag_api.model.data.EOrderStatus;
+import com.brownbag_api.model.enums.EOrderAction;
+import com.brownbag_api.model.enums.EOrderStatus;
 
 @Entity
 @Table(name = "ORDER_TRANS")

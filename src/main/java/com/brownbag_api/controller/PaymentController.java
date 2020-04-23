@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.brownbag_api.model.OrderPay;
 import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.User;
-import com.brownbag_api.model.data.EUser;
+import com.brownbag_api.model.enums.EUser;
 import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.UserRepo;

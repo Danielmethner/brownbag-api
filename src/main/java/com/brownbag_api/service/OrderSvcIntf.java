@@ -1,7 +1,7 @@
 package com.brownbag_api.service;
 
 import com.brownbag_api.model.Order;
-import com.brownbag_api.model.data.EOrderAction;
+import com.brownbag_api.model.enums.EOrderAction;
 
 public interface OrderSvcIntf {
 

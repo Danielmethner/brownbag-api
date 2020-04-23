@@ -1,4 +1,4 @@
-package com.brownbag_api.model.data;
+package com.brownbag_api.model.enums;
 
 public enum EOrderStatus {
 	NEW("New"), HOLD("Hold"), PLACED("Placed"), EXEC_FULL("Fully Executed"), EXEC_PART("Partially Executed"),

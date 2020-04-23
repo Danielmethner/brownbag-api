@@ -23,7 +23,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.brownbag_api.model.data.EAssetGrp;
+import com.brownbag_api.model.enums.EAssetGrp;
 
 @Entity
 @Table(name = "ASSET")

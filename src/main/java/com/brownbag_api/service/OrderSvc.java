@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.Order;
 import com.brownbag_api.model.OrderTrans;
-import com.brownbag_api.model.data.EOrderAction;
+import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.repo.OrderRepo;
 //import com.brownbag_api.repo.OrderRepo;
 import com.brownbag_api.repo.OrderTransRepo;

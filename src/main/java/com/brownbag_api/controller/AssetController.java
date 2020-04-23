@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.Asset;
-import com.brownbag_api.model.data.EAssetGrp;
+import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.repo.AssetRepo;
 
 @CrossOrigin(origins = "*", maxAge = 3600)

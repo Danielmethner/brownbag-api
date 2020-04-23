@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.BalSheet;
 import com.brownbag_api.model.Party;
-import com.brownbag_api.model.data.EBalSheetSectionType;
+import com.brownbag_api.model.enums.EBalSheetSectionType;
 import com.brownbag_api.repo.BalSheetRepo;
 
 @Service

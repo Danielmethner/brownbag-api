@@ -14,11 +14,11 @@ import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Pos;
 import com.brownbag_api.model.PosLoan;
 import com.brownbag_api.model.User;
-import com.brownbag_api.model.data.EAsset;
-import com.brownbag_api.model.data.EAssetGrp;
-import com.brownbag_api.model.data.EOrderAction;
-import com.brownbag_api.model.data.EOrderStatus;
-import com.brownbag_api.model.data.EOrderType;
+import com.brownbag_api.model.enums.EAsset;
+import com.brownbag_api.model.enums.EAssetGrp;
+import com.brownbag_api.model.enums.EOrderAction;
+import com.brownbag_api.model.enums.EOrderStatus;
+import com.brownbag_api.model.enums.EOrderType;
 
 @Service
 public class OrderLoanSvc extends OrderSvc {

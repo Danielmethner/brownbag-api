@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 
 import com.brownbag_api.model.Party;
 import com.brownbag_api.model.User;
-import com.brownbag_api.model.data.ERole;
-import com.brownbag_api.model.data.EUser;
+import com.brownbag_api.model.enums.ERole;
+import com.brownbag_api.model.enums.EUser;
 
 public interface UserSvc {
 	public void save(User user);

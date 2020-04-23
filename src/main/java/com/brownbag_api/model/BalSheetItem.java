@@ -21,7 +21,7 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.brownbag_api.model.data.EBalSheetItemType;
+import com.brownbag_api.model.enums.EBalSheetItemType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity

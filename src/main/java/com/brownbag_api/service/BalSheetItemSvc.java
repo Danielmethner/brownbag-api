@@ -7,7 +7,7 @@ import com.brownbag_api.model.BalSheetItem;
 import com.brownbag_api.model.BalSheetSectionType;
 import com.brownbag_api.model.Party;
 import com.brownbag_api.model.Pos;
-import com.brownbag_api.model.data.EBalSheetItemType;
+import com.brownbag_api.model.enums.EBalSheetItemType;
 import com.brownbag_api.repo.BalSheetItemRepo;
 
 @Service

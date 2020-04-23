@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import com.brownbag_api.model.Asset;
 import com.brownbag_api.model.Party;
-import com.brownbag_api.model.data.EAssetGrp;
+import com.brownbag_api.model.enums.EAssetGrp;
 
 @Repository
 public interface AssetRepo extends JpaRepository<Asset, Long> {

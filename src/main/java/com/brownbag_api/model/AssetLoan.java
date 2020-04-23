@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.brownbag_api.model.data.EAssetGrp;
+import com.brownbag_api.model.enums.EAssetGrp;
 
 @Entity
 @Table(name = "ASSET_LOAN")
