@@ -36,7 +36,7 @@ public class AssetLoan extends Asset implements Serializable {
 		this.intrRate = 0;
 	}
 
-	public AssetLoan(@NotBlank @Size(max = 50) String name, EAssetGrp eAssetGrp, @NotNull Party issuer, Date matDate,
+	public AssetLoan(@NotBlank String name, EAssetGrp eAssetGrp, @NotNull Party issuer, Date matDate,
 			@NotNull double intrRate) {
 		super(name, null, eAssetGrp, issuer, 1);
 		this.matDate = matDate;

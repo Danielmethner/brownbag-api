@@ -121,7 +121,7 @@ public class InitDataLoader {
 		createUser(EUser.MGR_DEUTSCHE_BANK);
 		createUser(EUser.MGR_GOVERNMENT);
 		// BROKER
-		createUser(EUser.U_BROKER);
+		createUser(EUser.MGR_BROKER);
 	}
 
 	// -----------------------------------------------------------
@@ -152,7 +152,8 @@ public class InitDataLoader {
 	private void createAssets() {
 		createAsset(EAsset.BOND_GOVERNMENT);
 		Party deutscheBank = partySvc.getByEnum(EParty.DEUTSCHE_BANK);
-		partySvc.goPublic(deutscheBank, "DE0005140008", 10, 10000);
+		deutscheBank = partySvc.goPublic(deutscheBank);
+		partySvc.issueShares(deutscheBank, 5000, 15);
 	}
 
 	// -----------------------------------------------------------
@@ -176,21 +177,16 @@ public class InitDataLoader {
 
 		User userTrader1 = userSvc.getByEnum(EUser.U_TRADER_1);
 		Party partyTrader1 = userSvc.getNaturalPerson(userTrader1);
-		OrderStex orderBuy = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 100, 100.55, userTrader1, EOrderStatus.NEW, partyTrader1);
+		OrderStex orderBuy = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 100, 100.55, userTrader1, partyTrader1);
 		User userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
 		Party partyTrader2 = userSvc.getNaturalPerson(userTrader2);
 		posSvc.createPosStex(deutscheBank, partyTrader2, 100); // TODO: Change to IPO
-		OrderStex orderSell = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.00, userTrader2, EOrderStatus.NEW, partyTrader2);
+		OrderStex orderSell = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.00, userTrader2, partyTrader2);
 		orderStexSvc.matchOrders(orderBuy, orderSell);
 	}
 
 	private void createOrders() {
 		createOrdersStex();
-	}
-
-
-	private void createExecuteStexOrder() {
-		
 	}
 	
 	public void createDemoData() {
@@ -199,8 +195,7 @@ public class InitDataLoader {
 		createLegalEntities();
 		createAssets();
 		createUsers();
-		createOrders();
-		createExecuteStexOrder();
+//		createOrders();
 		System.err.println("Demo Data Loaded Succesfully");
 	}
 

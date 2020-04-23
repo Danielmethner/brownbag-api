@@ -13,11 +13,13 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+import com.brownbag_api.model.enums.ELegalForm;
 import com.brownbag_api.model.enums.EPartyType;
 
 @Entity
@@ -42,18 +44,30 @@ public class Party implements Serializable {
 	private EPartyType partyType;
 
 	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(length = 50)
+	private ELegalForm legalForm;
+
+	@NotNull
 	@ManyToOne(targetEntity = User.class)
 	@JoinColumn(name = "USER_ID")
 	private User user;
+	
+	@OneToOne(targetEntity = Asset.class)
+	@JoinColumn(name = "ASSET_ID")
+	private Asset asset;
 
 	// CONSTRUCTOR
-	public Party(String name, User user, EPartyType legalEntityType) {
-		this.name = name;
-		this.user = user;
-		this.partyType = legalEntityType;
+	public Party() {
 	}
 
-	public Party() {
+	public Party(@NotBlank @Size(max = 50) String name, @NotNull EPartyType partyType, @NotNull ELegalForm legalForm,
+			@NotNull User user) {
+		super();
+		this.name = name;
+		this.partyType = partyType;
+		this.legalForm = legalForm;
+		this.user = user;
 	}
 
 	public Party(Long id) {
@@ -96,4 +110,29 @@ public class Party implements Serializable {
 		this.partyType = legalEntityType;
 	}
 
+	public EPartyType getPartyType() {
+		return partyType;
+	}
+
+	public void setPartyType(EPartyType partyType) {
+		this.partyType = partyType;
+	}
+
+	public ELegalForm getLegalForm() {
+		return legalForm;
+	}
+
+	public void setLegalForm(ELegalForm legalForm) {
+		this.legalForm = legalForm;
+	}
+
+	public Asset getAsset() {
+		return asset;
+	}
+
+	public void setAsset(Asset asset) {
+		this.asset = asset;
+	}
+
+	
 }

@@ -74,8 +74,11 @@ public class PosSvc {
 		return posRepo.save(posStex);
 	}
 	
-	public PosStex createPosStex(Asset asset, Party party, int qty) {
-		PosStex posStex = new PosStex(100, 0, asset, party, 50);
+	public PosStex createPosStex(Asset asset, Party partyOwner, int qty) {
+		if (partyOwner == null) {
+			System.err.println("Party Owner is null");
+		}
+		PosStex posStex = new PosStex(qty, 0, asset, partyOwner, 0);
 		return posRepo.save(posStex);
 	}
 

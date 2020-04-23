@@ -14,6 +14,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -38,7 +39,7 @@ public class Asset implements Serializable {
 	private Long id;
 
 	@NotBlank
-	@Size(max = 50)
+	@Size(max = 150)
 	private String name;
 
 	@Size(max = 12)
@@ -49,7 +50,11 @@ public class Asset implements Serializable {
 	private EAssetGrp assetGrp;
 
 	@NotNull
-	@ManyToOne(targetEntity = Party.class)
+	@Column(name = "TOTAL_SHARES")
+	private int totalShares;
+
+	@NotNull
+	@OneToOne(targetEntity = Party.class)
 	@JoinColumn(name = "ISSUER_ID")
 	private Party issuer;
 
@@ -61,7 +66,7 @@ public class Asset implements Serializable {
 	@NotNull
 	private double nomVal;
 
-	public Asset(@NotBlank @Size(max = 50) String name, @Size(max = 50) String isin, EAssetGrp assetGrp,
+	public Asset(@NotBlank @Size(max = 150) String name, @Size(max = 50) String isin, EAssetGrp assetGrp,
 			@NotNull Party issuer, @NotNull double nomVal) {
 		super();
 		this.name = name;
@@ -145,5 +150,6 @@ public class Asset implements Serializable {
 	public void setIsin(String isin) {
 		this.isin = isin;
 	}
+
 
 }

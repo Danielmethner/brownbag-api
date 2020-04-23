@@ -66,9 +66,9 @@ public class OrderStexSvc extends OrderSvc {
 	}
 
 	public OrderStex placeNewOrder(EOrderDir orderDir, EOrderType orderType, Asset asset, int qty, double price,
-			User user, EOrderStatus orderStatus, Party party) {
+			User user, Party party) {
 
-		OrderStex orderStex = new OrderStex(orderDir, qty, asset, orderType, orderStatus, user, price, party, 0);
+		OrderStex orderStex = new OrderStex(orderDir, qty, asset, orderType, EOrderStatus.NEW, user, price, party, 0);
 		orderStex = orderRepo.save(orderStex);
 
 		if (orderStex.getQty() <= 0 || orderStex.getPrice() <= 0) {
@@ -93,17 +93,22 @@ public class OrderStexSvc extends OrderSvc {
 			posSvc.save(posMacc);
 		}
 		if (orderDir == EOrderDir.SELL) {
-			// check if asset amount is sufficient
-			PosStex posStex = posSvc.getByAssetAndParty(asset, party);
-			double qtyAvbl = posSvc.getQtyAvbl(posStex);
-			if (qtyAvbl < qty) {
-				logSvc.write("OrderStexSvc.placeNewOrder: Not enough Shares! Party: " + party.getName() + " Asset: "
-						+ asset.getName() + " Order Quantity: " + qty + " Available Shares: " + qtyAvbl);
-				orderSvc.execAction(orderStex, EOrderAction.DISCARD);
-				return null;
+			
+			// STANDARD CASE: Selling Stocks from portfolio
+			if (orderStex.getOrderType() == EOrderType.STEX) {
+				// check if asset amount is sufficient
+				PosStex posStex = posSvc.getByAssetAndParty(asset, party);
+				double qtyAvbl = posSvc.getQtyAvbl(posStex);
+				if (qtyAvbl < qty) {
+					logSvc.write("OrderStexSvc.placeNewOrder: Not enough Shares! Party: " + party.getName() + " Asset: "
+							+ asset.getName() + " Order Quantity: " + qty + " Available Shares: " + qtyAvbl);
+					orderSvc.execAction(orderStex, EOrderAction.DISCARD);
+					return null;
+				}
+				posStex.setQtyBlocked(posStex.getQtyBlocked() + qty);
+				posSvc.save(posStex);
 			}
-			posStex.setQtyBlocked(posStex.getQtyBlocked() + qty);
-			posSvc.save(posStex);
+			
 		}
 
 		return placeOrder(orderStex);
