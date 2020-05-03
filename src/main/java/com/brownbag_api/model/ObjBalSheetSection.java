@@ -20,7 +20,7 @@ import com.brownbag_api.model.enums.EBalSheetSectionType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "BAL_SHEET_SECTION")
+@Table(name = "OBJ_BAL_SHEET_SECTION")
 public class ObjBalSheetSection implements Serializable {
 
 	private static final long serialVersionUID = 7386741814449599918L;

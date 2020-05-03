@@ -18,7 +18,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "USER", uniqueConstraints = { @UniqueConstraint(columnNames = "username") })
+@Table(name = "OBJ_USER", uniqueConstraints = { @UniqueConstraint(columnNames = "username") })
 public class ObjUser implements Serializable {
 	/**
 	 *

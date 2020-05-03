@@ -23,7 +23,7 @@ import com.brownbag_api.model.enums.ELegalForm;
 import com.brownbag_api.model.enums.EPartyType;
 
 @Entity
-@Table(name = "PARTY")
+@Table(name = "OBJ_PARTY")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class ObjParty implements Serializable {
 

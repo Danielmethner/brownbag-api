@@ -25,7 +25,7 @@ import com.brownbag_api.model.enums.EBalSheetItemType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "BAL_SHEET_ITEM")
+@Table(name = "OBJ_BAL_SHEET_ITEM")
 public class ObjBalSheetItem implements Serializable {
 
 	/**

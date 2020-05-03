@@ -27,7 +27,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.brownbag_api.model.enums.EAssetGrp;
 
 @Entity
-@Table(name = "OJB_ASSET")
+@Table(name = "OBJ_ASSET")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class ObjAsset implements Serializable {
 

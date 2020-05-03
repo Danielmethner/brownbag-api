@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "POS_MACC")
+@Table(name = "OBJ_POS_MACC")
 public class ObjPosMacc extends ObjPos implements Serializable {
 
 	private static final long serialVersionUID = 1530699992135610397L;

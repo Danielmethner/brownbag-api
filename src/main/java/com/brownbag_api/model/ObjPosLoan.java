@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "POS_LOAN")
+@Table(name = "OBJ_POS_LOAN")
 public class ObjPosLoan extends ObjPos implements Serializable {
 
 	private static final long serialVersionUID = 5228815539510545768L;

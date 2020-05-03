@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "ROLE", uniqueConstraints = { @UniqueConstraint(columnNames = "name") })
+@Table(name = "OBJ_ROLE", uniqueConstraints = { @UniqueConstraint(columnNames = "name") })
 public class ObjRole {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

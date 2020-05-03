@@ -15,7 +15,7 @@ import javax.validation.constraints.Size;
 import com.brownbag_api.model.enums.EAssetGrp;
 
 @Entity
-@Table(name = "ASSET_LOAN")
+@Table(name = "OBJ_ASSET_LOAN")
 @Inheritance(strategy = InheritanceType.JOINED)
 public class ObjAssetLoan extends ObjAsset implements Serializable {
 

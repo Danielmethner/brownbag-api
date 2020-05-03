@@ -22,7 +22,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "BAL_SHEET")
+@Table(name = "OBJ_BAL_SHEET")
 public class ObjBalSheet implements Serializable {
 
 	/**
