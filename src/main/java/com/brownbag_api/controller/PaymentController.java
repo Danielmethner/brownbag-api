@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.OrderPay;
-import com.brownbag_api.model.Pos;
-import com.brownbag_api.model.User;
+import com.brownbag_api.model.ObjPos;
+import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.EUser;
 import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.PosRepo;
@@ -49,9 +49,9 @@ public class PaymentController {
 
 	@GetMapping("/exec/from/{from}/to/{to}/amount/{amount}")
 	public ResponseEntity<?> execPayment(@PathVariable Long from, @PathVariable Long to, @PathVariable double amount) {
-		User user = userRepo.findByUsername(EUser.MGR_ECB.toString());
-		Pos posFrom = posRepo.getOne(from);
-		Pos posTo = posRepo.getOne(to);
+		ObjUser user = userRepo.findByUsername(EUser.MGR_ECB.toString());
+		ObjPos posFrom = posRepo.getOne(from);
+		ObjPos posTo = posRepo.getOne(to);
 		OrderPay pay = orderPaySvc.createPay(amount, user, null, null, posFrom, posTo);
 		pay = orderPaySvc.execPay(pay);
 

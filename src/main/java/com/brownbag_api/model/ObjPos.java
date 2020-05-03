@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "POS")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Pos implements Serializable {
+public class ObjPos implements Serializable {
 
 	private static final long serialVersionUID = 1530699992135610397L;
 
@@ -41,19 +41,19 @@ public class Pos implements Serializable {
 	private double qtyBlocked;
 
 	@NotNull
-	@ManyToOne(targetEntity = Asset.class)
+	@ManyToOne(targetEntity = ObjAsset.class)
 	@JoinColumn(name = "ASSET_ID")
-	public Asset asset;
+	public ObjAsset asset;
 
 	@NotNull
-	@ManyToOne(targetEntity = Party.class)
+	@ManyToOne(targetEntity = ObjParty.class)
 	@JoinColumn(name = "PARTY_ID")
-	private Party party;
+	private ObjParty party;
 
-	public Pos() {
+	public ObjPos() {
 	}
 
-	public Pos(@NotNull double qty, @NotNull double qtyBlocked, @NotNull Asset asset, @NotNull Party owner) {
+	public ObjPos(@NotNull double qty, @NotNull double qtyBlocked, @NotNull ObjAsset asset, @NotNull ObjParty owner) {
 		super();
 		this.qty = qty;
 		this.qtyBlocked = qtyBlocked;
@@ -74,19 +74,19 @@ public class Pos implements Serializable {
 		this.id = id;
 	}
 
-	public Asset getAsset() {
+	public ObjAsset getAsset() {
 		return asset;
 	}
 
-	public void setAsset(Asset asset) {
+	public void setAsset(ObjAsset asset) {
 		this.asset = asset;
 	}
 
-	public Party getParty() {
+	public ObjParty getParty() {
 		return party;
 	}
 
-	public void setParty(Party party) {
+	public void setParty(ObjParty party) {
 		this.party = party;
 	}
 
@@ -116,5 +116,15 @@ public class Pos implements Serializable {
 
 	public void setQtyBlocked(double qtyBlocked) {
 		this.qtyBlocked = qtyBlocked;
+	}
+
+	public ObjPos raiseQtyBlocked(double qty) {
+		setQtyBlocked(getQtyBlocked() + qty);
+		return this;
+	}
+
+	public ObjPos lowerQtyBlocked(double qty) {
+		setQtyBlocked(getQtyBlocked() - qty);
+		return this;
 	}
 }

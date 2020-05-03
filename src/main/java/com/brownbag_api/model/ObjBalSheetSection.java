@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "BAL_SHEET_SECTION")
-public class BalSheetSection implements Serializable {
+public class ObjBalSheetSection implements Serializable {
 
 	private static final long serialVersionUID = 7386741814449599918L;
 
@@ -31,10 +31,10 @@ public class BalSheetSection implements Serializable {
 	private Long id;
 
 	@NotNull
-	@ManyToOne(targetEntity = BalSheet.class)
+	@ManyToOne(targetEntity = ObjBalSheet.class)
 	@JoinColumn(name = "BAL_SHEET_ID")
 	@JsonBackReference
-	private BalSheet balSheet;
+	private ObjBalSheet balSheet;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20)
@@ -48,11 +48,11 @@ public class BalSheetSection implements Serializable {
 	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
 	private double qty;
 
-	public BalSheetSection() {
+	public ObjBalSheetSection() {
 
 	}
 
-	public BalSheetSection(@NotNull BalSheet balSheet, EBalSheetSectionType eBalSheetSection, double qty) {
+	public ObjBalSheetSection(@NotNull ObjBalSheet balSheet, EBalSheetSectionType eBalSheetSection, double qty) {
 		super();
 		this.balSheet = balSheet;
 		this.section = eBalSheetSection;
@@ -73,11 +73,11 @@ public class BalSheetSection implements Serializable {
 		return serialVersionUID;
 	}
 
-	public BalSheet getBalSheet() {
+	public ObjBalSheet getBalSheet() {
 		return balSheet;
 	}
 
-	public void setBalSheet(BalSheet balSheet) {
+	public void setBalSheet(ObjBalSheet balSheet) {
 		this.balSheet = balSheet;
 	}
 

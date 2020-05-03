@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.BalSheetItem;
-import com.brownbag_api.model.BalSheetSection;
+import com.brownbag_api.model.ObjBalSheetItem;
+import com.brownbag_api.model.ObjBalSheetSection;
 import com.brownbag_api.model.BalTrx;
 import com.brownbag_api.model.Booking;
 import com.brownbag_api.model.Order;
-import com.brownbag_api.model.Pos;
+import com.brownbag_api.model.ObjPos;
 import com.brownbag_api.model.enums.EBalSheetSectionType;
 import com.brownbag_api.model.enums.EBookingDir;
 import com.brownbag_api.model.trans.BalTrxTrans;
@@ -43,7 +43,7 @@ public class BookingSvc {
 	@Autowired
 	private LogSvc logSvc;
 
-	public Pos createBooking(Order order, Pos pos, EBookingDir eBookingDir,
+	public ObjPos createBooking(Order order, ObjPos pos, EBookingDir eBookingDir,
 			ArrayList<BalTrxTrans> balTrxTransientList) {
 
 		double orderQty = order.getQty();
@@ -76,13 +76,13 @@ public class BookingSvc {
 					: balTrxLiabEquity;
 
 			// UPDATE BALANCE SHEET ITEM
-			BalSheetItem bsi = balSheetItemSvc.getItem(balTrxTransient.getParty(), finYear,
+			ObjBalSheetItem bsi = balSheetItemSvc.getItem(balTrxTransient.getParty(), finYear,
 					balTrxTransient.getItemType());
 			bsi.setQty(bsi.getQty() + balTrxQty);
 			balSheetItemSvc.save(bsi);
 
 			// UPDATE BALANCE SHEET SECTION
-			BalSheetSection bss = bsi.getBalSheetSection();
+			ObjBalSheetSection bss = bsi.getBalSheetSection();
 			bss.increaseQty(balTrxQty);
 			balSheetSectionSvc.save(bss);
 			

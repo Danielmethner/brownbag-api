@@ -18,15 +18,16 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "POS_MACC")
-public class PosMacc extends Pos implements Serializable {
+public class ObjPosMacc extends ObjPos implements Serializable {
 
 	private static final long serialVersionUID = 1530699992135610397L;
 
-	public PosMacc() {
+	public ObjPosMacc() {
 	}
 
-	public PosMacc(@NotNull double qty, @NotNull Asset assetCurry, @NotNull Party owner) {
+	public ObjPosMacc(@NotNull double qty, @NotNull ObjAsset assetCurry, @NotNull ObjParty owner) {
 		super(qty, 0, assetCurry, owner);
 	}
+
 
 }

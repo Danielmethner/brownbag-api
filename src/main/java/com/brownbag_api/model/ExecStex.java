@@ -34,14 +34,14 @@ public class ExecStex implements Serializable {
 	private Date timestampCreate;
 
 	@NotNull
-	@ManyToOne(targetEntity = PosStex.class)
+	@ManyToOne(targetEntity = ObjPosStex.class)
 	@JoinColumn(name = "POS_SEND_ID")
-	private PosStex posSend;
+	private ObjPosStex posSend;
 
 	@NotNull
-	@ManyToOne(targetEntity = PosStex.class)
+	@ManyToOne(targetEntity = ObjPosStex.class)
 	@JoinColumn(name = "POS_RCV_ID")
-	private PosStex posRcv;
+	private ObjPosStex posRcv;
 
 	@NotNull
 	@ManyToOne(targetEntity = OrderStex.class)
@@ -67,7 +67,7 @@ public class ExecStex implements Serializable {
 	public ExecStex() {
 	}
 
-	public ExecStex(@NotNull PosStex posSend, @NotNull PosStex posRcv, @NotNull OrderStex orderSell,
+	public ExecStex(@NotNull ObjPosStex posSend, @NotNull ObjPosStex posRcv, @NotNull OrderStex orderSell,
 			@NotNull OrderStex orderBuy, String bookText, @NotNull int qtyExec, @NotNull double price) {
 		super();
 		this.posSend = posSend;
@@ -95,19 +95,19 @@ public class ExecStex implements Serializable {
 		this.timestampCreate = timestampCreate;
 	}
 
-	public PosStex getPosSend() {
+	public ObjPosStex getPosSend() {
 		return posSend;
 	}
 
-	public void setPosSend(PosStex posSend) {
+	public void setPosSend(ObjPosStex posSend) {
 		this.posSend = posSend;
 	}
 
-	public PosStex getPosRcv() {
+	public ObjPosStex getPosRcv() {
 		return posRcv;
 	}
 
-	public void setPosRcv(PosStex posRcv) {
+	public void setPosRcv(ObjPosStex posRcv) {
 		this.posRcv = posRcv;
 	}
 

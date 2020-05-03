@@ -19,7 +19,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "USER", uniqueConstraints = { @UniqueConstraint(columnNames = "username") })
-public class User implements Serializable {
+public class ObjUser implements Serializable {
 	/**
 	 *
 	 */
@@ -42,17 +42,17 @@ public class User implements Serializable {
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name = "USER_ID"), inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
-	private Set<Role> roles = new HashSet<>();
+	private Set<ObjRole> roles = new HashSet<>();
 
 //	@OneToMany(mappedBy = "user")
 //	@MapKey(name = "user")
 //	@JsonBackReference
 //	public List<Order> orders;
 
-	public User() {
+	public ObjUser() {
 	}
 
-	public User(String username, String name, String password) {
+	public ObjUser(String username, String name, String password) {
 		this.username = username;
 		this.name = name;
 		this.password = password;
@@ -90,11 +90,11 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	public Set<Role> getRoles() {
+	public Set<ObjRole> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(Set<ObjRole> roles) {
 		this.roles = roles;
 	}
 

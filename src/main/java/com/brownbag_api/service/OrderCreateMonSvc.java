@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.brownbag_api.model.Asset;
+import com.brownbag_api.model.ObjAsset;
 import com.brownbag_api.model.OrderCreateMon;
 import com.brownbag_api.model.OrderPay;
-import com.brownbag_api.model.Party;
-import com.brownbag_api.model.Pos;
-import com.brownbag_api.model.User;
+import com.brownbag_api.model.ObjParty;
+import com.brownbag_api.model.ObjPos;
+import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.enums.EOrderStatus;
@@ -45,8 +45,8 @@ public class OrderCreateMonSvc extends OrderSvc {
 	@Autowired
 	private PartySvc partySvc;
 
-	public OrderPay createPay(double qty, @NotNull User user, Asset assetCash, String bookText, Pos maccSend,
-			Pos maccRcv) {
+	public OrderPay createPay(double qty, @NotNull ObjUser user, ObjAsset assetCash, String bookText, ObjPos maccSend,
+			ObjPos maccRcv) {
 		String userString = "User: " + user.getName();
 		String orderString = "Pay Order: Amount: " + qty + " MACC From: '" + maccSend.getName() + "' MACC To: '"
 				+ maccRcv.getName() + "'";
@@ -81,8 +81,8 @@ public class OrderCreateMonSvc extends OrderSvc {
 	}
 
 	@Transactional
-	public OrderCreateMon createMon(Party partySend, @NotNull double amount) {
-		Pos maccCentralBank = partySvc.getMacc(partySend);
+	public OrderCreateMon createMon(ObjParty partySend, @NotNull double amount) {
+		ObjPos maccCentralBank = partySvc.getMacc(partySend);
 		OrderCreateMon orderCreateMon = new OrderCreateMon(amount, maccCentralBank.getAsset(), EOrderType.CREATE_MONEY,
 				EOrderStatus.NEW, partySend.getUser(), maccCentralBank, "Money Creation: " + partySend.getName());
 		orderCreateMon = (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.HOLD);
@@ -91,7 +91,7 @@ public class OrderCreateMonSvc extends OrderSvc {
 	}
 
 	public void createMon(EParty eParty, @NotNull double amount) {
-		Party partySend = partyRepo.findByName(EParty.ECB.toString());
+		ObjParty partySend = partyRepo.findByName(EParty.ECB.toString());
 		createMon(partySend, amount);
 	}
 

@@ -18,7 +18,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "POS_STEX")
-public class PosStex extends Pos implements Serializable {
+public class ObjPosStex extends ObjPos implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -26,10 +26,10 @@ public class PosStex extends Pos implements Serializable {
 	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
 	private double priceAvg;
 
-	public PosStex() {
+	public ObjPosStex() {
 	}
 
-	public PosStex(@NotNull double qty, @NotNull double qtyBlocked, @NotNull Asset asset, @NotNull Party owner,
+	public ObjPosStex(@NotNull double qty, @NotNull double qtyBlocked, @NotNull ObjAsset asset, @NotNull ObjParty owner,
 			@NotNull double priceAvg) {
 		super(qty, qtyBlocked, asset, owner);
 		this.priceAvg = priceAvg;

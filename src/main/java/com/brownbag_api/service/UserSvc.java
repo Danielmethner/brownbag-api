@@ -4,23 +4,23 @@ import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 
-import com.brownbag_api.model.Party;
-import com.brownbag_api.model.User;
+import com.brownbag_api.model.ObjParty;
+import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.ERole;
 import com.brownbag_api.model.enums.EUser;
 
 public interface UserSvc {
-	public void save(User user);
+	public void save(ObjUser user);
 
 	ResponseEntity<?> registerUser(String userName, String password, Set<String> strRoles);
 
 	ResponseEntity<?> registerUser(String userName, String name, String password, Set<String> eRoles);
 
-	boolean hasRole(User user, ERole eRole);
+	boolean hasRole(ObjUser user, ERole eRole);
 
-	Party getNaturalPerson(User user);
+	ObjParty getNaturalPerson(ObjUser user);
 
-	Party getOrganisation(User user);
+	ObjParty getOrganisation(ObjUser user);
 
-	User getByEnum(EUser eUser);
+	ObjUser getByEnum(EUser eUser);
 }

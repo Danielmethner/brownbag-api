@@ -1,6 +1,6 @@
 package com.brownbag_api.model.trans;
 
-import com.brownbag_api.model.Party;
+import com.brownbag_api.model.ObjParty;
 import com.brownbag_api.model.enums.EBalSheetItemType;
 import com.brownbag_api.model.enums.EBookingDir;
 
@@ -9,9 +9,9 @@ public class BalTrxTrans {
 	private EBalSheetItemType itemType;
 	private double qty;
 	private EBookingDir bookingDir;
-	private Party party;
+	private ObjParty party;
 
-	public BalTrxTrans(EBalSheetItemType itemType, double qty, EBookingDir bookingDir, Party party) {
+	public BalTrxTrans(EBalSheetItemType itemType, double qty, EBookingDir bookingDir, ObjParty party) {
 		this.itemType = itemType;
 		this.qty = qty;
 		this.bookingDir = bookingDir;
@@ -42,11 +42,11 @@ public class BalTrxTrans {
 		this.qty = qty;
 	}
 
-	public Party getParty() {
+	public ObjParty getParty() {
 		return party;
 	}
 
-	public void setParty(Party party) {
+	public void setParty(ObjParty party) {
 		this.party = party;
 	}
 

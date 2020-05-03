@@ -49,9 +49,9 @@ public class Booking implements Serializable {
 	private double posBalNew;
 
 	@NotNull
-	@ManyToOne(targetEntity = Pos.class)
+	@ManyToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "POS_ID")
-	private Pos pos;
+	private ObjPos pos;
 
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
@@ -62,7 +62,7 @@ public class Booking implements Serializable {
 	}
 
 	public Booking(@NotNull Order order, @NotNull double posBalOld, @NotNull double qty, @NotNull double posBalNew,
-			@NotNull Pos pos, @NotNull String bookText) {
+			@NotNull ObjPos pos, @NotNull String bookText) {
 		super();
 		this.order = order;
 		this.posBalOld = posBalOld;
@@ -112,11 +112,11 @@ public class Booking implements Serializable {
 		this.posBalNew = posBalNew;
 	}
 
-	public Pos getPos() {
+	public ObjPos getPos() {
 		return pos;
 	}
 
-	public void setPos(Pos pos) {
+	public void setPos(ObjPos pos) {
 		this.pos = pos;
 	}
 

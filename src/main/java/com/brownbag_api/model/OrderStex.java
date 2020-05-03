@@ -28,9 +28,9 @@ public class OrderStex extends Order implements Serializable {
 	private EOrderDir orderDir;
 
 	@NotNull
-	@ManyToOne(targetEntity = Party.class)
+	@ManyToOne(targetEntity = ObjParty.class)
 	@JoinColumn(name = "PARTY_ID")
-	private Party party;
+	private ObjParty party;
 
 	@Column(name = "QTY_EXEC", columnDefinition = "Decimal(20,2)")
 	private double qtyExec;
@@ -43,22 +43,14 @@ public class OrderStex extends Order implements Serializable {
 		this.priceLimit = price;
 	}
 
-	public OrderStex(EOrderDir orderDir, @NotNull int qty, @NotNull Asset asset, EOrderType orderType,
-			EOrderStatus orderStatus, @NotNull User user, @NotNull double price, @NotNull Party party, double qtyExec) {
+	public OrderStex(EOrderDir orderDir, @NotNull int qty, @NotNull ObjAsset asset, EOrderType orderType,
+			EOrderStatus orderStatus, @NotNull ObjUser user, @NotNull double price, @NotNull ObjParty party, double qtyExec) {
 		super(qty, asset, orderType, orderStatus, user, orderType.getName() + " Order: '" + orderDir.toString()
 				+ "'; User: '" + user.getName() + "'; Asset: '" + asset.getName() + "'; Qty: '" + qty + "'");
 		this.orderDir = orderDir;
 		this.priceLimit = price;
 		this.party = party;
 		this.qtyExec = qtyExec;
-	}
-
-	public double getPrice() {
-		return priceLimit;
-	}
-
-	public void setPrice(double price) {
-		this.priceLimit = price;
 	}
 
 	public static long getSerialversionuid() {
@@ -81,11 +73,11 @@ public class OrderStex extends Order implements Serializable {
 		this.priceLimit = priceLimit;
 	}
 
-	public Party getParty() {
+	public ObjParty getParty() {
 		return party;
 	}
 
-	public void setParty(Party party) {
+	public void setParty(ObjParty party) {
 		this.party = party;
 	}
 
@@ -95,6 +87,10 @@ public class OrderStex extends Order implements Serializable {
 
 	public void setQtyExec(double qtyExec) {
 		this.qtyExec = qtyExec;
+	}
+	
+	public void raiseQtyExec(double qtyExec) {
+		this.qtyExec = this.qtyExec + qtyExec;
 	}
 
 }

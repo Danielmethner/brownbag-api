@@ -8,14 +8,14 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.brownbag_api.model.Asset;
-import com.brownbag_api.model.AssetLoan;
+import com.brownbag_api.model.ObjAsset;
+import com.brownbag_api.model.ObjAssetLoan;
 import com.brownbag_api.model.OrderPay;
 import com.brownbag_api.model.OrderStex;
-import com.brownbag_api.model.Party;
-import com.brownbag_api.model.Pos;
-import com.brownbag_api.model.Role;
-import com.brownbag_api.model.User;
+import com.brownbag_api.model.ObjParty;
+import com.brownbag_api.model.ObjPos;
+import com.brownbag_api.model.ObjRole;
+import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderStatus;
@@ -75,7 +75,7 @@ public class InitDataLoader {
 	private void createRole(ERole eRole) {
 
 		if (!roleRepo.existsByName(eRole.getName())) {
-			Role role = new Role(eRole.getName());
+			ObjRole role = new ObjRole(eRole.getName());
 			roleRepo.save(role);
 		}
 	}
@@ -98,8 +98,8 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 	// ASSET
 	// -----------------------------------------------------------
-	private Asset createAsset(EAsset eAsset) {
-		Party issuer = partySvc.getByEnum(eAsset.getParty());
+	private ObjAsset createAsset(EAsset eAsset) {
+		ObjParty issuer = partySvc.getByEnum(eAsset.getParty());
 		return assetSvc.createAssetStex(eAsset.getName(), null, eAsset.getAssetGrp(), issuer, 1);
 	}
 
@@ -128,12 +128,12 @@ public class InitDataLoader {
 	// EUR CENTRAL BANK
 	// -----------------------------------------------------------
 	public void createCentralBank() {
-		Party ecb = partySvc.createParty(EParty.ECB);
+		ObjParty ecb = partySvc.createParty(EParty.ECB);
 		// ECB is issuer of EUR, hence needs to be created beforehand
-		Asset assetEUR = createAsset(EAsset.EUR);
+		ObjAsset assetEUR = createAsset(EAsset.EUR);
 		posSvc.createMacc(0, assetEUR.getIssuer(), 100000000);
-		Asset assetLoanVanilla = new Asset(EAsset.LOAN_GENERIC.getName(), null, EAsset.LOAN_GENERIC.getAssetGrp(), ecb, 1);
-		AssetLoan assetLoan = new AssetLoan(assetLoanVanilla);
+		ObjAsset assetLoanVanilla = new ObjAsset(EAsset.LOAN_GENERIC.getName(), null, EAsset.LOAN_GENERIC.getAssetGrp(), ecb, 1);
+		ObjAssetLoan assetLoan = new ObjAssetLoan(assetLoanVanilla);
 		assetSvc.save(assetLoan);
 	}
 
@@ -151,8 +151,8 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 	private void createAssets() {
 		createAsset(EAsset.BOND_GOVERNMENT);
-		Party deutscheBank = partySvc.getByEnum(EParty.DEUTSCHE_BANK);
-		deutscheBank = partySvc.goPublic(deutscheBank);
+		ObjParty deutscheBank = partySvc.getByEnum(EParty.DEUTSCHE_BANK);
+		deutscheBank = partySvc.goPublic(deutscheBank, 10000);
 		partySvc.issueShares(deutscheBank, 5000, 15);
 	}
 
@@ -171,17 +171,19 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 	private void createOrdersStex() {
 
-		Party pDeutscheBank = partySvc.getByEnum(EParty.DEUTSCHE_BANK);
-		Asset deutscheBank = assetSvc.getByIssuer(pDeutscheBank);
-		Asset govBond = assetSvc.getByEnum(EAsset.BOND_GOVERNMENT);
+		ObjParty pDeutscheBank = partySvc.getByEnum(EParty.DEUTSCHE_BANK);
+		ObjAsset deutscheBank = assetSvc.getByIssuer(pDeutscheBank);
+//		Asset govBond = assetSvc.getByEnum(EAsset.BOND_GOVERNMENT);
 
-		User userTrader1 = userSvc.getByEnum(EUser.U_TRADER_1);
-		Party partyTrader1 = userSvc.getNaturalPerson(userTrader1);
-		OrderStex orderBuy = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 100, 100.55, userTrader1, partyTrader1);
-		User userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
-		Party partyTrader2 = userSvc.getNaturalPerson(userTrader2);
-		posSvc.createPosStex(deutscheBank, partyTrader2, 100); // TODO: Change to IPO
-		OrderStex orderSell = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.00, userTrader2, partyTrader2);
+		// BUY SHARES FROM IPO
+		ObjUser userTrader1 = userSvc.getByEnum(EUser.U_TRADER_1);
+		ObjParty partyTrader1 = userSvc.getNaturalPerson(userTrader1);
+		OrderStex orderBuy = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 1000, 16, userTrader1, partyTrader1);
+//		User userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
+//		Party partyTrader2 = userSvc.getNaturalPerson(userTrader2);
+//		OrderStex orderSell = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.00, userTrader2, partyTrader2);
+		
+		OrderStex orderSell = orderStexSvc.getByAsset(deutscheBank).get(0);
 		orderStexSvc.matchOrders(orderBuy, orderSell);
 	}
 
@@ -195,7 +197,7 @@ public class InitDataLoader {
 		createLegalEntities();
 		createAssets();
 		createUsers();
-//		createOrders();
+		createOrders();
 		System.err.println("Demo Data Loaded Succesfully");
 	}
 

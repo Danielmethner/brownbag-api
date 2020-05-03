@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.Party;
-import com.brownbag_api.model.Role;
-import com.brownbag_api.model.User;
+import com.brownbag_api.model.ObjParty;
+import com.brownbag_api.model.ObjRole;
+import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.ERole;
 import com.brownbag_api.model.enums.EUser;
 import com.brownbag_api.repo.AssetRepo;
@@ -43,13 +43,13 @@ public class UserSvcImpl implements UserSvc {
 	AssetRepo assetRepo;
 
 	@Override
-	public void save(User user) {
+	public void save(ObjUser user) {
 		userRepo.save(user);
 	}
 
 	@Override
-	public boolean hasRole(User user, ERole eRole) {
-		for (Role role : user.getRoles()) {
+	public boolean hasRole(ObjUser user, ERole eRole) {
+		for (ObjRole role : user.getRoles()) {
 			if (role.getName().equals(eRole.toString())) {
 				return true;
 			}
@@ -70,20 +70,20 @@ public class UserSvcImpl implements UserSvc {
 		// ---------------------------------------------------------------------
 		// INSTANTIATE USER
 		// ---------------------------------------------------------------------
-		User user = new User(userName, name, encoder.encode(password));
+		ObjUser user = new ObjUser(userName, name, encoder.encode(password));
 
 		// ---------------------------------------------------------------------
 		// ADD ROLES
 		// ---------------------------------------------------------------------
 		Set<String> strRoles = eRoles;
-		Set<Role> roles = new HashSet<>();
+		Set<ObjRole> roles = new HashSet<>();
 
 		if (strRoles == null) {
-			Role userRole = roleRepo.findByName(ERole.ROLE_MGR.getName());
+			ObjRole userRole = roleRepo.findByName(ERole.ROLE_MGR.getName());
 			roles.add(userRole);
 		} else {
 			strRoles.forEach(strRole -> {
-				Role role = roleRepo.findByName(strRole);
+				ObjRole role = roleRepo.findByName(strRole);
 				if (role != null) {
 					roles.add(role);
 				}
@@ -100,7 +100,7 @@ public class UserSvcImpl implements UserSvc {
 		// ---------------------------------------------------------------------
 		// ADD NATURAL PERSON WITH MACC
 		// ---------------------------------------------------------------------
-		for (Role role : user.getRoles()) {
+		for (ObjRole role : user.getRoles()) {
 			String roleName = role.getName();
 			if (roleName.equals(ERole.ROLE_MGR.getName())) {
 				partySvc.createNaturalPerson(user);
@@ -118,18 +118,18 @@ public class UserSvcImpl implements UserSvc {
 	}
 
 	@Override
-	public Party getOrganisation(User user) {
+	public ObjParty getOrganisation(ObjUser user) {
 
 		return partySvc.getNaturalPerson(user);
 	}
 
 	@Override
-	public Party getNaturalPerson(User user) {
+	public ObjParty getNaturalPerson(ObjUser user) {
 		return partySvc.getNaturalPerson(user);
 	}
 
 	@Override
-	public User getByEnum(EUser eUser) {
+	public ObjUser getByEnum(EUser eUser) {
 		return userRepo.findByUsername(eUser.toString());
 	}
 }

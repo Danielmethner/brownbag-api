@@ -10,7 +10,7 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "ROLE", uniqueConstraints = { @UniqueConstraint(columnNames = "name") })
-public class Role {
+public class ObjRole {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -18,11 +18,11 @@ public class Role {
 	@Column(length = 20)
 	private String name;
 
-	public Role(String name) {
+	public ObjRole(String name) {
 		this.name = name;
 	}
 
-	public Role() {
+	public ObjRole() {
 
 	}
 

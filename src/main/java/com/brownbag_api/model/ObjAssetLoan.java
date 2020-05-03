@@ -17,7 +17,7 @@ import com.brownbag_api.model.enums.EAssetGrp;
 @Entity
 @Table(name = "ASSET_LOAN")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class AssetLoan extends Asset implements Serializable {
+public class ObjAssetLoan extends ObjAsset implements Serializable {
 
 	private static final long serialVersionUID = -8337101973240362473L;
 
@@ -28,15 +28,15 @@ public class AssetLoan extends Asset implements Serializable {
 	@Column(name = "INTR_RATE")
 	private double intrRate;
 
-	public AssetLoan() {
+	public ObjAssetLoan() {
 	}
 
-	public AssetLoan(Asset asset) {
+	public ObjAssetLoan(ObjAsset asset) {
 		super(asset.getName(), null, asset.getAssetGrp(), asset.getIssuer(), 1);
 		this.intrRate = 0;
 	}
 
-	public AssetLoan(@NotBlank String name, EAssetGrp eAssetGrp, @NotNull Party issuer, Date matDate,
+	public ObjAssetLoan(@NotBlank String name, EAssetGrp eAssetGrp, @NotNull ObjParty issuer, Date matDate,
 			@NotNull double intrRate) {
 		super(name, null, eAssetGrp, issuer, 1);
 		this.matDate = matDate;

@@ -5,12 +5,16 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.brownbag_api.model.Party;
-import com.brownbag_api.model.Pos;
+import com.brownbag_api.model.ObjAsset;
+import com.brownbag_api.model.ObjParty;
+import com.brownbag_api.model.ObjPos;
+import com.brownbag_api.model.ObjPosStex;
 
 @Repository
-public interface PosRepo extends JpaRepository<Pos, Long> {
+public interface PosRepo extends JpaRepository<ObjPos, Long> {
 
-	List<Pos> findByParty(Party owner);
+	List<ObjPos> findByParty(ObjParty owner);
+
+	
 
 }

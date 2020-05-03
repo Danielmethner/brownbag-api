@@ -3,8 +3,8 @@ package com.brownbag_api.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.BalSheet;
-import com.brownbag_api.model.Party;
+import com.brownbag_api.model.ObjBalSheet;
+import com.brownbag_api.model.ObjParty;
 import com.brownbag_api.model.enums.EBalSheetSectionType;
 import com.brownbag_api.repo.BalSheetRepo;
 
@@ -17,8 +17,8 @@ public class BalSheetSvc {
 	@Autowired
 	private BalSheetSectionSvc balSheetSectionSvc;
 
-	public BalSheet createBalSheet(Party party, int finYear) {
-		BalSheet balSheet = new BalSheet(party, finYear);
+	public ObjBalSheet createBalSheet(ObjParty party, int finYear) {
+		ObjBalSheet balSheet = new ObjBalSheet(party, finYear);
 		balSheet = balSheetRepo.save(balSheet);
 		balSheetSectionSvc.createBalSheetSection(balSheet, EBalSheetSectionType.ASSETS);
 		balSheetSectionSvc.createBalSheetSection(balSheet, EBalSheetSectionType.LIABILITIES);
@@ -26,8 +26,8 @@ public class BalSheetSvc {
 		return balSheet;
 	}
 
-	public BalSheet getBalSheet(Party party, int finYear) {
-		BalSheet balSheet = balSheetRepo.findByPartyAndFinYear(party, finYear);
+	public ObjBalSheet getBalSheet(ObjParty party, int finYear) {
+		ObjBalSheet balSheet = balSheetRepo.findByPartyAndFinYear(party, finYear);
 		if (balSheet == null) {
 			balSheet = createBalSheet(party, finYear);
 		}

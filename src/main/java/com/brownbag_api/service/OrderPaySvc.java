@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.brownbag_api.model.Asset;
+import com.brownbag_api.model.ObjAsset;
 import com.brownbag_api.model.OrderPay;
-import com.brownbag_api.model.Pos;
-import com.brownbag_api.model.User;
+import com.brownbag_api.model.ObjPos;
+import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.enums.EOrderStatus;
@@ -46,8 +46,8 @@ public class OrderPaySvc extends OrderSvc {
 	 * @param maccRcv
 	 * @return
 	 */
-	public OrderPay createPay(double qty, @NotNull User user, Asset assetCash, String bookText, Pos maccSend,
-			Pos maccRcv) {
+	public OrderPay createPay(double qty, @NotNull ObjUser user, ObjAsset assetCash, String bookText, ObjPos maccSend,
+			ObjPos maccRcv) {
 		String userString = "User: " + user.getName();
 		bookText = bookText != null ? bookText
 				: "Pay Order: Amount: '" + qty + "'. MACC From: '" + maccSend.getName() + "'. MACC To: '"

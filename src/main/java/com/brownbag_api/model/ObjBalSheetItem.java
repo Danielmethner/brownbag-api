@@ -26,7 +26,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "BAL_SHEET_ITEM")
-public class BalSheetItem implements Serializable {
+public class ObjBalSheetItem implements Serializable {
 
 	/**
 	 *
@@ -55,10 +55,10 @@ public class BalSheetItem implements Serializable {
 	private int finYear;
 
 	@NotNull
-	@ManyToOne(targetEntity = Party.class)
+	@ManyToOne(targetEntity = ObjParty.class)
 	@JoinColumn(name = "PARTY_ID")
 	@JsonBackReference
-	private Party party;
+	private ObjParty party;
 
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
@@ -66,16 +66,16 @@ public class BalSheetItem implements Serializable {
 	private Date timestampCreate;
 
 	@NotNull
-	@ManyToOne(targetEntity = BalSheetSection.class)
+	@ManyToOne(targetEntity = ObjBalSheetSection.class)
 	@JoinColumn(name = "BAL_SHEET_SECTION_ID")
 	@JsonBackReference
-	private BalSheetSection balSheetSection;
+	private ObjBalSheetSection balSheetSection;
 
-	public BalSheetItem() {
+	public ObjBalSheetItem() {
 	}
 
-	public BalSheetItem(@NotNull double qty, EBalSheetItemType itemType, @NotNull int finYear, @NotNull Party party,
-			@NotNull BalSheetSection balSheetSection) {
+	public ObjBalSheetItem(@NotNull double qty, EBalSheetItemType itemType, @NotNull int finYear, @NotNull ObjParty party,
+			@NotNull ObjBalSheetSection balSheetSection) {
 		super();
 		this.name = balSheetSection.getName() + ": " + itemType.getName();
 		this.qty = qty;
@@ -85,11 +85,11 @@ public class BalSheetItem implements Serializable {
 		this.balSheetSection = balSheetSection;
 	}
 
-	public BalSheetSection getBalSheetSection() {
+	public ObjBalSheetSection getBalSheetSection() {
 		return balSheetSection;
 	}
 
-	public void setBalSheetSection(BalSheetSection balSheetSection) {
+	public void setBalSheetSection(ObjBalSheetSection balSheetSection) {
 		this.balSheetSection = balSheetSection;
 	}
 
@@ -125,11 +125,11 @@ public class BalSheetItem implements Serializable {
 		this.finYear = finYear;
 	}
 
-	public Party getParty() {
+	public ObjParty getParty() {
 		return party;
 	}
 
-	public void setParty(Party party) {
+	public void setParty(ObjParty party) {
 		this.party = party;
 	}
 

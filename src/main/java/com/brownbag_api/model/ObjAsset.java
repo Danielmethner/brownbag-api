@@ -27,9 +27,9 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.brownbag_api.model.enums.EAssetGrp;
 
 @Entity
-@Table(name = "ASSET")
+@Table(name = "OJB_ASSET")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Asset implements Serializable {
+public class ObjAsset implements Serializable {
 
 	private static final long serialVersionUID = -8337101973240362473L;
 
@@ -54,9 +54,9 @@ public class Asset implements Serializable {
 	private int totalShares;
 
 	@NotNull
-	@OneToOne(targetEntity = Party.class)
+	@OneToOne(targetEntity = ObjParty.class)
 	@JoinColumn(name = "ISSUER_ID")
-	private Party issuer;
+	private ObjParty issuer;
 
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
@@ -66,8 +66,8 @@ public class Asset implements Serializable {
 	@NotNull
 	private double nomVal;
 
-	public Asset(@NotBlank @Size(max = 150) String name, @Size(max = 50) String isin, EAssetGrp assetGrp,
-			@NotNull Party issuer, @NotNull double nomVal) {
+	public ObjAsset(@NotBlank @Size(max = 150) String name, @Size(max = 50) String isin, EAssetGrp assetGrp,
+			@NotNull ObjParty issuer, @NotNull double nomVal) {
 		super();
 		this.name = name;
 		this.isin = isin;
@@ -76,10 +76,10 @@ public class Asset implements Serializable {
 		this.nomVal = nomVal;
 	}
 
-	public Asset() {
+	public ObjAsset() {
 	}
 
-	public Asset(Long id) {
+	public ObjAsset(Long id) {
 		this.id = id;
 	}
 
@@ -99,11 +99,11 @@ public class Asset implements Serializable {
 		this.name = name;
 	}
 
-	public Party getIssuer() {
+	public ObjParty getIssuer() {
 		return issuer;
 	}
 
-	public void setIssuer(Party issuer) {
+	public void setIssuer(ObjParty issuer) {
 		this.issuer = issuer;
 	}
 
@@ -151,5 +151,12 @@ public class Asset implements Serializable {
 		this.isin = isin;
 	}
 
+	public int getTotalShares() {
+		return totalShares;
+	}
+
+	public void setTotalShares(int totalShares) {
+		this.totalShares = totalShares;
+	}
 
 }

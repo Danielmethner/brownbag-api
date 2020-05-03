@@ -10,43 +10,43 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "POS_LOAN")
-public class PosLoan extends Pos implements Serializable {
+public class ObjPosLoan extends ObjPos implements Serializable {
 
 	private static final long serialVersionUID = 5228815539510545768L;
 
 	@NotNull
-	@OneToOne(targetEntity = Pos.class)
+	@OneToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "MACC_LENDER_ID")
-	private Pos maccLender;
+	private ObjPos maccLender;
 
 	@NotNull
-	@OneToOne(targetEntity = Pos.class)
+	@OneToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "MACC_DEBTOR_ID")
-	private Pos maccDebtor;
+	private ObjPos maccDebtor;
 
-	public PosLoan() {
+	public ObjPosLoan() {
 	}
 
-	public PosLoan(@NotNull double qty, @NotNull Asset asset, @NotNull Party owner, @NotNull Pos maccGrant,
-			@NotNull Pos maccRcv) {
+	public ObjPosLoan(@NotNull double qty, @NotNull ObjAsset asset, @NotNull ObjParty owner, @NotNull ObjPos maccGrant,
+			@NotNull ObjPos maccRcv) {
 		super(qty, 0, asset, owner);
 		this.maccLender = maccGrant;
 		this.maccDebtor = maccRcv;
 	}
 
-	public Pos getMaccLender() {
+	public ObjPos getMaccLender() {
 		return maccLender;
 	}
 
-	public void setMaccLender(Pos maccLender) {
+	public void setMaccLender(ObjPos maccLender) {
 		this.maccLender = maccLender;
 	}
 
-	public Pos getMaccDebtor() {
+	public ObjPos getMaccDebtor() {
 		return maccDebtor;
 	}
 
-	public void setMaccDebtor(Pos maccDebtor) {
+	public void setMaccDebtor(ObjPos maccDebtor) {
 		this.maccDebtor = maccDebtor;
 	}
 

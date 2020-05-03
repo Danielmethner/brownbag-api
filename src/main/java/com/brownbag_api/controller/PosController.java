@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brownbag_api.model.Pos;
+import com.brownbag_api.model.ObjPos;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.service.UserSvc;
@@ -28,7 +28,7 @@ public class PosController {
 	UserSvc userSvc;
 
 	@GetMapping("/all")
-	public List<Pos> getAll() {
+	public List<ObjPos> getAll() {
 		return posRepo.findAll();
 	}
 

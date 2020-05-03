@@ -20,18 +20,18 @@ public class OrderLoan extends Order implements Serializable {
 	private static final long serialVersionUID = 4643589803146964779L;
 
 	@NotNull
-	@OneToOne(targetEntity = Pos.class)
+	@OneToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "POS_LENDER_ID")
-	private Pos maccLender;
+	private ObjPos maccLender;
 
 	@NotNull
-	@OneToOne(targetEntity = Pos.class)
+	@OneToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "POS_DEBTOR_ID")
-	private Pos maccDebtor;
+	private ObjPos maccDebtor;
 
-	@OneToOne(targetEntity = PosLoan.class)
+	@OneToOne(targetEntity = ObjPosLoan.class)
 	@JoinColumn(name = "POS_LOAN_ID")
-	private PosLoan posLoan;
+	private ObjPosLoan posLoan;
 
 	@Column(name = "MAT_DATE")
 	private Date matDate;
@@ -43,8 +43,8 @@ public class OrderLoan extends Order implements Serializable {
 	public OrderLoan() {
 	}
 
-	public OrderLoan(@NotNull double qty, @NotNull Asset asset, EOrderType orderType, EOrderStatus orderStatus,
-			@NotNull User user, String advText, @NotNull Pos maccLender, @NotNull Pos maccDebtor, PosLoan posLoan,
+	public OrderLoan(@NotNull double qty, @NotNull ObjAsset asset, EOrderType orderType, EOrderStatus orderStatus,
+			@NotNull ObjUser user, String advText, @NotNull ObjPos maccLender, @NotNull ObjPos maccDebtor, ObjPosLoan posLoan,
 			Date matDate, @NotNull double intrRate) {
 		super(qty, asset, orderType, orderStatus, user, advText);
 		this.maccLender = maccLender;
@@ -74,27 +74,27 @@ public class OrderLoan extends Order implements Serializable {
 		this.intrRate = intrRate;
 	}
 
-	public Pos getMaccLender() {
+	public ObjPos getMaccLender() {
 		return maccLender;
 	}
 
-	public void setMaccLender(Pos maccLender) {
+	public void setMaccLender(ObjPos maccLender) {
 		this.maccLender = maccLender;
 	}
 
-	public Pos getMaccDebtor() {
+	public ObjPos getMaccDebtor() {
 		return maccDebtor;
 	}
 
-	public void setMaccDebtor(Pos maccDebtor) {
+	public void setMaccDebtor(ObjPos maccDebtor) {
 		this.maccDebtor = maccDebtor;
 	}
 
-	public PosLoan getPosLoan() {
+	public ObjPosLoan getPosLoan() {
 		return posLoan;
 	}
 
-	public void setPosLoan(PosLoan posLoan) {
+	public void setPosLoan(ObjPosLoan posLoan) {
 		this.posLoan = posLoan;
 	}
 

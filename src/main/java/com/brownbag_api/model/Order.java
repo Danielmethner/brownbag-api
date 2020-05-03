@@ -53,9 +53,9 @@ public class Order implements Serializable {
 	private String advText;
 
 	@NotNull
-	@ManyToOne(targetEntity = Asset.class)
+	@ManyToOne(targetEntity = ObjAsset.class)
 	@JoinColumn(name = "ASSET_ID")
-	private Asset asset;
+	private ObjAsset asset;
 
 	@CreationTimestamp
 	@Temporal(TemporalType.TIMESTAMP)
@@ -68,15 +68,15 @@ public class Order implements Serializable {
 	private Date timestampModified;
 
 	@NotNull
-	@ManyToOne(targetEntity = User.class)
+	@ManyToOne(targetEntity = ObjUser.class)
 	@JoinColumn(name = "USER_ID")
-	private User user;
+	private ObjUser user;
 
 	public Order() {
 	}
 
-	public Order(@NotNull double qty, @NotNull Asset asset, EOrderType orderType, EOrderStatus orderStatus,
-			@NotNull User user, String advText) {
+	public Order(@NotNull double qty, @NotNull ObjAsset asset, EOrderType orderType, EOrderStatus orderStatus,
+			@NotNull ObjUser user, String advText) {
 		super();
 		this.qty = qty;
 		this.asset = asset;
@@ -103,11 +103,11 @@ public class Order implements Serializable {
 		this.id = id;
 	}
 
-	public Asset getAsset() {
+	public ObjAsset getAsset() {
 		return asset;
 	}
 
-	public void setAsset(Asset asset) {
+	public void setAsset(ObjAsset asset) {
 		this.asset = asset;
 	}
 
@@ -119,11 +119,11 @@ public class Order implements Serializable {
 		this.qty = qty;
 	}
 
-	public User getUser() {
+	public ObjUser getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(ObjUser user) {
 		this.user = user;
 	}
 

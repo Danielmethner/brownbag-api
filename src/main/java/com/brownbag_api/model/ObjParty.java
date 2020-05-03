@@ -25,7 +25,7 @@ import com.brownbag_api.model.enums.EPartyType;
 @Entity
 @Table(name = "PARTY")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Party implements Serializable {
+public class ObjParty implements Serializable {
 
 	private static final long serialVersionUID = -8337101973240362473L;
 
@@ -49,20 +49,20 @@ public class Party implements Serializable {
 	private ELegalForm legalForm;
 
 	@NotNull
-	@ManyToOne(targetEntity = User.class)
+	@ManyToOne(targetEntity = ObjUser.class)
 	@JoinColumn(name = "USER_ID")
-	private User user;
+	private ObjUser user;
 	
-	@OneToOne(targetEntity = Asset.class)
+	@OneToOne(targetEntity = ObjAsset.class)
 	@JoinColumn(name = "ASSET_ID")
-	private Asset asset;
+	private ObjAsset asset;
 
 	// CONSTRUCTOR
-	public Party() {
+	public ObjParty() {
 	}
 
-	public Party(@NotBlank @Size(max = 50) String name, @NotNull EPartyType partyType, @NotNull ELegalForm legalForm,
-			@NotNull User user) {
+	public ObjParty(@NotBlank @Size(max = 50) String name, @NotNull EPartyType partyType, @NotNull ELegalForm legalForm,
+			@NotNull ObjUser user) {
 		super();
 		this.name = name;
 		this.partyType = partyType;
@@ -70,7 +70,7 @@ public class Party implements Serializable {
 		this.user = user;
 	}
 
-	public Party(Long id) {
+	public ObjParty(Long id) {
 		this.id = id;
 	}
 
@@ -90,11 +90,11 @@ public class Party implements Serializable {
 		this.name = name;
 	}
 
-	public User getUser() {
+	public ObjUser getUser() {
 		return user;
 	}
 
-	public void setUser(User user) {
+	public void setUser(ObjUser user) {
 		this.user = user;
 	}
 
@@ -126,11 +126,11 @@ public class Party implements Serializable {
 		this.legalForm = legalForm;
 	}
 
-	public Asset getAsset() {
+	public ObjAsset getAsset() {
 		return asset;
 	}
 
-	public void setAsset(Asset asset) {
+	public void setAsset(ObjAsset asset) {
 		this.asset = asset;
 	}
 

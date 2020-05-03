@@ -20,21 +20,21 @@ public class OrderPay extends Order implements Serializable {
 	private static final long serialVersionUID = 4643589803146964779L;
 
 	@NotNull
-	@OneToOne(targetEntity = Pos.class)
+	@OneToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "POS_SEND_ID")
-	private Pos posSend;
+	private ObjPos posSend;
 
 	@NotNull
-	@OneToOne(targetEntity = Pos.class)
+	@OneToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "POS_RCV_ID")
-	private Pos posRcv;
+	private ObjPos posRcv;
 
 	public OrderPay() {
 		super();
 	}
 
-	public OrderPay(@NotNull double qty, @NotNull Asset asset, EOrderType orderType, EOrderStatus orderStatus,
-			@NotNull User user, @NotNull Pos posSend, @NotNull Pos posRcv, String advText) {
+	public OrderPay(@NotNull double qty, @NotNull ObjAsset asset, EOrderType orderType, EOrderStatus orderStatus,
+			@NotNull ObjUser user, @NotNull ObjPos posSend, @NotNull ObjPos posRcv, String advText) {
 
 		super(qty, asset, orderType, orderStatus, user, advText);
 		this.posSend = posSend;
@@ -42,19 +42,19 @@ public class OrderPay extends Order implements Serializable {
 
 	}
 
-	public Pos getPosSend() {
+	public ObjPos getPosSend() {
 		return posSend;
 	}
 
-	public void setPosSend(Pos posSend) {
+	public void setPosSend(ObjPos posSend) {
 		this.posSend = posSend;
 	}
 
-	public Pos getPosRcv() {
+	public ObjPos getPosRcv() {
 		return posRcv;
 	}
 
-	public void setPosRcv(Pos posRcv) {
+	public void setPosRcv(ObjPos posRcv) {
 		this.posRcv = posRcv;
 	}
 

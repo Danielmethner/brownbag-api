@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.Asset;
+import com.brownbag_api.model.ObjAsset;
 import com.brownbag_api.model.OrderStex;
-import com.brownbag_api.model.Party;
-import com.brownbag_api.model.Pos;
-import com.brownbag_api.model.PosMacc;
-import com.brownbag_api.model.PosStex;
-import com.brownbag_api.model.User;
+import com.brownbag_api.model.ObjParty;
+import com.brownbag_api.model.ObjPos;
+import com.brownbag_api.model.ObjPosMacc;
+import com.brownbag_api.model.ObjPosStex;
+import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.model.enums.ELegalForm;
 import com.brownbag_api.model.enums.EOrderDir;
@@ -49,8 +49,8 @@ public class PartySvc {
 	 * @param addMacc   - create MACC for newly created Legal Entity
 	 * @return
 	 */
-	public Party createParty(EParty eParty) {
-		User user;
+	public ObjParty createParty(EParty eParty) {
+		ObjUser user;
 		user = userSvc.getByEnum(eParty.getUser());
 
 		if (eParty.getPartyType() == EPartyType.ORG_GOVT) {
@@ -58,14 +58,14 @@ public class PartySvc {
 		}
 
 		if (eParty.getPartyType() == EPartyType.PERSON_LEGAL) {
-			Party natPerson = getNaturalPerson(user);
+			ObjParty natPerson = getNaturalPerson(user);
 			return createLegalPerson(eParty.toString(), eParty.getLegalForm(), user, natPerson);
 		}
 		return null;
 	}
 
-	public Party createOrgGovt(String name, ELegalForm legalForm, User user, boolean addMacc) {
-		Party party = new Party(name, EPartyType.ORG_GOVT, legalForm, user);
+	public ObjParty createOrgGovt(String name, ELegalForm legalForm, ObjUser user, boolean addMacc) {
+		ObjParty party = new ObjParty(name, EPartyType.ORG_GOVT, legalForm, user);
 		party = partyRepo.save(party);
 		if (addMacc) {
 			posSvc.createMacc(0, party, 0);
@@ -73,21 +73,21 @@ public class PartySvc {
 		return party;
 	}
 
-	public Party createLegalPerson(String name, ELegalForm legalForm, User user, Party owner) {
-		Party party = new Party(name, EPartyType.PERSON_LEGAL, legalForm, user);
+	public ObjParty createLegalPerson(String name, ELegalForm legalForm, ObjUser user, ObjParty owner) {
+		ObjParty party = new ObjParty(name, EPartyType.PERSON_LEGAL, legalForm, user);
 		party = partyRepo.save(party);
 		posSvc.createMacc(0, party, 0);
-		Asset asset = assetSvc.createAssetStex(party.getName(), null, EAssetGrp.STOCK, party, 1);
+		ObjAsset asset = assetSvc.createAssetStex(party.getName(), null, EAssetGrp.STOCK, party, 1);
 		party.setAsset(asset);
-		Pos pos = posSvc.createPosStex(asset, owner, 1);
+		ObjPos pos = posSvc.createPosStex(asset, owner, 1);
 		party = partyRepo.save(party);
 		return party;
 	}
 
-	public Party getNaturalPerson(User user) {
-		List<Party> lEs = partyRepo.findByUserAndPartyType(user, EPartyType.PERSON_NATURAL);
-		if( lEs.isEmpty()) {
-			Party natPerson = new Party(user.getName(), EPartyType.PERSON_NATURAL, ELegalForm.NOT_APPL, user);
+	public ObjParty getNaturalPerson(ObjUser user) {
+		List<ObjParty> lEs = partyRepo.findByUserAndPartyType(user, EPartyType.PERSON_NATURAL);
+		if (lEs.isEmpty()) {
+			ObjParty natPerson = new ObjParty(user.getName(), EPartyType.PERSON_NATURAL, ELegalForm.NOT_APPL, user);
 			natPerson = partyRepo.save(natPerson);
 
 			// ADD MACC
@@ -97,30 +97,33 @@ public class PartySvc {
 			return lEs.get(0);
 		}
 	}
-	
-	public Party createNaturalPerson(User user) {
+
+	public ObjParty createNaturalPerson(ObjUser user) {
 		return getNaturalPerson(user);
 	}
 
-	public PosMacc getMacc(Party party) {
+	public ObjPosMacc getMacc(ObjParty party) {
 		return posSvc.findByParty(party);
 	}
 
-	public Party getByName(String name) {
+	public ObjParty getByName(String name) {
 		return partyRepo.findByName(name);
 	}
 
-	public Party getByEnum(EParty eParty) {
+	public ObjParty getByEnum(EParty eParty) {
 		return partyRepo.findByName(eParty.toString());
 	}
 
-	public Party goPublic(Party party) {
-		// ENSURE ONLY LTDs CAN GO PUBLIC - for more legal forms, introduce new
-		// attribute on Enumeration
+	public ObjParty goPublic(ObjParty party, int qty) {
+		// ENSURE ONLY LTDs CAN GO PUBLIC
 		if (party.getLegalForm() == ELegalForm.LTD) {
+			
 			party.setLegalForm(ELegalForm.CORP);
+
+			ObjAsset asset = assetSvc.getByIssuer(party);
+			assetSvc.split(asset, qty);
 			return party;
-		} 
+		}
 		if (party.getLegalForm() == ELegalForm.CORP) {
 			logSvc.write("Party with name '" + party.getName() + "' is already a publicly traded company!");
 			return null;
@@ -130,13 +133,15 @@ public class PartySvc {
 		}
 	}
 
-	public OrderStex issueShares(Party party, int qty, double minPrice) {
+	public OrderStex issueShares(ObjParty party, int qty, double minPrice) {
 
-		if(party.getLegalForm() != ELegalForm.CORP) {
-			logSvc.write("PartySvc.issueShares(): A party must have the legal form 'corporation' to issue new shares. Party: " + party.getName());
+		if (party.getLegalForm() != ELegalForm.CORP) {
+			logSvc.write(
+					"PartySvc.issueShares(): A party must have the legal form 'corporation' to issue new shares. Party: "
+							+ party.getName());
 			return null;
 		}
-		Asset asset = assetSvc.getByIssuer(party);
+		ObjAsset asset = assetSvc.getByIssuer(party);
 		return orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX_IPO, asset, qty, minPrice, party.getUser(),
 				party);
 

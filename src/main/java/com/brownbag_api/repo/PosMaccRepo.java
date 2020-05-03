@@ -5,13 +5,13 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.brownbag_api.model.Party;
-import com.brownbag_api.model.Pos;
-import com.brownbag_api.model.PosMacc;
+import com.brownbag_api.model.ObjParty;
+import com.brownbag_api.model.ObjPos;
+import com.brownbag_api.model.ObjPosMacc;
 
 @Repository
-public interface PosMaccRepo extends JpaRepository<PosMacc, Long> {
+public interface PosMaccRepo extends JpaRepository<ObjPosMacc, Long> {
 
-	List<PosMacc> findByParty(Party party);
+	List<ObjPosMacc> findByParty(ObjParty party);
 
 }

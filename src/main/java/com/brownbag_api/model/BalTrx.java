@@ -48,9 +48,9 @@ public class BalTrx implements Serializable {
 	private Date timestampCreate;
 
 	@NotNull
-	@ManyToOne(targetEntity = BalSheetItem.class)
+	@ManyToOne(targetEntity = ObjBalSheetItem.class)
 	@JoinColumn(name = "BAL_SHEET_ITEM_ID")
-	private BalSheetItem bsi;
+	private ObjBalSheetItem bsi;
 
 	@NotNull
 	@ManyToOne(targetEntity = Booking.class)
@@ -65,7 +65,7 @@ public class BalTrx implements Serializable {
 
 	}
 
-	public BalTrx(@NotNull Order order, @NotNull BalSheetItem bsi, Booking booking, @NotNull double qty) {
+	public BalTrx(@NotNull Order order, @NotNull ObjBalSheetItem bsi, Booking booking, @NotNull double qty) {
 		super();
 		this.order = order;
 		this.name = genName();
@@ -102,11 +102,11 @@ public class BalTrx implements Serializable {
 		this.timestampCreate = timestampCreate;
 	}
 
-	public BalSheetItem getBsi() {
+	public ObjBalSheetItem getBsi() {
 		return bsi;
 	}
 
-	public void setBsi(BalSheetItem bsi) {
+	public void setBsi(ObjBalSheetItem bsi) {
 		this.bsi = bsi;
 	}
 
