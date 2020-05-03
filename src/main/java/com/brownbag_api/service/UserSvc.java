@@ -4,10 +4,10 @@ import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 
-import com.brownbag_api.model.ObjParty;
-import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.ERole;
 import com.brownbag_api.model.enums.EUser;
+import com.brownbag_api.model.jpa.ObjParty;
+import com.brownbag_api.model.jpa.ObjUser;
 
 public interface UserSvc {
 	public void save(ObjUser user);

@@ -7,18 +7,18 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.ObjAssetLoan;
-import com.brownbag_api.model.OrderLoan;
-import com.brownbag_api.model.OrderPay;
-import com.brownbag_api.model.ObjParty;
-import com.brownbag_api.model.ObjPos;
-import com.brownbag_api.model.ObjPosLoan;
-import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
+import com.brownbag_api.model.jpa.ObjAssetLoan;
+import com.brownbag_api.model.jpa.ObjParty;
+import com.brownbag_api.model.jpa.ObjPos;
+import com.brownbag_api.model.jpa.ObjPosLoan;
+import com.brownbag_api.model.jpa.ObjUser;
+import com.brownbag_api.model.jpa.OrderLoan;
+import com.brownbag_api.model.jpa.OrderPay;
 
 @Service
 public class OrderLoanSvc extends OrderSvc {

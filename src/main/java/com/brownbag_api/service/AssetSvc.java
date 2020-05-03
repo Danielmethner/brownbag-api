@@ -5,12 +5,12 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.ObjAsset;
-import com.brownbag_api.model.ObjAssetLoan;
-import com.brownbag_api.model.ObjParty;
-import com.brownbag_api.model.ObjPosStex;
 import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EAssetGrp;
+import com.brownbag_api.model.jpa.ObjAsset;
+import com.brownbag_api.model.jpa.ObjAssetLoan;
+import com.brownbag_api.model.jpa.ObjParty;
+import com.brownbag_api.model.jpa.ObjPosStex;
 import com.brownbag_api.repo.AssetRepo;
 
 @Service

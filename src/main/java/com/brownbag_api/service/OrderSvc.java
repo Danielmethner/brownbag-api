@@ -3,9 +3,9 @@ package com.brownbag_api.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.Order;
-import com.brownbag_api.model.OrderTrans;
 import com.brownbag_api.model.enums.EOrderAction;
+import com.brownbag_api.model.jpa.Order;
+import com.brownbag_api.model.jpa.OrderTrans;
 import com.brownbag_api.repo.OrderRepo;
 //import com.brownbag_api.repo.OrderRepo;
 import com.brownbag_api.repo.OrderTransRepo;

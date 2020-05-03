@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brownbag_api.model.OrderPay;
-import com.brownbag_api.model.ObjPos;
-import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.EUser;
+import com.brownbag_api.model.jpa.ObjPos;
+import com.brownbag_api.model.jpa.ObjUser;
+import com.brownbag_api.model.jpa.OrderPay;
 import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.UserRepo;

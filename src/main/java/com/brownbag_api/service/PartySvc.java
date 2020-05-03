@@ -5,19 +5,19 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.ObjAsset;
-import com.brownbag_api.model.OrderStex;
-import com.brownbag_api.model.ObjParty;
-import com.brownbag_api.model.ObjPos;
-import com.brownbag_api.model.ObjPosMacc;
-import com.brownbag_api.model.ObjPosStex;
-import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.model.enums.ELegalForm;
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.enums.EParty;
 import com.brownbag_api.model.enums.EPartyType;
+import com.brownbag_api.model.jpa.ObjAsset;
+import com.brownbag_api.model.jpa.ObjParty;
+import com.brownbag_api.model.jpa.ObjPos;
+import com.brownbag_api.model.jpa.ObjPosMacc;
+import com.brownbag_api.model.jpa.ObjPosStex;
+import com.brownbag_api.model.jpa.ObjUser;
+import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.repo.PartyRepo;
 
 @Service

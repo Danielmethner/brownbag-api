@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brownbag_api.model.Order;
-import com.brownbag_api.model.OrderPay;
+import com.brownbag_api.model.jpa.Order;
+import com.brownbag_api.model.jpa.OrderPay;
 import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.OrderRepo;
 import com.brownbag_api.repo.UserRepo;

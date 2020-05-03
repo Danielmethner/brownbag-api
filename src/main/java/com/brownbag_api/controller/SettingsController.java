@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brownbag_api.model.Log;
+import com.brownbag_api.model.jpa.Log;
 import com.brownbag_api.service.LogSvc;
 import com.brownbag_api.util.UtilDate;
 

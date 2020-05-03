@@ -3,9 +3,9 @@ package com.brownbag_api.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.ObjBalSheet;
-import com.brownbag_api.model.ObjParty;
 import com.brownbag_api.model.enums.EBalSheetSectionType;
+import com.brownbag_api.model.jpa.ObjBalSheet;
+import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.repo.BalSheetRepo;
 
 @Service

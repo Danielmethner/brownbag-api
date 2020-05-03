@@ -7,10 +7,10 @@ import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.ObjBalSheet;
-import com.brownbag_api.model.ObjBalSheetSection;
 import com.brownbag_api.model.enums.EBalSheetItemType;
 import com.brownbag_api.model.enums.EBalSheetSectionType;
+import com.brownbag_api.model.jpa.ObjBalSheet;
+import com.brownbag_api.model.jpa.ObjBalSheetSection;
 import com.brownbag_api.repo.BalSheetSectionRepo;
 
 @Service

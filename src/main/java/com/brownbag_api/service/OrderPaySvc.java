@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.brownbag_api.model.ObjAsset;
-import com.brownbag_api.model.OrderPay;
-import com.brownbag_api.model.ObjPos;
-import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
+import com.brownbag_api.model.jpa.ObjAsset;
+import com.brownbag_api.model.jpa.ObjPos;
+import com.brownbag_api.model.jpa.ObjUser;
+import com.brownbag_api.model.jpa.OrderPay;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.OrderRepo;
 

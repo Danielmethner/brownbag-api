@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brownbag_api.model.ObjAsset;
 import com.brownbag_api.model.enums.EAssetGrp;
+import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.repo.AssetRepo;
 
 @CrossOrigin(origins = "*", maxAge = 3600)

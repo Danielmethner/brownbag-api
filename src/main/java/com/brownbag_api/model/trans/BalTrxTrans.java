@@ -1,8 +1,8 @@
 package com.brownbag_api.model.trans;
 
-import com.brownbag_api.model.ObjParty;
 import com.brownbag_api.model.enums.EBalSheetItemType;
 import com.brownbag_api.model.enums.EBookingDir;
+import com.brownbag_api.model.jpa.ObjParty;
 
 public class BalTrxTrans {
 

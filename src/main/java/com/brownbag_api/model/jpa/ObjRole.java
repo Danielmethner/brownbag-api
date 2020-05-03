@@ -1,4 +1,4 @@
-package com.brownbag_api.model;
+package com.brownbag_api.model.jpa;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -8,11 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.ObjParty;
-import com.brownbag_api.model.ObjRole;
-import com.brownbag_api.model.ObjUser;
 import com.brownbag_api.model.enums.ERole;
 import com.brownbag_api.model.enums.EUser;
+import com.brownbag_api.model.jpa.ObjParty;
+import com.brownbag_api.model.jpa.ObjRole;
+import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.repo.UserRepo;
