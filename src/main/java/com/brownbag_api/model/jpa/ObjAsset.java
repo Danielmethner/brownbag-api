@@ -40,6 +40,7 @@ public class ObjAsset implements Serializable {
 
 	@NotBlank
 	@Size(max = 150)
+	@Column(name = "name", unique = true)
 	private String name;
 
 	@Size(max = 12)
@@ -157,6 +158,11 @@ public class ObjAsset implements Serializable {
 
 	public void setTotalShares(int totalShares) {
 		this.totalShares = totalShares;
+	}
+
+	public void raiseTotalShares(@NotNull int amount) {
+		this.totalShares = this.totalShares + amount;
+		
 	}
 
 }

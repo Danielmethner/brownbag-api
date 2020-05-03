@@ -121,9 +121,13 @@ public class OrderStexSvc extends OrderSvc {
 	}
 
 	public void matchOrders(OrderStex orderBuy, OrderStex orderSell) {
-		if (orderBuy.getOrderDir() == EOrderDir.SELL || orderSell.getOrderDir() == EOrderDir.BUY) {
-			logSvc.write(
-					"OrderStexSvc.matchOrders: Cannot match orders: Buy Order has Direction 'SELL' or Sell Order has Direciton 'BUY'.");
+		if (orderBuy.getOrderDir() == EOrderDir.SELL) {
+			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: Buy Order has Direction 'SELL'.");
+			return;
+		}
+
+		if (orderSell.getOrderDir() == EOrderDir.BUY) {
+			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: Sell Order has Direction 'BUY'.");
 			return;
 		}
 		ObjParty partySeller = orderSell.getParty();
@@ -144,7 +148,7 @@ public class OrderStexSvc extends OrderSvc {
 
 		// CALCULATE EXECUTION PRICE
 		double execPrice = (orderBuy.getPriceLimit() + orderSell.getPriceLimit()) / 2;
-		
+
 		// ADJUST AVG_PRICE - BUYORDER
 		double newAvgBuyPrice = (posRcv.getQty() * posRcv.getPriceAvg() + orderBuy.getQty() * orderBuy.getPriceLimit())
 				/ (posRcv.getQty() + orderBuy.getQty());
@@ -155,51 +159,54 @@ public class OrderStexSvc extends OrderSvc {
 		ExecStex execStex = new ExecStex(posSend, posRcv, orderSell, orderBuy, book_text, qtyExec, execPrice);
 		execStexRepo.save(execStex);
 
-		// BOOK POSITIONS
-		posSvc.creditPos(orderBuy, execStex);
-		posSvc.debitPos(orderSell, execStex);
+		// BOOK POSITIONS - STEX
+		ObjPosStex creditPos = posSvc.creditPosStex(orderBuy, execStex);
+		
+		if (orderSell.getOrderType() != EOrderType.STEX_IPO) {
+			ObjPosStex debitPos = posSvc.debitPosStex(orderSell, execStex);
+		}
 
 		// ADJUST EXEC QTY - ORDER
 		orderSell.raiseQtyExec(execStex.getQtyExec());
 		orderBuy.raiseQtyExec(execStex.getQtyExec());
-
-		// TRANSFER MONEY
-		ObjPosMacc maccSend = partySvc.getMacc(partyBuyer);
-		ObjPosMacc maccRcv = partySvc.getMacc(partySeller);
-		String bookText = "Payment for execution of Stex Buy Order ID: " + orderBuy.getId()
-				+ " against STEX sell order ID: " + orderSell.getId();
-
-		OrderPay payment = orderPaySvc.createPay(execStex.getAmtExec(), orderBuy.getUser(), null, bookText, maccSend,
-				maccRcv);
-		orderPaySvc.execPay(payment);
 		
-		//TODO: manually transfer money
-
+		// BOOK POSITIONS - MACC
+		ObjPosMacc maccBuyer = posSvc.creditPosMacc(orderSell, execStex);
+		ObjPosMacc maccSeller = posSvc.debitPosMacc(orderBuy, execStex);
+	
+	
 		// RELASE POS BLOCK - SHARE
 		posSend.lowerQtyBlocked(qtyExec);
 		posSvc.save(posSend);
-		
-		
 
 		// RELASE POS BLOCK - MACC
-		maccRcv.lowerQtyBlocked(qtyExec);
-		posSvc.save(maccRcv);
+		maccSeller.lowerQtyBlocked(qtyExec);
+		posSvc.save(maccSeller);
 
-		if (orderBuy.getQty() == orderBuy.getQtyExec()) {
-			orderSvc.execAction(orderBuy, EOrderAction.EXECUTE_FULL);
-		} else {
-			orderSvc.execAction(orderBuy, EOrderAction.EXECUTE_PART);
+		if (creditPos != null) {
+
+			if (orderBuy.getQty() == orderBuy.getQtyExec()) {
+				orderSvc.execAction(orderBuy, EOrderAction.EXECUTE_FULL);
+			} else {
+				orderSvc.execAction(orderBuy, EOrderAction.EXECUTE_PART);
+			}
+
+			if (orderSell.getQty() == orderSell.getQtyExec()) {
+				orderSvc.execAction(orderSell, EOrderAction.EXECUTE_FULL);
+			} else {
+				orderSvc.execAction(orderSell, EOrderAction.EXECUTE_PART);
+			}
 		}
 
-		if (orderSell.getQty() == orderSell.getQtyExec()) {
-			orderSvc.execAction(orderSell, EOrderAction.EXECUTE_FULL);
-		} else {
-			orderSvc.execAction(orderSell, EOrderAction.EXECUTE_PART);
-		}
 	}
 
 	public List<OrderStex> getByAsset(ObjAsset asset) {
 		return orderStexRepo.findByAsset(asset);
+
+	}
+
+	public List<OrderStex> getByAssetAndDir(ObjAsset asset, EOrderDir orderDir) {
+		return orderStexRepo.findByAssetAndOrderDir(asset, orderDir);
 
 	}
 

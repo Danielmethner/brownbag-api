@@ -61,13 +61,15 @@ public class BookingSvc {
 
 		// GET BALANCE SHEET (Instanciate if not exists)
 		balSheetSvc.getBalSheet(pos.getParty(), finYear);
-
+		
 		// GENERATE BALANCE SHEET BOOKINGS
 		for (BalTrxTrans balTrxTransient : balTrxTransientList) {
+		
+			
 
 			double balTrxQty = balTrxTransient.getBookingDir() == EBookingDir.CREDIT ? balTrxTransient.getQty()
 					: (-1) * balTrxTransient.getQty();
-
+			
 			balTrxAssets = balTrxTransient.getItemType().getSection() == EBalSheetSectionType.ASSETS
 					? balTrxAssets + balTrxQty
 					: balTrxAssets;
@@ -92,6 +94,8 @@ public class BookingSvc {
 		}
 
 		if (balTrxAssets != balTrxLiabEquity) {
+			logSvc.write("BookingSvc.createBooking(): balTrxAssets: " + balTrxAssets);
+			logSvc.write("BookingSvc.createBooking(): balTrxLiabEquity: " + balTrxLiabEquity);
 			logSvc.write(
 					"BookingSvc.createBooking(): Asset and Financing bookings of Balance sheet must be equal. Booking cannot proceed. Order ID: "
 							+ order.getId());

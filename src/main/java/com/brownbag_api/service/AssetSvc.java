@@ -48,13 +48,16 @@ public class AssetSvc {
 	}
 
 	public void split(ObjAsset asset, int splitFactor) {
+		
 		if(asset.getTotalShares() > 1) {
 			logSvc.write("Assets can currently only be split when total number of shares equals 1");
+			return;
 		}
-		asset.setTotalShares(splitFactor);
-		assetRepo.save(asset);
+		asset.setTotalShares(asset.getTotalShares() * splitFactor);
+		asset = assetRepo.save(asset);
 		for(ObjPosStex posStex : posSvc.getByAsset(asset)) {
 			posStex.setQty(posStex.getQty() * splitFactor);
+			//TODO: adjust asset prices
 			posSvc.save(posStex);
 		}
 	}

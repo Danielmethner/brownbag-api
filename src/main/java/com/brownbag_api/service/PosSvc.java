@@ -60,7 +60,8 @@ public class PosSvc {
 		return posRepo.save(pos);
 	}
 
-	public ObjPosLoan createPosLoan(double qty, ObjAssetLoan assetLoan, ObjParty partyLender, ObjPos maccLender, ObjPos maccDebtor) {
+	public ObjPosLoan createPosLoan(double qty, ObjAssetLoan assetLoan, ObjParty partyLender, ObjPos maccLender,
+			ObjPos maccDebtor) {
 		ObjPosLoan posLoan = new ObjPosLoan(qty, assetLoan, partyLender, maccLender, maccDebtor);
 		return posRepo.save(posLoan);
 	}
@@ -83,14 +84,14 @@ public class PosSvc {
 		return posRepo.save(posStex);
 	}
 
-	public ObjPos createMacc(@NotNull double initialDeposit, @NotNull ObjParty owner, double odLimit) {
+	public ObjPos createMacc(@NotNull int initialDeposit, @NotNull ObjParty owner, double odLimit) {
 		ObjAsset assetCash = assetRepo.findByName(EAsset.EUR.getName());
 		ObjPosMacc newMacc = createPosMacc(0, assetCash, owner);
 
 		// ADD INITIAL DEPOSIT FROM CENTRAL BANK
 		if (initialDeposit > 0) {
 
-			ObjParty leSend = partyRepo.findByName(EParty.ECB.toString());
+			ObjParty leSend = partyRepo.findByName(EParty.ECB.getName());
 			orderCreateMonSvc.createMon(leSend, initialDeposit);
 
 			ObjPos maccCentralBank = partySvc.getMacc(leSend);
@@ -197,9 +198,9 @@ public class PosSvc {
 	}
 
 	// -----------------------------------------------------------------
-	// STEX - CREDIT POS (BUY Order)
+	// STEX - CREDIT POS STEX (BUY Order)
 	// -----------------------------------------------------------------
-	public ObjPosStex creditPos(OrderStex orderStex, ExecStex execStex) {
+	public ObjPosStex creditPosStex(OrderStex orderStex, ExecStex execStex) {
 
 		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
 		// CREDIT STOCKS - BUYER
@@ -215,21 +216,58 @@ public class PosSvc {
 
 	}
 
-	public ObjPosStex debitPos(OrderStex orderSell, ExecStex execStex) {
+	// -----------------------------------------------------------------
+	// STEX - DEBIT POS STEX (SELL Order)
+	// -----------------------------------------------------------------
+	public ObjPosStex debitPosStex(OrderStex orderSell, ExecStex execStex) {
 		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
 		// DEBIT STOCKS - BUYER
-		if (orderSell.getOrderType() != EOrderType.STEX_IPO) {
-			balTrxList.add(new BalTrxTrans(EBalSheetItemType.STOCKS, execStex.getAmtExec(), EBookingDir.DEBIT,
-					orderSell.getParty()));
-		}
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.STOCKS, execStex.getAmtExec(), EBookingDir.DEBIT,
+				orderSell.getParty()));
 
 		// DEBIT EQUITY
 		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, execStex.getAmtExec(), EBookingDir.DEBIT,
 				orderSell.getParty()));
 
 		// BOOKING
-		return (ObjPosStex) bookingSvc.createBooking(orderSell, execStex.getPosSend(), EBookingDir.CREDIT, balTrxList);
+		return (ObjPosStex) bookingSvc.createBooking(orderSell, execStex.getPosSend(), EBookingDir.DEBIT, balTrxList);
 
+	}
+
+	// -----------------------------------------------------------------
+	// STEX - CREDIT POS MACC (SELL Order)
+	// -----------------------------------------------------------------
+	public ObjPosMacc creditPosMacc(OrderStex orderSell, ExecStex execStex) {
+		ObjPosMacc maccSeller = partySvc.getMacc(orderSell.getParty());
+		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
+		// CREDIT CASH- SELLER
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.CASH, execStex.getAmtExec(), EBookingDir.CREDIT,
+				orderSell.getParty()));
+
+		// CREDIT EQUITY
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, execStex.getAmtExec(), EBookingDir.CREDIT,
+				orderSell.getParty()));
+
+		// BOOKING
+		return (ObjPosMacc) bookingSvc.createBooking(orderSell, maccSeller, EBookingDir.CREDIT, balTrxList);
+	}
+
+	// -----------------------------------------------------------------
+	// STEX - DEBIT POS MACC (BUY Order)
+	// -----------------------------------------------------------------
+	public ObjPosMacc debitPosMacc(OrderStex orderBuy, ExecStex execStex) {
+		ObjPosMacc maccBuyer = partySvc.getMacc(orderBuy.getParty());
+		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
+		// CREDIT CASH- SELLER
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.CASH, execStex.getAmtExec(), EBookingDir.DEBIT,
+				orderBuy.getParty()));
+
+		// DEBIT EQUITY
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, execStex.getAmtExec(), EBookingDir.DEBIT,
+				orderBuy.getParty()));
+
+		// BOOKING
+		return (ObjPosMacc) bookingSvc.createBooking(orderBuy, maccBuyer, EBookingDir.DEBIT, balTrxList);
 	}
 
 }

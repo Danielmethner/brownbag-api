@@ -24,6 +24,9 @@ import com.brownbag_api.repo.PartyRepo;
 public class PartySvc {
 
 	@Autowired
+	private PartySvc partySvc;
+
+	@Autowired
 	private PartyRepo partyRepo;
 
 	@Autowired
@@ -44,9 +47,6 @@ public class PartySvc {
 	/**
 	 *
 	 * @param eParty
-	 * @param user      - managing user
-	 * @param partyType - Legal or natural person
-	 * @param addMacc   - create MACC for newly created Legal Entity
 	 * @return
 	 */
 	public ObjParty createParty(EParty eParty) {
@@ -54,33 +54,65 @@ public class PartySvc {
 		user = userSvc.getByEnum(eParty.getUser());
 
 		if (eParty.getPartyType() == EPartyType.ORG_GOVT) {
-			return createOrgGovt(eParty.toString(), eParty.getLegalForm(), user, eParty.createMACC);
+			return createOrgGovt(eParty.getName(), eParty.getLegalForm(), user, eParty.createMACC);
 		}
 
 		if (eParty.getPartyType() == EPartyType.PERSON_LEGAL) {
 			ObjParty natPerson = getNaturalPerson(user);
-			return createLegalPerson(eParty.toString(), eParty.getLegalForm(), user, natPerson);
+			return createLegalPerson(eParty.getName(), eParty.getLegalForm(), user, natPerson, 1);
 		}
 		return null;
 	}
 
+	public ObjParty save(ObjParty party) {
+		if (party.getId() == null && partyRepo.findByName(party.getName()) != null) {
+			logSvc.write("Party with name: '" + party.getName() + "' cannot be created: Name is not unique!");
+			return null;
+		} else {
+			return partyRepo.save(party);
+		}
+
+	}
+
 	public ObjParty createOrgGovt(String name, ELegalForm legalForm, ObjUser user, boolean addMacc) {
 		ObjParty party = new ObjParty(name, EPartyType.ORG_GOVT, legalForm, user);
-		party = partyRepo.save(party);
+		party = save(party);
+		if (party == null) {
+			return null;
+		}
 		if (addMacc) {
 			posSvc.createMacc(0, party, 0);
 		}
 		return party;
 	}
 
-	public ObjParty createLegalPerson(String name, ELegalForm legalForm, ObjUser user, ObjParty owner) {
+	public ObjParty createLegalPerson(String name, ELegalForm legalForm, ObjUser user, ObjParty owner, int shareQty) {
+
 		ObjParty party = new ObjParty(name, EPartyType.PERSON_LEGAL, legalForm, user);
-		party = partyRepo.save(party);
+
+		party = save(party);
+
+		if (party == null) {
+			return null;
+		}
 		posSvc.createMacc(0, party, 0);
-		ObjAsset asset = assetSvc.createAssetStex(party.getName(), null, EAssetGrp.STOCK, party, 1);
+		ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, party, 1);
+
+		switch (legalForm) {
+		case LTD:
+			asset.setTotalShares(1);
+			break;
+		case CORP:
+			asset.setTotalShares(shareQty);
+			break;
+		case NOT_APPL:
+			asset.setTotalShares(0);
+			break;
+		}
+		asset = assetSvc.save(asset);
 		party.setAsset(asset);
-		ObjPos pos = posSvc.createPosStex(asset, owner, 1);
-		party = partyRepo.save(party);
+		posSvc.createPosStex(asset, owner, 1);
+		party = save(party);
 		return party;
 	}
 
@@ -88,8 +120,10 @@ public class PartySvc {
 		List<ObjParty> lEs = partyRepo.findByUserAndPartyType(user, EPartyType.PERSON_NATURAL);
 		if (lEs.isEmpty()) {
 			ObjParty natPerson = new ObjParty(user.getName(), EPartyType.PERSON_NATURAL, ELegalForm.NOT_APPL, user);
-			natPerson = partyRepo.save(natPerson);
-
+			natPerson = save(natPerson);
+			if (natPerson == null) {
+				return null;
+			}
 			// ADD MACC
 			posSvc.createMacc(100000, natPerson, 0);
 			return natPerson;
@@ -111,17 +145,22 @@ public class PartySvc {
 	}
 
 	public ObjParty getByEnum(EParty eParty) {
-		return partyRepo.findByName(eParty.toString());
+		return partyRepo.findByName(eParty.getName());
 	}
 
 	public ObjParty goPublic(ObjParty party, int qty) {
+		
+		System.err.println("Party: " + party.getName() + " Qty: " + qty);
 		// ENSURE ONLY LTDs CAN GO PUBLIC
 		if (party.getLegalForm() == ELegalForm.LTD) {
-			
-			party.setLegalForm(ELegalForm.CORP);
 
-			ObjAsset asset = assetSvc.getByIssuer(party);
-			assetSvc.split(asset, qty);
+			party.setLegalForm(ELegalForm.CORP);
+			party = partySvc.save(party);
+			if (party != null) {
+
+				ObjAsset asset = assetSvc.getByIssuer(party);
+				assetSvc.split(asset, qty);
+			}
 			return party;
 		}
 		if (party.getLegalForm() == ELegalForm.CORP) {

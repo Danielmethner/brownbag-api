@@ -24,6 +24,10 @@ import com.brownbag_api.repo.PartyRepo;
 @Service
 public class OrderCreateMonSvc extends OrderSvc {
 
+	
+	@Autowired
+	private AssetSvc assetSvc;
+	
 	@Autowired
 	private AssetRepo assetRepo;
 
@@ -81,16 +85,25 @@ public class OrderCreateMonSvc extends OrderSvc {
 	}
 
 	@Transactional
-	public OrderCreateMon createMon(ObjParty partySend, @NotNull double amount) {
+	public OrderCreateMon createMon(ObjParty partySend, @NotNull int amount) {
 		ObjPos maccCentralBank = partySvc.getMacc(partySend);
 		OrderCreateMon orderCreateMon = new OrderCreateMon(amount, maccCentralBank.getAsset(), EOrderType.CREATE_MONEY,
 				EOrderStatus.NEW, partySend.getUser(), maccCentralBank, "Money Creation: " + partySend.getName());
 		orderCreateMon = (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.HOLD);
 		orderCreateMon.setPosRcv(posSvc.creditPos(orderCreateMon));
+		ObjAsset curry = maccCentralBank.getAsset();
+		curry.raiseTotalShares(amount);
+		
 		return (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.VERIFY);
 	}
 
-	public void createMon(EParty eParty, @NotNull double amount) {
+	/**
+	 * DEMO DATA
+	 * 
+	 * @param eParty
+	 * @param amount
+	 */
+	public void createMon(EParty eParty, @NotNull int amount) {
 		ObjParty partySend = partyRepo.findByName(EParty.ECB.toString());
 		createMon(partySend, amount);
 	}

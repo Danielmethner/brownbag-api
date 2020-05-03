@@ -50,7 +50,7 @@ public class InitDataLoader {
 
 	@Autowired
 	private OrderSvc orderSvc;
-	
+
 	@Autowired
 	private OrderStexSvc orderStexSvc;
 
@@ -99,8 +99,14 @@ public class InitDataLoader {
 	// ASSET
 	// -----------------------------------------------------------
 	private ObjAsset createAsset(EAsset eAsset) {
-		ObjParty issuer = partySvc.getByEnum(eAsset.getParty());
-		return assetSvc.createAssetStex(eAsset.getName(), null, eAsset.getAssetGrp(), issuer, 1);
+		ObjAsset asset = assetSvc.getByEnum(eAsset);
+		if (asset == null) {
+			ObjParty issuer = partySvc.getByEnum(eAsset.getParty());
+			return assetSvc.createAssetStex(eAsset.getName(), null, eAsset.getAssetGrp(), issuer, 1);
+		} else {
+			return asset;
+		}
+
 	}
 
 	// -----------------------------------------------------------
@@ -129,12 +135,21 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 	public void createCentralBank() {
 		ObjParty ecb = partySvc.createParty(EParty.ECB);
+		if (ecb == null) {
+			ecb = partySvc.getByEnum(EParty.ECB);
+		}
 		// ECB is issuer of EUR, hence needs to be created beforehand
 		ObjAsset assetEUR = createAsset(EAsset.EUR);
 		posSvc.createMacc(0, assetEUR.getIssuer(), 100000000);
-		ObjAsset assetLoanVanilla = new ObjAsset(EAsset.LOAN_GENERIC.getName(), null, EAsset.LOAN_GENERIC.getAssetGrp(), ecb, 1);
-		ObjAssetLoan assetLoan = new ObjAssetLoan(assetLoanVanilla);
-		assetSvc.save(assetLoan);
+
+		if (assetSvc.getByEnum(EAsset.LOAN_GENERIC) == null) {
+			ObjAsset assetLoanVanilla = new ObjAsset(EAsset.LOAN_GENERIC.getName(), null,
+					EAsset.LOAN_GENERIC.getAssetGrp(), ecb, 1);
+
+			ObjAssetLoan assetLoan = new ObjAssetLoan(assetLoanVanilla);
+			assetSvc.save(assetLoan);
+		}
+
 	}
 
 	// -----------------------------------------------------------
@@ -152,8 +167,12 @@ public class InitDataLoader {
 	private void createAssets() {
 		createAsset(EAsset.BOND_GOVERNMENT);
 		ObjParty deutscheBank = partySvc.getByEnum(EParty.DEUTSCHE_BANK);
+
 		deutscheBank = partySvc.goPublic(deutscheBank, 10000);
-		partySvc.issueShares(deutscheBank, 5000, 15);
+		if (deutscheBank != null) {
+			partySvc.issueShares(deutscheBank, 5000, 15);
+		}
+
 	}
 
 	// -----------------------------------------------------------
@@ -165,7 +184,7 @@ public class InitDataLoader {
 		createUser(EUser.U_TRADER_1);
 		createUser(EUser.U_TRADER_2);
 	}
-	
+
 	// -----------------------------------------------------------
 	// ORDERS
 	// -----------------------------------------------------------
@@ -178,19 +197,24 @@ public class InitDataLoader {
 		// BUY SHARES FROM IPO
 		ObjUser userTrader1 = userSvc.getByEnum(EUser.U_TRADER_1);
 		ObjParty partyTrader1 = userSvc.getNaturalPerson(userTrader1);
-		OrderStex orderBuy = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 1000, 16, userTrader1, partyTrader1);
+		OrderStex orderBuy = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 1000, 16,
+				userTrader1, partyTrader1);
 //		User userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
 //		Party partyTrader2 = userSvc.getNaturalPerson(userTrader2);
 //		OrderStex orderSell = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.00, userTrader2, partyTrader2);
-		
-		OrderStex orderSell = orderStexSvc.getByAsset(deutscheBank).get(0);
-		orderStexSvc.matchOrders(orderBuy, orderSell);
+
+		if (orderBuy != null) {
+
+			OrderStex orderSell = orderStexSvc.getByAssetAndDir(deutscheBank, EOrderDir.SELL).get(0);
+
+			orderStexSvc.matchOrders(orderBuy, orderSell);
+		}
 	}
 
 	private void createOrders() {
 		createOrdersStex();
 	}
-	
+
 	public void createDemoData() {
 		createOrgUsers();
 		createCentralBank();
@@ -200,6 +224,5 @@ public class InitDataLoader {
 		createOrders();
 		System.err.println("Demo Data Loaded Succesfully");
 	}
-
 
 }
