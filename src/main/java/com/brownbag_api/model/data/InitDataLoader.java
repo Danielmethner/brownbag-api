@@ -197,18 +197,19 @@ public class InitDataLoader {
 		// BUY SHARES FROM IPO
 		ObjUser userTrader1 = userSvc.getByEnum(EUser.U_TRADER_1);
 		ObjParty partyTrader1 = userSvc.getNaturalPerson(userTrader1);
-		OrderStex orderBuy = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 1000, 16,
+		OrderStex orderBuy = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 3000, 16,
 				userTrader1, partyTrader1);
-//		User userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
-//		Party partyTrader2 = userSvc.getNaturalPerson(userTrader2);
-//		OrderStex orderSell = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.00, userTrader2, partyTrader2);
 
 		if (orderBuy != null) {
-
 			OrderStex orderSell = orderStexSvc.getByAssetAndDir(deutscheBank, EOrderDir.SELL).get(0);
-
 			orderStexSvc.matchOrders(orderBuy, orderSell);
 		}
+
+//		ObjUser userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
+//		ObjParty partyTrader2 = userSvc.getNaturalPerson(userTrader2);
+//		OrderStex orderBuy2 = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.00,
+//				userTrader2, partyTrader2);
+
 	}
 
 	private void createOrders() {

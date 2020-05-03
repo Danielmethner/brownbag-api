@@ -93,4 +93,8 @@ public class OrderStex extends Order implements Serializable {
 		this.qtyExec = this.qtyExec + qtyExec;
 	}
 
+	public double getQtyOpn() {
+		return this.getQty() - this.qtyExec;
+	}
+
 }

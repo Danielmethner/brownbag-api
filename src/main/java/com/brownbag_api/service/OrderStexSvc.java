@@ -122,20 +122,27 @@ public class OrderStexSvc extends OrderSvc {
 
 	public void matchOrders(OrderStex orderBuy, OrderStex orderSell) {
 		if (orderBuy.getOrderDir() == EOrderDir.SELL) {
-			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: Buy Order has Direction 'SELL'.");
+			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: BUY Order has Direction 'SELL'.");
 			return;
 		}
 
 		if (orderSell.getOrderDir() == EOrderDir.BUY) {
-			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: Sell Order has Direction 'BUY'.");
+			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: SELL Order has Direction 'BUY'.");
 			return;
+		}
+		if (orderBuy.getOrderStatus() == EOrderStatus.EXEC_FULL) {
+			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: BUY Order is already in Status 'Fully Executed'.");
+			return;
+		}
+		if (orderSell.getOrderStatus() == EOrderStatus.EXEC_FULL) {
+			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: SELL Order is already in Status 'Fully Executed'.");
 		}
 		ObjParty partySeller = orderSell.getParty();
 		ObjParty partyBuyer = orderBuy.getParty();
 		ObjPosStex posSend = posSvc.getByAssetAndParty(orderSell.getAsset(), partySeller); // Instanciates if not exists
 		ObjPosStex posRcv = posSvc.getByAssetAndParty(orderBuy.getAsset(), partyBuyer); // Instanciates if not exists
 
-		int qtyExec = (int) (orderBuy.getQty() < orderSell.getQty() ? orderBuy.getQty() : orderSell.getQty());
+		int qtyExec = (int) (orderBuy.getQtyOpn() < orderSell.getQtyOpn() ? orderBuy.getQtyOpn() : orderSell.getQtyOpn());
 
 		String book_text = "Buyer: " + partyBuyer.getName() + " Seller: " + partySeller.getName() + " Qty: " + qtyExec;
 
@@ -161,20 +168,21 @@ public class OrderStexSvc extends OrderSvc {
 
 		// BOOK POSITIONS - STEX
 		ObjPosStex creditPos = posSvc.creditPosStex(orderBuy, execStex);
-		
+
 		if (orderSell.getOrderType() != EOrderType.STEX_IPO) {
 			ObjPosStex debitPos = posSvc.debitPosStex(orderSell, execStex);
 		}
 
 		// ADJUST EXEC QTY - ORDER
 		orderSell.raiseQtyExec(execStex.getQtyExec());
+		orderSell = orderStexRepo.save(orderSell);
 		orderBuy.raiseQtyExec(execStex.getQtyExec());
-		
+		orderBuy = orderStexRepo.save(orderBuy);
+
 		// BOOK POSITIONS - MACC
 		ObjPosMacc maccBuyer = posSvc.creditPosMacc(orderSell, execStex);
 		ObjPosMacc maccSeller = posSvc.debitPosMacc(orderBuy, execStex);
-	
-	
+
 		// RELASE POS BLOCK - SHARE
 		posSend.lowerQtyBlocked(qtyExec);
 		posSvc.save(posSend);

@@ -125,7 +125,7 @@ public class PartySvc {
 				return null;
 			}
 			// ADD MACC
-			posSvc.createMacc(100000, natPerson, 0);
+			posSvc.createMacc(200000, natPerson, 0);
 			return natPerson;
 		} else {
 			return lEs.get(0);
