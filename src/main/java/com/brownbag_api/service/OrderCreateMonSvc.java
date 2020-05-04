@@ -24,10 +24,6 @@ import com.brownbag_api.repo.PartyRepo;
 @Service
 public class OrderCreateMonSvc extends OrderSvc {
 
-	
-	@Autowired
-	private AssetSvc assetSvc;
-	
 	@Autowired
 	private AssetRepo assetRepo;
 
@@ -93,13 +89,13 @@ public class OrderCreateMonSvc extends OrderSvc {
 		orderCreateMon.setPosRcv(posSvc.creditPos(orderCreateMon));
 		ObjAsset curry = maccCentralBank.getAsset();
 		curry.raiseTotalShares(amount);
-		
+
 		return (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.VERIFY);
 	}
 
 	/**
 	 * DEMO DATA
-	 * 
+	 *
 	 * @param eParty
 	 * @param amount
 	 */

@@ -82,7 +82,5 @@ public class OrderPaySvc extends OrderSvc {
 
 		return (OrderPay) orderSvc.execAction(orderPay, EOrderAction.VERIFY);
 	}
-	
-	
 
 }

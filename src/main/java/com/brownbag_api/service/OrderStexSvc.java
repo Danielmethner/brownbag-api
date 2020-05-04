@@ -12,21 +12,13 @@ import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.jpa.ExecStex;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
-import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjPosStex;
 import com.brownbag_api.model.jpa.ObjUser;
-import com.brownbag_api.model.jpa.Order;
-import com.brownbag_api.model.jpa.OrderPay;
 import com.brownbag_api.model.jpa.OrderStex;
-import com.brownbag_api.model.jpa.OrderTrans;
-import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.ExecStexRepo;
 import com.brownbag_api.repo.OrderRepo;
 import com.brownbag_api.repo.OrderStexRepo;
-//import com.brownbag_api.repo.OrderRepo;
-import com.brownbag_api.repo.OrderTransRepo;
-import com.brownbag_api.repo.PosRepo;
 
 @Service
 public class OrderStexSvc extends OrderSvc {
@@ -35,25 +27,16 @@ public class OrderStexSvc extends OrderSvc {
 	private OrderRepo orderRepo;
 
 	@Autowired
-	private OrderTransRepo orderTransRepo;
-
-	@Autowired
 	private ExecStexRepo execStexRepo;
 
 	@Autowired
 	private OrderStexRepo orderStexRepo;
 
 	@Autowired
-	private AssetRepo assetRepo;
-
-	@Autowired
 	private AssetSvc assetSvc;
 
 	@Autowired
 	private OrderSvc orderSvc;
-
-	@Autowired
-	private OrderPaySvc orderPaySvc;
 
 	@Autowired
 	private PartySvc partySvc;
@@ -178,8 +161,7 @@ public class OrderStexSvc extends OrderSvc {
 		// IF NOT IPO
 		if (orderSell.getOrderType() != EOrderType.STEX_IPO) {
 
-			// REMOVE ASSETS FROM SELLER
-			ObjPosStex debitPos = posSvc.debitPosStex(orderSell, execStex);
+			posSvc.debitPosStex(orderSell, execStex);
 
 			// RELASE POS BLOCK - SHARE
 			posSend.lowerQtyBlocked(qtyExec);
@@ -196,8 +178,7 @@ public class OrderStexSvc extends OrderSvc {
 		orderBuy.raiseQtyExec(execStex.getQtyExec());
 		orderBuy = orderStexRepo.save(orderBuy);
 
-		// BOOK POSITIONS - MACC
-		ObjPosMacc maccSeller = posSvc.creditPosMacc(orderSell, execStex);
+		posSvc.creditPosMacc(orderSell, execStex);
 		ObjPosMacc maccBuyer = posSvc.debitPosMacc(orderBuy, execStex);
 
 		// RELASE POS BLOCK - MACC

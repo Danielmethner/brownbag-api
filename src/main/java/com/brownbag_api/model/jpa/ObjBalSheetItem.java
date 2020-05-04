@@ -74,8 +74,8 @@ public class ObjBalSheetItem implements Serializable {
 	public ObjBalSheetItem() {
 	}
 
-	public ObjBalSheetItem(@NotNull double qty, EBalSheetItemType itemType, @NotNull int finYear, @NotNull ObjParty party,
-			@NotNull ObjBalSheetSection balSheetSection) {
+	public ObjBalSheetItem(@NotNull double qty, EBalSheetItemType itemType, @NotNull int finYear,
+			@NotNull ObjParty party, @NotNull ObjBalSheetSection balSheetSection) {
 		super();
 		this.name = balSheetSection.getName() + ": " + itemType.getName();
 		this.qty = qty;

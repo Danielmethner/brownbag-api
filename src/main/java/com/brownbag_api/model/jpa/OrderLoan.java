@@ -44,8 +44,8 @@ public class OrderLoan extends Order implements Serializable {
 	}
 
 	public OrderLoan(@NotNull double qty, @NotNull ObjAsset asset, EOrderType orderType, EOrderStatus orderStatus,
-			@NotNull ObjUser user, String advText, @NotNull ObjPos maccLender, @NotNull ObjPos maccDebtor, ObjPosLoan posLoan,
-			Date matDate, @NotNull double intrRate) {
+			@NotNull ObjUser user, String advText, @NotNull ObjPos maccLender, @NotNull ObjPos maccDebtor,
+			ObjPosLoan posLoan, Date matDate, @NotNull double intrRate) {
 		super(qty, asset, orderType, orderStatus, user, advText);
 		this.maccLender = maccLender;
 		this.maccDebtor = maccDebtor;

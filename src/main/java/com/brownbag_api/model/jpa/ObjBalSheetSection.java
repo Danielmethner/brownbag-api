@@ -104,7 +104,7 @@ public class ObjBalSheetSection implements Serializable {
 	public void setQty(double qty) {
 		this.qty = qty;
 	}
-	
+
 	public void increaseQty(double qty) {
 		this.qty = this.qty + qty;
 	}

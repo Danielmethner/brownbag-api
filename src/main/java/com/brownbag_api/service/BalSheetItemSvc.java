@@ -43,6 +43,6 @@ public class BalSheetItemSvc {
 
 	public List<ObjBalSheetItem> getByBalSheetSection(ObjBalSheetSection section) {
 		return balSheetItemRepo.findByBalSheetSection(section);
-		
+
 	}
 }

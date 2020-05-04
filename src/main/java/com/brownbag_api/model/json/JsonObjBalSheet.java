@@ -2,21 +2,7 @@ package com.brownbag_api.model.json;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import com.brownbag_api.model.enums.EAssetGrp;
-import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjBalSheet;
-import com.brownbag_api.model.jpa.ObjBalSheetSection;
-import com.brownbag_api.model.jpa.ObjParty;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 public class JsonObjBalSheet {
 

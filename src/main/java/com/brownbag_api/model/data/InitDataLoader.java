@@ -3,14 +3,11 @@ package com.brownbag_api.model.data;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.validation.constraints.NotNull;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EOrderDir;
-import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.enums.EParty;
 import com.brownbag_api.model.enums.ERole;
@@ -18,18 +15,13 @@ import com.brownbag_api.model.enums.EUser;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjAssetLoan;
 import com.brownbag_api.model.jpa.ObjParty;
-import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjRole;
 import com.brownbag_api.model.jpa.ObjUser;
-import com.brownbag_api.model.jpa.OrderPay;
 import com.brownbag_api.model.jpa.OrderStex;
-import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.OrderCreateMonSvc;
-import com.brownbag_api.service.OrderPaySvc;
 import com.brownbag_api.service.OrderStexSvc;
-import com.brownbag_api.service.OrderSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
 import com.brownbag_api.service.UserSvc;
@@ -49,13 +41,7 @@ public class InitDataLoader {
 	private PartySvc partySvc;
 
 	@Autowired
-	private OrderSvc orderSvc;
-
-	@Autowired
 	private OrderStexSvc orderStexSvc;
-
-	@Autowired
-	private OrderPaySvc orderPaySvc;
 
 	@Autowired
 	private PosSvc posSvc;

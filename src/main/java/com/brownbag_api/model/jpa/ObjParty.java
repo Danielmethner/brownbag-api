@@ -15,7 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -54,7 +53,7 @@ public class ObjParty implements Serializable {
 	@ManyToOne(targetEntity = ObjUser.class)
 	@JoinColumn(name = "USER_ID")
 	private ObjUser user;
-	
+
 	@OneToOne(targetEntity = ObjAsset.class)
 	@JoinColumn(name = "ASSET_ID")
 	private ObjAsset asset;
@@ -136,5 +135,4 @@ public class ObjParty implements Serializable {
 		this.asset = asset;
 	}
 
-	
 }

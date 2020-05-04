@@ -44,7 +44,8 @@ public class OrderStex extends Order implements Serializable {
 	}
 
 	public OrderStex(EOrderDir orderDir, @NotNull int qty, @NotNull ObjAsset asset, EOrderType orderType,
-			EOrderStatus orderStatus, @NotNull ObjUser user, @NotNull double price, @NotNull ObjParty party, double qtyExec) {
+			EOrderStatus orderStatus, @NotNull ObjUser user, @NotNull double price, @NotNull ObjParty party,
+			double qtyExec) {
 		super(qty, asset, orderType, orderStatus, user, orderType.getName() + " Order: '" + orderDir.toString()
 				+ "'; User: '" + user.getName() + "'; Asset: '" + asset.getName() + "'; Qty: '" + qty + "'");
 		this.orderDir = orderDir;
@@ -88,7 +89,7 @@ public class OrderStex extends Order implements Serializable {
 	public void setQtyExec(double qtyExec) {
 		this.qtyExec = qtyExec;
 	}
-	
+
 	public void raiseQtyExec(double qtyExec) {
 		this.qtyExec = this.qtyExec + qtyExec;
 	}

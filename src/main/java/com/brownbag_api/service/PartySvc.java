@@ -13,9 +13,7 @@ import com.brownbag_api.model.enums.EParty;
 import com.brownbag_api.model.enums.EPartyType;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
-import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosMacc;
-import com.brownbag_api.model.jpa.ObjPosStex;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.repo.PartyRepo;
@@ -149,7 +147,7 @@ public class PartySvc {
 	}
 
 	public ObjParty goPublic(ObjParty party, int qty) {
-		
+
 		System.err.println("Party: " + party.getName() + " Qty: " + qty);
 		// ENSURE ONLY LTDs CAN GO PUBLIC
 		if (party.getLegalForm() == ELegalForm.LTD) {

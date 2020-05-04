@@ -57,7 +57,8 @@ public class ObjPos implements Serializable {
 	public ObjPos() {
 	}
 
-	public ObjPos(@NotNull double qty, @NotNull double qtyBlocked, @NotNull ObjAsset asset, @NotNull ObjParty owner, @NotNull double priceAvg) {
+	public ObjPos(@NotNull double qty, @NotNull double qtyBlocked, @NotNull ObjAsset asset, @NotNull ObjParty owner,
+			@NotNull double priceAvg) {
 		super();
 		this.qty = qty;
 		this.qtyBlocked = qtyBlocked;

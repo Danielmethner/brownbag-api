@@ -1,25 +1,10 @@
 package com.brownbag_api.model.json;
 
-import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
-
-import org.hibernate.annotations.CreationTimestamp;
-
-import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.model.enums.EBalSheetSectionType;
-import com.brownbag_api.model.jpa.ObjAsset;
-import com.brownbag_api.model.jpa.ObjBalSheet;
 import com.brownbag_api.model.jpa.ObjBalSheetItem;
 import com.brownbag_api.model.jpa.ObjBalSheetSection;
-import com.brownbag_api.model.jpa.ObjParty;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 public class JsonObjBalSheetSection {
 
@@ -39,13 +24,12 @@ public class JsonObjBalSheetSection {
 		this.section = objBalSheetSection.getSection();
 		this.items = items;
 	}
-	
+
 	public JsonObjBalSheetSection(ObjBalSheetSection objBalSheetSection) {
 		this.id = objBalSheetSection.getId();
 		this.name = objBalSheetSection.getName();
 		this.section = objBalSheetSection.getSection();
 	}
-
 
 	public double getId() {
 		return id;

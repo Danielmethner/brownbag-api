@@ -4,7 +4,6 @@ import java.util.Date;
 
 import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.model.jpa.ObjAsset;
-import com.brownbag_api.model.jpa.ObjParty;
 
 public class JsonObjAsset {
 
@@ -82,6 +81,5 @@ public class JsonObjAsset {
 	public void setNomVal(double nomVal) {
 		this.nomVal = nomVal;
 	}
-	
-	
+
 }

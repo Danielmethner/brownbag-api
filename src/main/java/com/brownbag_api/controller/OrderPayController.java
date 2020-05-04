@@ -2,7 +2,6 @@ package com.brownbag_api.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +15,7 @@ import com.brownbag_api.model.enums.EUser;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderPay;
-import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.model.json.JsonOrderPay;
-import com.brownbag_api.model.json.JsonOrderStex;
 import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.UserRepo;

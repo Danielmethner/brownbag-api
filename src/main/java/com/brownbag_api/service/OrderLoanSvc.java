@@ -80,8 +80,8 @@ public class OrderLoanSvc extends OrderSvc {
 
 		// TRANSFER CASH
 		OrderPay orderPay = orderPaySvc.createPay(orderLoan.getQty(), orderLoan.getUser(),
-				orderLoan.getMaccLender().getAsset(), "Payout for: " + orderLoan.getAdvText(), orderLoan.getMaccLender(),
-				orderLoan.getMaccDebtor());
+				orderLoan.getMaccLender().getAsset(), "Payout for: " + orderLoan.getAdvText(),
+				orderLoan.getMaccLender(), orderLoan.getMaccDebtor());
 		orderPay = orderPaySvc.execPay(orderPay);
 
 		// CREATE LOAN ASSET

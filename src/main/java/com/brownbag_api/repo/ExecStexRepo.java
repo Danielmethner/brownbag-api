@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.brownbag_api.model.jpa.ExecStex;
-import com.brownbag_api.model.jpa.Log;
 
 @Repository
 public interface ExecStexRepo extends JpaRepository<ExecStex, Long> {

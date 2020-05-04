@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjPos;
-import com.brownbag_api.model.json.JsonObjAsset;
 import com.brownbag_api.model.json.JsonObjPos;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.PosRepo;
@@ -39,13 +37,13 @@ public class PosController {
 		}
 		return jsonPosList;
 	}
-	
+
 	@GetMapping("/all")
 	public List<JsonObjPos> getAll() {
 		List<ObjPos> jpaPosList = posRepo.findAll();
 		return jpaToJson(jpaPosList);
 	}
-	
+
 //	@RequestMapping(value = "/user", method = RequestMethod.GET)
 //	@ResponseBody
 //	public List<Position> getByUser(Authentication authentication) {

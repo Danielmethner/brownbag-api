@@ -21,7 +21,7 @@ public class AssetController {
 
 	@Autowired
 	private AssetRepo assetRepo;
-	
+
 	private List<JsonObjAsset> jpaToJson(List<ObjAsset> jpaAssets) {
 		List<JsonObjAsset> jsonAssets = new ArrayList<JsonObjAsset>();
 		for (ObjAsset jpaAsset : jpaAssets) {
@@ -33,7 +33,7 @@ public class AssetController {
 
 	@GetMapping("/stock/all")
 	public List<JsonObjAsset> allStocks() {
-		
+
 		List<ObjAsset> jpaAssets = assetRepo.findAllByAssetGrp(EAssetGrp.STOCK);
 		return jpaToJson(jpaAssets);
 	}

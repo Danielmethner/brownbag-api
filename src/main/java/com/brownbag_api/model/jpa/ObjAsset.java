@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -162,7 +161,7 @@ public class ObjAsset implements Serializable {
 
 	public void raiseTotalShares(@NotNull int amount) {
 		this.totalShares = this.totalShares + amount;
-		
+
 	}
 
 }

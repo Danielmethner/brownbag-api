@@ -12,7 +12,7 @@ import com.brownbag_api.model.jpa.ObjParty;
 @Repository
 public interface AssetRepo extends JpaRepository<ObjAsset, Long> {
 	ObjAsset findByName(String name);
-	
+
 	ObjAsset findByIssuer(ObjParty party);
 
 	List<ObjAsset> findAllByAssetGrp(EAssetGrp eAssetGrp);
