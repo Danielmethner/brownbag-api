@@ -1,5 +1,7 @@
 package com.brownbag_api.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +39,10 @@ public class BalSheetItemSvc {
 		ObjBalSheetItem balSheetItem = balSheetItemRepo.findByPartyAndFinYearAndItemType(pos.getParty(), finYear,
 				eBalSheetItem);
 		return balSheetItem;
+	}
+
+	public List<ObjBalSheetItem> getByBalSheetSection(ObjBalSheetSection section) {
+		return balSheetItemRepo.findByBalSheetSection(section);
+		
 	}
 }

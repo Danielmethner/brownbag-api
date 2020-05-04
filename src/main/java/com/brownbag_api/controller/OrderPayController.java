@@ -1,5 +1,6 @@
 package com.brownbag_api.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,9 @@ import com.brownbag_api.model.enums.EUser;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderPay;
+import com.brownbag_api.model.jpa.OrderStex;
+import com.brownbag_api.model.json.JsonOrderPay;
+import com.brownbag_api.model.json.JsonOrderStex;
 import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.UserRepo;
@@ -22,8 +26,8 @@ import com.brownbag_api.service.OrderPaySvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/pay")
-public class PaymentController {
+@RequestMapping("/api/order/pay")
+public class OrderPayController {
 
 	@Autowired
 	private PosRepo posRepo;
@@ -37,14 +41,27 @@ public class PaymentController {
 	UserRepo userRepo;
 
 	@GetMapping("/all")
-	public List<OrderPay> getAllPayments() {
-		return orderPayRepo.findAll();
+	public List<JsonOrderPay> getAllPay() {
+		List<OrderPay> jpaOrdersPay = orderPayRepo.findAll();
+		List<JsonOrderPay> jsonOrders = new ArrayList<JsonOrderPay>();
+		for (OrderPay orderPay : jpaOrdersPay) {
+			JsonOrderPay jsonOrder = new JsonOrderPay(orderPay);
+			jsonOrders.add(jsonOrder);
+		}
+		return jsonOrders;
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getPaymentByIdTest(@PathVariable Long id) {
-		Optional<OrderPay> orderPay = orderPayRepo.findById(id);
-		return ResponseEntity.ok(orderPay);
+
+		OrderPay orderPay = orderPayRepo.findById(id).orElse(null);
+		if (orderPay == null) {
+			return ResponseEntity.noContent().build();
+		} else {
+			JsonOrderPay jsonOrderPay = new JsonOrderPay(orderPay);
+			return ResponseEntity.ok(jsonOrderPay);
+		}
+
 	}
 
 	@GetMapping("/exec/from/{from}/to/{to}/amount/{amount}")

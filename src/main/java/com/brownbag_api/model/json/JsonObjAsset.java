@@ -6,7 +6,7 @@ import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 
-public class JsonAsset {
+public class JsonObjAsset {
 
 	private double id;
 
@@ -17,7 +17,7 @@ public class JsonAsset {
 	private Date timestampCreate;
 	private double nomVal;
 
-	public JsonAsset(ObjAsset jpaAsset) {
+	public JsonObjAsset(ObjAsset jpaAsset) {
 		this.id = jpaAsset.getId();
 		this.name = jpaAsset.getName();
 		this.isin = jpaAsset.getIsin();

@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import com.brownbag_api.model.enums.EBalSheetItemType;
 import com.brownbag_api.model.enums.EBalSheetSectionType;
 import com.brownbag_api.model.jpa.ObjBalSheet;
+import com.brownbag_api.model.jpa.ObjBalSheetItem;
 import com.brownbag_api.model.jpa.ObjBalSheetSection;
+import com.brownbag_api.model.json.JsonObjBalSheetSection;
 import com.brownbag_api.repo.BalSheetSectionRepo;
 
 @Service
@@ -42,6 +44,15 @@ public class BalSheetSectionSvc {
 
 	public ObjBalSheetSection save(ObjBalSheetSection bss) {
 		return balSheetSectionRepo.save(bss);
-		
+
+	}
+
+	public JsonObjBalSheetSection getByBalSheetAndSection(ObjBalSheet balSheet, EBalSheetSectionType sectionType) {
+		ObjBalSheetSection section = balSheetSectionRepo.findByBalSheetAndSection(balSheet, sectionType);
+		JsonObjBalSheetSection jsonObjBalSheetSection = new JsonObjBalSheetSection(section);
+		List<ObjBalSheetItem> items = balSheetItemSvc.getByBalSheetSection(section);
+		jsonObjBalSheetSection.setItems(items);
+
+		return jsonObjBalSheetSection;
 	}
 }

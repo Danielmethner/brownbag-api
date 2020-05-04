@@ -1,5 +1,6 @@
 package com.brownbag_api.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,10 +9,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.Order;
 import com.brownbag_api.model.jpa.OrderPay;
+import com.brownbag_api.model.jpa.OrderStex;
+import com.brownbag_api.model.json.JsonObjAsset;
+import com.brownbag_api.model.json.JsonOrder;
+import com.brownbag_api.model.json.JsonOrderStex;
 import com.brownbag_api.repo.OrderPayRepo;
 import com.brownbag_api.repo.OrderRepo;
+import com.brownbag_api.repo.OrderStexRepo;
 import com.brownbag_api.repo.UserRepo;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -24,18 +31,35 @@ public class OrderController {
 
 	@Autowired
 	private OrderPayRepo orderPayRepo;
+	
+	@Autowired
+	private OrderStexRepo orderStexRepo;
+	
+	
 
 	@Autowired
 	UserRepo userRepo;
 
 	@GetMapping("/all")
-	public List<Order> getAll() {
-		return orderRepo.findAll();
+	public List<JsonOrder> getAll() {
+		List<Order> jpaOrders = orderRepo.findAll();
+		List<JsonOrder> jsonOrders = new ArrayList<JsonOrder>();
+		for(Order order : jpaOrders) {
+			JsonOrder jsonOrder = new JsonOrder(order);
+			jsonOrders.add(jsonOrder);
+		}
+		return jsonOrders;
 	}
-
-	@GetMapping("/pay/all")
-	public List<OrderPay> getAllPayments() {
-		return orderPayRepo.findAll();
+	
+	@GetMapping("/stex/all")
+	public List<JsonOrderStex> getAllStex() {
+		List<OrderStex> jpaOrdersStex = orderStexRepo.findAll();
+		List<JsonOrderStex> jsonOrders = new ArrayList<JsonOrderStex>();
+		for(OrderStex orderStex : jpaOrdersStex) {
+			JsonOrderStex jsonOrder = new JsonOrderStex(orderStex, orderStex.getPriceLimit(), orderStex.getOrderDir(), orderStex.getParty().getName(), orderStex.getQtyExec());
+			jsonOrders.add(jsonOrder);
+		}
+		return jsonOrders;
 	}
 
 //	@RequestMapping(value = "/user", method = RequestMethod.GET)
