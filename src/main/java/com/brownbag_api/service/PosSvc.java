@@ -67,7 +67,7 @@ public class PosSvc {
 	}
 
 	public ObjPosMacc createPosMacc(double qty, ObjAsset assetCurry, ObjParty party) {
-		ObjPosMacc posMacc = new ObjPosMacc(qty, assetCurry, party);
+		ObjPosMacc posMacc = new ObjPosMacc(qty, assetCurry, party, 1);
 		return posRepo.save(posMacc);
 	}
 
@@ -138,7 +138,7 @@ public class PosSvc {
 		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, orderPay.getQty(), EBookingDir.DEBIT, partyPayer));
 
 		// BOOKING
-		return bookingSvc.createBooking(orderPay, orderPay.getPosSend(), EBookingDir.DEBIT, balTrxList);
+		return bookingSvc.createBooking(orderPay, orderPay.getPosSend(), EBookingDir.DEBIT, balTrxList, orderPay.getQty());
 
 	}
 
@@ -155,7 +155,7 @@ public class PosSvc {
 				.add(new BalTrxTrans(EBalSheetItemType.EQUITY, orderPay.getQty(), EBookingDir.CREDIT, partyRecipient));
 
 		// BOOKING
-		return bookingSvc.createBooking(orderPay, orderPay.getPosRcv(), EBookingDir.CREDIT, balTrxList);
+		return bookingSvc.createBooking(orderPay, orderPay.getPosRcv(), EBookingDir.CREDIT, balTrxList, orderPay.getQty());
 
 	}
 
@@ -171,7 +171,7 @@ public class PosSvc {
 		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, orderCreateMon.getQty(), EBookingDir.CREDIT, party));
 
 		// BOOKING
-		return bookingSvc.createBooking(orderCreateMon, orderCreateMon.getPosRcv(), EBookingDir.CREDIT, balTrxList);
+		return bookingSvc.createBooking(orderCreateMon, orderCreateMon.getPosRcv(), EBookingDir.CREDIT, balTrxList, orderCreateMon.getQty());
 	}
 
 	// -----------------------------------------------------------------
@@ -194,25 +194,25 @@ public class PosSvc {
 		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, qty, EBookingDir.DEBIT, partyDebtor));
 
 		// BOOKING
-		return (ObjPosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoan(), EBookingDir.CREDIT, balTrxList);
+		return (ObjPosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoan(), EBookingDir.CREDIT, balTrxList, orderLoan.getQty());
 	}
 
 	// -----------------------------------------------------------------
 	// STEX - CREDIT POS STEX (BUY Order)
 	// -----------------------------------------------------------------
-	public ObjPosStex creditPosStex(OrderStex orderStex, ExecStex execStex) {
+	public ObjPosStex creditPosStex(OrderStex orderBuy, ExecStex execStex) {
 
 		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
 		// CREDIT STOCKS - BUYER
 		balTrxList.add(new BalTrxTrans(EBalSheetItemType.STOCKS, execStex.getAmtExec(), EBookingDir.CREDIT,
-				orderStex.getParty()));
+				orderBuy.getParty()));
 
 		// CREDIT EQUITY - BUYER
 		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, execStex.getAmtExec(), EBookingDir.CREDIT,
-				orderStex.getParty()));
+				orderBuy.getParty()));
 
 		// BOOKING
-		return (ObjPosStex) bookingSvc.createBooking(orderStex, execStex.getPosRcv(), EBookingDir.CREDIT, balTrxList);
+		return (ObjPosStex) bookingSvc.createBooking(orderBuy, execStex.getPosRcv(), EBookingDir.CREDIT, balTrxList, orderBuy.getQty());
 
 	}
 
@@ -230,7 +230,7 @@ public class PosSvc {
 				orderSell.getParty()));
 
 		// BOOKING
-		return (ObjPosStex) bookingSvc.createBooking(orderSell, execStex.getPosSend(), EBookingDir.DEBIT, balTrxList);
+		return (ObjPosStex) bookingSvc.createBooking(orderSell, execStex.getPosSend(), EBookingDir.DEBIT, balTrxList , orderSell.getQty());
 
 	}
 
@@ -249,14 +249,14 @@ public class PosSvc {
 				orderSell.getParty()));
 
 		// BOOKING
-		return (ObjPosMacc) bookingSvc.createBooking(orderSell, maccSeller, EBookingDir.CREDIT, balTrxList);
+		return (ObjPosMacc) bookingSvc.createBooking(orderSell, maccSeller, EBookingDir.CREDIT, balTrxList, execStex.getAmtExec());
 	}
 
 	// -----------------------------------------------------------------
 	// STEX - DEBIT POS MACC (BUY Order)
 	// -----------------------------------------------------------------
 	public ObjPosMacc debitPosMacc(OrderStex orderBuy, ExecStex execStex) {
-		ObjPosMacc maccBuyer = partySvc.getMacc(orderBuy.getParty());
+		
 		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
 		// CREDIT CASH- SELLER
 		balTrxList.add(new BalTrxTrans(EBalSheetItemType.CASH, execStex.getAmtExec(), EBookingDir.DEBIT,
@@ -267,7 +267,8 @@ public class PosSvc {
 				orderBuy.getParty()));
 
 		// BOOKING
-		return (ObjPosMacc) bookingSvc.createBooking(orderBuy, maccBuyer, EBookingDir.DEBIT, balTrxList);
+		ObjPosMacc maccBuyer = partySvc.getMacc(orderBuy.getParty());
+		return (ObjPosMacc) bookingSvc.createBooking(orderBuy, maccBuyer, EBookingDir.DEBIT, balTrxList, execStex.getAmtExec());
 	}
 
 }

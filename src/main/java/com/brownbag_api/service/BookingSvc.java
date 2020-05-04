@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.enums.EBalSheetSectionType;
 import com.brownbag_api.model.enums.EBookingDir;
+import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.jpa.BalTrx;
 import com.brownbag_api.model.jpa.Booking;
 import com.brownbag_api.model.jpa.ObjBalSheetItem;
@@ -44,10 +45,10 @@ public class BookingSvc {
 	private LogSvc logSvc;
 
 	public ObjPos createBooking(Order order, ObjPos pos, EBookingDir eBookingDir,
-			ArrayList<BalTrxTrans> balTrxTransientList) {
+			ArrayList<BalTrxTrans> balTrxTransientList, double bookQty) {
 
-		double orderQty = order.getQty();
-		orderQty = eBookingDir == EBookingDir.CREDIT ? orderQty : -orderQty;
+		bookQty = bookQty > 0 ? bookQty : order.getQty();
+		bookQty = eBookingDir == EBookingDir.CREDIT ? bookQty : -bookQty;
 
 		double posQty = pos.getQty();
 		int finYear = UtilDate.getFinYear();
@@ -56,7 +57,7 @@ public class BookingSvc {
 		double balTrxLiabEquity = 0;
 
 		// CREATE BOOKING
-		Booking booking = new Booking(order, posQty, orderQty, posQty + orderQty, pos, order.getAdvText());
+		Booking booking = new Booking(order, posQty, bookQty, posQty + bookQty, pos, order.getAdvText());
 		booking = bookingRepo.save(booking);
 
 		// GET BALANCE SHEET (Instanciate if not exists)

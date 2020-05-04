@@ -25,9 +25,8 @@ public class ObjPosMacc extends ObjPos implements Serializable {
 	public ObjPosMacc() {
 	}
 
-	public ObjPosMacc(@NotNull double qty, @NotNull ObjAsset assetCurry, @NotNull ObjParty owner) {
-		super(qty, 0, assetCurry, owner);
+	public ObjPosMacc(@NotNull double qty, @NotNull ObjAsset assetCurry, @NotNull ObjParty owner, double priceAvg) {
+		super(qty, 0, assetCurry, owner, priceAvg > 0 ? priceAvg : 1);
 	}
-
 
 }

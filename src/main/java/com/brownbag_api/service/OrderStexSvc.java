@@ -47,6 +47,9 @@ public class OrderStexSvc extends OrderSvc {
 	private AssetRepo assetRepo;
 
 	@Autowired
+	private AssetSvc assetSvc;
+
+	@Autowired
 	private OrderSvc orderSvc;
 
 	@Autowired
@@ -131,18 +134,21 @@ public class OrderStexSvc extends OrderSvc {
 			return;
 		}
 		if (orderBuy.getOrderStatus() == EOrderStatus.EXEC_FULL) {
-			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: BUY Order is already in Status 'Fully Executed'.");
+			logSvc.write(
+					"OrderStexSvc.matchOrders: Cannot match orders: BUY Order is already in Status 'Fully Executed'.");
 			return;
 		}
 		if (orderSell.getOrderStatus() == EOrderStatus.EXEC_FULL) {
-			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: SELL Order is already in Status 'Fully Executed'.");
+			logSvc.write(
+					"OrderStexSvc.matchOrders: Cannot match orders: SELL Order is already in Status 'Fully Executed'.");
 		}
 		ObjParty partySeller = orderSell.getParty();
 		ObjParty partyBuyer = orderBuy.getParty();
 		ObjPosStex posSend = posSvc.getByAssetAndParty(orderSell.getAsset(), partySeller); // Instanciates if not exists
 		ObjPosStex posRcv = posSvc.getByAssetAndParty(orderBuy.getAsset(), partyBuyer); // Instanciates if not exists
 
-		int qtyExec = (int) (orderBuy.getQtyOpn() < orderSell.getQtyOpn() ? orderBuy.getQtyOpn() : orderSell.getQtyOpn());
+		int qtyExec = (int) (orderBuy.getQtyOpn() < orderSell.getQtyOpn() ? orderBuy.getQtyOpn()
+				: orderSell.getQtyOpn());
 
 		String book_text = "Buyer: " + partyBuyer.getName() + " Seller: " + partySeller.getName() + " Qty: " + qtyExec;
 
@@ -169,8 +175,19 @@ public class OrderStexSvc extends OrderSvc {
 		// BOOK POSITIONS - STEX
 		ObjPosStex creditPos = posSvc.creditPosStex(orderBuy, execStex);
 
+		// IF NOT IPO
 		if (orderSell.getOrderType() != EOrderType.STEX_IPO) {
+
+			// REMOVE ASSETS FROM SELLER
 			ObjPosStex debitPos = posSvc.debitPosStex(orderSell, execStex);
+
+			// RELASE POS BLOCK - SHARE
+			posSend.lowerQtyBlocked(qtyExec);
+			posSvc.save(posSend);
+		} else {
+			ObjAsset asset = orderSell.getAsset();
+			asset.raiseTotalShares(qtyExec);
+			assetSvc.save(asset);
 		}
 
 		// ADJUST EXEC QTY - ORDER
@@ -180,16 +197,12 @@ public class OrderStexSvc extends OrderSvc {
 		orderBuy = orderStexRepo.save(orderBuy);
 
 		// BOOK POSITIONS - MACC
-		ObjPosMacc maccBuyer = posSvc.creditPosMacc(orderSell, execStex);
-		ObjPosMacc maccSeller = posSvc.debitPosMacc(orderBuy, execStex);
-
-		// RELASE POS BLOCK - SHARE
-		posSend.lowerQtyBlocked(qtyExec);
-		posSvc.save(posSend);
+		ObjPosMacc maccSeller = posSvc.creditPosMacc(orderSell, execStex);
+		ObjPosMacc maccBuyer = posSvc.debitPosMacc(orderBuy, execStex);
 
 		// RELASE POS BLOCK - MACC
-		maccSeller.lowerQtyBlocked(qtyExec);
-		posSvc.save(maccSeller);
+		maccBuyer.lowerQtyBlocked(execStex.getQtyExec() * orderBuy.getPriceLimit());
+		posSvc.save(maccBuyer);
 
 		if (creditPos != null) {
 
@@ -206,6 +219,7 @@ public class OrderStexSvc extends OrderSvc {
 			}
 		}
 
+		// TODO: Cleanup if order fails
 	}
 
 	public List<OrderStex> getByAsset(ObjAsset asset) {

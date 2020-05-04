@@ -22,26 +22,16 @@ public class ObjPosStex extends ObjPos implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@NotNull
-	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
-	private double priceAvg;
 
 	public ObjPosStex() {
 	}
 
 	public ObjPosStex(@NotNull double qty, @NotNull double qtyBlocked, @NotNull ObjAsset asset, @NotNull ObjParty owner,
 			@NotNull double priceAvg) {
-		super(qty, qtyBlocked, asset, owner);
-		this.priceAvg = priceAvg;
+		super(qty, qtyBlocked, asset, owner, priceAvg);
+		
 	}
 
-	public double getPriceAvg() {
-		return priceAvg;
-	}
-
-	public void setPriceAvg(double priceAvg) {
-		this.priceAvg = priceAvg;
-	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;

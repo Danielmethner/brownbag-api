@@ -29,7 +29,7 @@ public class ObjPosLoan extends ObjPos implements Serializable {
 
 	public ObjPosLoan(@NotNull double qty, @NotNull ObjAsset asset, @NotNull ObjParty owner, @NotNull ObjPos maccGrant,
 			@NotNull ObjPos maccRcv) {
-		super(qty, 0, asset, owner);
+		super(qty, 0, asset, owner, 1);
 		this.maccLender = maccGrant;
 		this.maccDebtor = maccRcv;
 	}

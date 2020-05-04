@@ -50,16 +50,21 @@ public class ObjPos implements Serializable {
 	@JoinColumn(name = "PARTY_ID")
 	private ObjParty party;
 
+	@NotNull
+	@Column(name = "PRICE_AVG", columnDefinition = "Decimal(20,2)")
+	private double priceAvg;
+
 	public ObjPos() {
 	}
 
-	public ObjPos(@NotNull double qty, @NotNull double qtyBlocked, @NotNull ObjAsset asset, @NotNull ObjParty owner) {
+	public ObjPos(@NotNull double qty, @NotNull double qtyBlocked, @NotNull ObjAsset asset, @NotNull ObjParty owner, @NotNull double priceAvg) {
 		super();
 		this.qty = qty;
 		this.qtyBlocked = qtyBlocked;
 		this.asset = asset;
 		this.party = owner;
 		this.name = genName();
+		this.priceAvg = priceAvg;
 	}
 
 	private String genName() {
@@ -126,5 +131,13 @@ public class ObjPos implements Serializable {
 	public ObjPos lowerQtyBlocked(double qty) {
 		setQtyBlocked(getQtyBlocked() - qty);
 		return this;
+	}
+
+	public double getPriceAvg() {
+		return priceAvg;
+	}
+
+	public void setPriceAvg(double priceAvg) {
+		this.priceAvg = priceAvg;
 	}
 }
