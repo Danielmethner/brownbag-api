@@ -145,9 +145,9 @@ public class OrderStexSvc extends OrderSvc {
 		// CALCULATE EXECUTION PRICE
 		double execPrice = (orderBuy.getPriceLimit() + orderSell.getPriceLimit()) / 2;
 
-		// ADJUST AVG_PRICE - BUYORDER
-		double newAvgBuyPrice = (posRcv.getQty() * posRcv.getPriceAvg() + orderBuy.getQty() * orderBuy.getPriceLimit())
-				/ (posRcv.getQty() + orderBuy.getQty());
+		// ADJUST AVG_PRICE - POS OF BUYORDER
+		double newAvgBuyPrice = (posRcv.getQty() * posRcv.getPriceAvg() + qtyExec * execPrice)
+				/ (posRcv.getQty() + qtyExec);
 		posRcv.setPriceAvg(newAvgBuyPrice);
 		posRcv = (ObjPosStex) posSvc.save(posRcv);
 
@@ -155,12 +155,13 @@ public class OrderStexSvc extends OrderSvc {
 		ExecStex execStex = new ExecStex(posSend, posRcv, orderSell, orderBuy, book_text, qtyExec, execPrice);
 		execStexRepo.save(execStex);
 
-		// BOOK POSITIONS - STEX
+		// BOOK POSITIONS - STEX BUY
 		ObjPosStex creditPos = posSvc.creditPosStex(orderBuy, execStex);
 
 		// IF NOT IPO
 		if (orderSell.getOrderType() != EOrderType.STEX_IPO) {
 
+			// BOOK POSITIONS - STEX SELL
 			posSvc.debitPosStex(orderSell, execStex);
 
 			// RELASE POS BLOCK - SHARE

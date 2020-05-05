@@ -16,6 +16,8 @@ public class JsonObjBalSheetSection {
 
 	private double qty;
 
+	private String style;
+
 	private List<ObjBalSheetItem> items;
 
 	public JsonObjBalSheetSection(ObjBalSheetSection objBalSheetSection, List<ObjBalSheetItem> items) {
@@ -69,6 +71,14 @@ public class JsonObjBalSheetSection {
 
 	public void setItems(List<ObjBalSheetItem> items) {
 		this.items = items;
+	}
+
+	public String getStyle() {
+		return style;
+	}
+
+	public void setStyle(String style) {
+		this.style = style;
 	}
 
 }

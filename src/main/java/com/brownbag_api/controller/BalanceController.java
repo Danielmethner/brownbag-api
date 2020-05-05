@@ -4,16 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.enums.EBalSheetSectionType;
 import com.brownbag_api.model.jpa.ObjBalSheet;
+import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.json.JsonObjBalSheet;
+import com.brownbag_api.model.json.JsonObjBalSheetSection;
 import com.brownbag_api.repo.BalSheetRepo;
+import com.brownbag_api.repo.PartyRepo;
+import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.BalSheetSectionSvc;
+import com.brownbag_api.service.BalSheetSvc;
+import com.brownbag_api.util.UtilDate;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -22,21 +30,46 @@ public class BalanceController {
 
 	@Autowired
 	private BalSheetRepo balSheetRepo;
+	
+	@Autowired
+	private BalSheetSvc balSheetSvc;
+	
+	@Autowired
+	private PartyRepo partyRepo;
+	
+	@Autowired
+	private AssetSvc assetSvc;
 
 	@Autowired
 	private BalSheetSectionSvc balSheetSectionSvc;
 
+	private JsonObjBalSheet jpaToJson(ObjBalSheet jpaBalSheet) {
+
+		JsonObjBalSheet jsonBalSheet = new JsonObjBalSheet(jpaBalSheet);
+		List<JsonObjBalSheetSection> balSheetSections = new ArrayList<JsonObjBalSheetSection>();
+		JsonObjBalSheetSection assets = balSheetSectionSvc.getByBalSheetAndSection(jpaBalSheet,
+				EBalSheetSectionType.ASSETS);
+		assets.setStyle("bg-success");
+		balSheetSections.add(assets);
+
+		JsonObjBalSheetSection liablities = balSheetSectionSvc.getByBalSheetAndSection(jpaBalSheet,
+				EBalSheetSectionType.LIABILITIES);
+		liablities.setStyle("bg-danger");
+		balSheetSections.add(liablities);
+
+		JsonObjBalSheetSection equity = balSheetSectionSvc.getByBalSheetAndSection(jpaBalSheet,
+				EBalSheetSectionType.EQUITY);
+		equity.setStyle("bg-primary");
+		balSheetSections.add(equity);
+
+		jsonBalSheet.setSections(balSheetSections);
+		return jsonBalSheet;
+	}
+
 	private List<JsonObjBalSheet> jpaToJson(List<ObjBalSheet> jpaBalSheets) {
 		List<JsonObjBalSheet> jsonBalSheets = new ArrayList<JsonObjBalSheet>();
 		for (ObjBalSheet jpaBalSheet : jpaBalSheets) {
-			JsonObjBalSheet jsonBalSheet = new JsonObjBalSheet(jpaBalSheet);
-			jsonBalSheet.setSectionAssets(
-					balSheetSectionSvc.getByBalSheetAndSection(jpaBalSheet, EBalSheetSectionType.ASSETS));
-			jsonBalSheet.setSectionLiablities(
-					balSheetSectionSvc.getByBalSheetAndSection(jpaBalSheet, EBalSheetSectionType.LIABILITIES));
-			jsonBalSheet.setSectionEquity(
-					balSheetSectionSvc.getByBalSheetAndSection(jpaBalSheet, EBalSheetSectionType.EQUITY));
-			jsonBalSheets.add(jsonBalSheet);
+			jsonBalSheets.add(jpaToJson(jpaBalSheet));
 		}
 		return jsonBalSheets;
 	}
@@ -47,5 +80,31 @@ public class BalanceController {
 		List<ObjBalSheet> jpaBalSheets = balSheetRepo.findAll();
 		return jpaToJson(jpaBalSheets);
 	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<?> getById(@PathVariable Long id) {
+		ObjBalSheet jpaBalSheet = balSheetRepo.findById(id).orElse(null);
+
+		if (jpaBalSheet == null) {
+			return ResponseEntity.noContent().build();
+		} else {
+			return ResponseEntity.ok(jpaToJson(jpaBalSheet));
+		}
+
+	}
+	
+	@GetMapping("/party/{id}")
+	public ResponseEntity<?> getBalSheetByPartyId(@PathVariable Long id) {
+		ObjParty party = partyRepo.getOne(id);
+		ObjBalSheet jpaBalSheet = balSheetSvc.getBalSheet(party, UtilDate.getFinYear());
+
+		if (jpaBalSheet == null) {
+			return ResponseEntity.noContent().build();
+		} else {
+			return ResponseEntity.ok(jpaToJson(jpaBalSheet));
+		}
+
+	}
+
 
 }

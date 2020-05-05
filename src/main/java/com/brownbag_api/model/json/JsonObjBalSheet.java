@@ -1,6 +1,7 @@
 package com.brownbag_api.model.json;
 
 import java.util.Date;
+import java.util.List;
 
 import com.brownbag_api.model.jpa.ObjBalSheet;
 
@@ -16,9 +17,7 @@ public class JsonObjBalSheet {
 
 	private int finYear;
 
-	private JsonObjBalSheetSection sectionAssets;
-	private JsonObjBalSheetSection sectionLiablities;
-	private JsonObjBalSheetSection sectionEquity;
+	private List<JsonObjBalSheetSection> sections;
 
 	public JsonObjBalSheet(ObjBalSheet objBalSheet) {
 		this.id = objBalSheet.getId();
@@ -68,28 +67,14 @@ public class JsonObjBalSheet {
 		this.partyName = partyName;
 	}
 
-	public JsonObjBalSheetSection getSectionAssets() {
-		return sectionAssets;
+	public List<JsonObjBalSheetSection> getSections() {
+		return sections;
 	}
 
-	public void setSectionAssets(JsonObjBalSheetSection sectionAssets) {
-		this.sectionAssets = sectionAssets;
+	public void setSections(List<JsonObjBalSheetSection> sections) {
+		this.sections = sections;
 	}
-
-	public JsonObjBalSheetSection getSectionLiablities() {
-		return sectionLiablities;
-	}
-
-	public void setSectionLiablities(JsonObjBalSheetSection sectionLiablities) {
-		this.sectionLiablities = sectionLiablities;
-	}
-
-	public JsonObjBalSheetSection getSectionEquity() {
-		return sectionEquity;
-	}
-
-	public void setSectionEquity(JsonObjBalSheetSection sectionEquities) {
-		this.sectionEquity = sectionEquities;
-	}
+	
+	
 
 }

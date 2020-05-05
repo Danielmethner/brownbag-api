@@ -15,6 +15,9 @@ public class JsonObjAsset {
 	private int totalShares;
 	private Date timestampCreate;
 	private double nomVal;
+	private long issuerId;
+
+	private String issuerName;
 
 	public JsonObjAsset(ObjAsset jpaAsset) {
 		this.id = jpaAsset.getId();
@@ -24,6 +27,8 @@ public class JsonObjAsset {
 		this.totalShares = jpaAsset.getTotalShares();
 		this.timestampCreate = jpaAsset.getTimestampCreate();
 		this.nomVal = jpaAsset.getNomVal();
+		this.issuerId = jpaAsset.getIssuer().getId();
+		this.setIssuerName(jpaAsset.getIssuer().getName());
 	}
 
 	public double getId() {
@@ -80,6 +85,22 @@ public class JsonObjAsset {
 
 	public void setNomVal(double nomVal) {
 		this.nomVal = nomVal;
+	}
+
+	public long getIssuerId() {
+		return issuerId;
+	}
+
+	public void setIssuerId(long issuerId) {
+		this.issuerId = issuerId;
+	}
+
+	public String getIssuerName() {
+		return issuerName;
+	}
+
+	public void setIssuerName(String issuerName) {
+		this.issuerName = issuerName;
 	}
 
 }

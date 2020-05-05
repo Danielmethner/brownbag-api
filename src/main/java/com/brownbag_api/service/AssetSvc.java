@@ -62,4 +62,8 @@ public class AssetSvc {
 			posSvc.save(posStex);
 		}
 	}
+
+	public ObjAsset getById(Long assetId) {
+		return assetRepo.getOne(assetId);
+	}
 }

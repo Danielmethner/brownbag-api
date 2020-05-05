@@ -1,7 +1,9 @@
 package com.brownbag_api.model.json;
 
 import com.brownbag_api.model.enums.EOrderDir;
-import com.brownbag_api.model.jpa.Order;
+import com.brownbag_api.model.enums.EOrderStatus;
+import com.brownbag_api.model.enums.EOrderType;
+import com.brownbag_api.model.jpa.OrderStex;
 
 public class JsonOrderStex extends JsonOrder {
 
@@ -13,8 +15,17 @@ public class JsonOrderStex extends JsonOrder {
 
 	private double qtyExec;
 
-	public JsonOrderStex(Order order, double priceLimit, EOrderDir orderDir, String partyName, double qtyExec) {
-		super(order);
+	public JsonOrderStex(OrderStex orderStex) {
+		super(orderStex);
+		this.priceLimit = orderStex.getPriceLimit();
+		this.orderDir = orderStex.getOrderDir();
+		this.partyName = orderStex.getParty().getName();
+		this.qtyExec = orderStex.getQtyExec();
+	}
+
+	public JsonOrderStex(double qty, EOrderType orderType, EOrderStatus orderStatus, Long assetId, Long userId,
+			double priceLimit, EOrderDir orderDir, String partyName, double qtyExec) {
+		super(qty, orderType, orderStatus, assetId, userId);
 		this.priceLimit = priceLimit;
 		this.orderDir = orderDir;
 		this.partyName = partyName;

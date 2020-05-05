@@ -4,15 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
+import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.json.JsonObjPos;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.PosRepo;
+import com.brownbag_api.repo.UserRepo;
+import com.brownbag_api.security.svc.UserDetailsImpl;
 import com.brownbag_api.service.UserSvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -22,6 +29,9 @@ public class PosController {
 
 	@Autowired
 	private PosRepo posRepo;
+
+	@Autowired
+	private UserRepo userRepo;
 
 	@Autowired
 	PartyRepo lERepo;
@@ -44,16 +54,17 @@ public class PosController {
 		return jpaToJson(jpaPosList);
 	}
 
-//	@RequestMapping(value = "/user", method = RequestMethod.GET)
-//	@ResponseBody
-//	public List<Position> getByUser(Authentication authentication) {
-//
-//		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-//		User user = userRepo.findById(userDetailsImpl.getId())
-//				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
-//
-//		List<Position> positions = posRepo.findByOwner(.getNaturalPerson());
-//		return positions ;
-//	}
+	@RequestMapping(value = "/user", method = RequestMethod.GET)
+	@ResponseBody
+	public List<JsonObjPos> getByUser(Authentication authentication) {
+
+		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
+		ObjUser user = userRepo.findById(userDetailsImpl.getId())
+				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
+		ObjParty partyPerson = userSvc.getNaturalPerson(user);
+		List<ObjPos> jpaPosList = posRepo.findByParty(partyPerson);
+
+		return jpaToJson(jpaPosList);
+	}
 
 }

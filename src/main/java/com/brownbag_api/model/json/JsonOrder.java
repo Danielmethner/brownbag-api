@@ -18,12 +18,15 @@ public class JsonOrder {
 
 	private String advText;
 
+	private Long assetId;
+
 	private String assetName;
 
 	private Date timestampCreate;
 
 	private Date timestampModified;
 
+	private Long userId;
 	private String userName;
 
 	public JsonOrder(Order order) {
@@ -32,10 +35,21 @@ public class JsonOrder {
 		this.orderType = order.getOrderType();
 		this.orderStatus = order.getOrderStatus();
 		this.advText = order.getAdvText();
+		this.assetId = order.getAsset().getId();
 		this.assetName = order.getAsset().getName();
 		this.timestampCreate = order.getTimestampCreate();
 		this.timestampModified = order.getTimestampModified();
 		this.userName = order.getUser().getName();
+		this.userId = order.getUser().getId();
+	}
+
+	public JsonOrder(double qty, EOrderType orderType, EOrderStatus orderStatus, Long assetId, Long userId) {
+		super();
+		this.qty = qty;
+		this.orderType = orderType;
+		this.orderStatus = orderStatus;
+		this.assetId = assetId;
+		this.userId = userId;
 	}
 
 	public Long getId() {
@@ -108,6 +122,14 @@ public class JsonOrder {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public Long getAssetId() {
+		return assetId;
+	}
+
+	public void setAssetId(Long assetId) {
+		this.assetId = assetId;
 	}
 
 }

@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.jpa.Order;
-import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.model.json.JsonOrder;
-import com.brownbag_api.model.json.JsonOrderStex;
 import com.brownbag_api.repo.OrderRepo;
 import com.brownbag_api.repo.OrderStexRepo;
 import com.brownbag_api.repo.UserRepo;
@@ -37,18 +35,6 @@ public class OrderController {
 		List<JsonOrder> jsonOrders = new ArrayList<JsonOrder>();
 		for (Order order : jpaOrders) {
 			JsonOrder jsonOrder = new JsonOrder(order);
-			jsonOrders.add(jsonOrder);
-		}
-		return jsonOrders;
-	}
-
-	@GetMapping("/stex/all")
-	public List<JsonOrderStex> getAllStex() {
-		List<OrderStex> jpaOrdersStex = orderStexRepo.findAll();
-		List<JsonOrderStex> jsonOrders = new ArrayList<JsonOrderStex>();
-		for (OrderStex orderStex : jpaOrdersStex) {
-			JsonOrderStex jsonOrder = new JsonOrderStex(orderStex, orderStex.getPriceLimit(), orderStex.getOrderDir(),
-					orderStex.getParty().getName(), orderStex.getQtyExec());
 			jsonOrders.add(jsonOrder);
 		}
 		return jsonOrders;

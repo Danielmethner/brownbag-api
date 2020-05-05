@@ -19,16 +19,5 @@ public class UserController {
 	@Autowired
 	UserSvc userSvc;
 
-//	@RequestMapping(value = "/user", method = RequestMethod.GET)
-//	@ResponseBody
-//	public List<Position> getByUser(Authentication authentication) {
-//
-//		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-//		User user = userRepo.findById(userDetailsImpl.getId())
-//				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
-//
-//		List<Position> positions = posRepo.findByOwner(.getNaturalPerson());
-//		return positions ;
-//	}
 
 }
