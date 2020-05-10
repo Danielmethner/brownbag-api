@@ -17,6 +17,7 @@ import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderStex;
+import com.brownbag_api.model.json.JsonObjAsset;
 import com.brownbag_api.model.json.JsonOrderStex;
 import com.brownbag_api.repo.OrderStexRepo;
 import com.brownbag_api.repo.PosRepo;
@@ -33,12 +34,12 @@ import com.brownbag_api.service.UserSvc;
 public class OrderStexController {
 
 	@Autowired
-	private PosRepo posRepo;
+	PosRepo posRepo;
 
 	@Autowired
-	private OrderStexRepo orderStexRepo;
+	OrderStexRepo orderStexRepo;
 	@Autowired
-	private OrderStexSvc orderStexSvc;
+	OrderStexSvc orderStexSvc;
 
 	@Autowired
 	UserRepo userRepo;
@@ -52,33 +53,38 @@ public class OrderStexController {
 	@Autowired
 	PartySvc partySvc;
 
-	@GetMapping("/all")
-	public List<JsonOrderStex> getAllPay() {
-		List<OrderStex> jpaOrdersPay = orderStexRepo.findAll();
-		List<JsonOrderStex> jsonOrders = new ArrayList<JsonOrderStex>();
-		for (OrderStex orderPay : jpaOrdersPay) {
-			JsonOrderStex jsonOrder = new JsonOrderStex(orderPay);
-			jsonOrders.add(jsonOrder);
+	private List<JsonOrderStex> jpaToJson(List<OrderStex> jpaOrderStexList) {
+		List<JsonOrderStex> jsonOrderStexList = new ArrayList<JsonOrderStex>();
+		for (OrderStex jpaOrderStex : jpaOrderStexList) {
+			JsonOrderStex jsonOrderStex = new JsonOrderStex(jpaOrderStex);
+			jsonOrderStexList.add(jsonOrderStex);
 		}
-		return jsonOrders;
+		return jsonOrderStexList;
 	}
 
-//	@RequestMapping(value = "/user", method = RequestMethod.GET)
-//	@ResponseBody
-//	public List<Order> getByUser(Authentication authentication) {
-//
-//		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-//		User user = userRepo.findById(userDetailsImpl.getId())
-//				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
-//		List<Order> orders = orderRepo.findByUser(user);
-//		return orders;
-//	}
+	private ObjUser getByAuthentication(Authentication authentication) {
+		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
+		ObjUser objUser = userRepo.findById(userDetailsImpl.getId())
+				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
+		return objUser;
+	}
+
+	@GetMapping("/all")
+	public List<JsonOrderStex> getAllStex() {
+		List<OrderStex> jpaOrderStexList = orderStexRepo.findAll();
+		return jpaToJson(jpaOrderStexList);
+	}
+
+	@GetMapping("/user")
+	public List<JsonOrderStex> getByUser(Authentication authentication) {
+		ObjUser user = getByAuthentication(authentication);
+		List<OrderStex> jpaOrderStexList = orderStexRepo.findByUser(user);
+		return jpaToJson(jpaOrderStexList);
+	}
 
 	@PostMapping(value = "/place", consumes = "application/json")
 	public ResponseEntity<?> placeOrder(@RequestBody JsonOrderStex jsonOrderStex, Authentication authentication) {
-		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-		ObjUser user = userRepo.findById(userDetailsImpl.getId())
-				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
+		ObjUser user = getByAuthentication(authentication);
 		ObjParty party = userSvc.getNaturalPerson(user);
 		ObjAsset asset = assetSvc.getById(jsonOrderStex.getAssetId());
 

@@ -25,7 +25,7 @@ import com.brownbag_api.service.UserSvc;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/pos")
-public class PosController {
+public class ObjPosController {
 
 	@Autowired
 	private PosRepo posRepo;
@@ -38,6 +38,13 @@ public class PosController {
 
 	@Autowired
 	UserSvc userSvc;
+	
+	private ObjUser getByAuthentication(Authentication authentication) {
+		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
+		ObjUser objUser = userRepo.findById(userDetailsImpl.getId())
+				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
+		return objUser;
+	}
 
 	private List<JsonObjPos> jpaToJson(List<ObjPos> jpaPosList) {
 		List<JsonObjPos> jsonPosList = new ArrayList<JsonObjPos>();
@@ -54,13 +61,20 @@ public class PosController {
 		return jpaToJson(jpaPosList);
 	}
 
-	@RequestMapping(value = "/user", method = RequestMethod.GET)
-	@ResponseBody
+	@GetMapping("/user")
 	public List<JsonObjPos> getByUser(Authentication authentication) {
 
-		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-		ObjUser user = userRepo.findById(userDetailsImpl.getId())
-				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
+		ObjUser user = getByAuthentication(authentication);
+		ObjParty partyPerson = userSvc.getNaturalPerson(user);
+		List<ObjPos> jpaPosList = posRepo.findByParty(partyPerson);
+
+		return jpaToJson(jpaPosList);
+	}
+	
+	@GetMapping("/private/user")
+	public List<JsonObjPos> getPrivateByUser(Authentication authentication) {
+
+		ObjUser user = getByAuthentication(authentication);
 		ObjParty partyPerson = userSvc.getNaturalPerson(user);
 		List<ObjPos> jpaPosList = posRepo.findByParty(partyPerson);
 

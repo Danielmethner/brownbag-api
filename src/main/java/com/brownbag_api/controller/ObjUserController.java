@@ -11,7 +11,7 @@ import com.brownbag_api.service.UserSvc;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/user")
-public class UserController {
+public class ObjUserController {
 
 	@Autowired
 	PartyRepo lERepo;

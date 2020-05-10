@@ -26,7 +26,7 @@ import com.brownbag_api.util.UtilDate;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/balsheet")
-public class BalanceController {
+public class ObjBalanceController {
 
 	@Autowired
 	private BalSheetRepo balSheetRepo;
