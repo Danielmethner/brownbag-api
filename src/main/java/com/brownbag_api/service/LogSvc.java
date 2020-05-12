@@ -3,6 +3,7 @@ package com.brownbag_api.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.jpa.Log;
@@ -22,6 +23,11 @@ public class LogSvc extends OrderSvc {
 
 	public List<Log> getAll() {
 		return logRepo.findAll();
+	}
+
+	public List<Log> getRecentEntries() {
+		return logRepo.findFirst20ByOrderByTimestampCreateDesc();
+
 	}
 
 }

@@ -20,6 +20,7 @@ import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.svc.UserDetailsImpl;
+import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.UserSvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -28,16 +29,29 @@ import com.brownbag_api.service.UserSvc;
 public class ObjPartyController {
 
 	@Autowired
-	private PartyRepo partyRepo;
+	PartyRepo partyRepo;
 
 	@Autowired
-	private UserRepo userRepo;
+	PartySvc partySvc;
+
+	@Autowired
+	UserRepo userRepo;
 
 	@Autowired
 	PartyRepo lERepo;
 
 	@Autowired
 	UserSvc userSvc;
+	
+	/*
+	 * GET OBJ_USER BY AUTH OBJ
+	 */
+	private ObjUser getByAuthentication(Authentication authentication) {
+		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
+		ObjUser objUser = userRepo.findById(userDetailsImpl.getId())
+				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
+		return objUser;
+	}
 
 	private List<JsonObjParty> jpaToJson(List<ObjParty> jpaPartyList) {
 		List<JsonObjParty> jsonPartyList = new ArrayList<JsonObjParty>();
@@ -52,6 +66,14 @@ public class ObjPartyController {
 	public List<JsonObjParty> getAll() {
 		List<ObjParty> jpaPartyList = partyRepo.findAll();
 		return jpaToJson(jpaPartyList);
+	}
+
+	@GetMapping("/priv")
+	public JsonObjParty getPriv(Authentication authentication) {
+		ObjUser user = getByAuthentication(authentication);
+		ObjParty jpaParty = userSvc.getNaturalPerson(user);
+		JsonObjParty jsonParty = new JsonObjParty(jpaParty);
+		return jsonParty;
 	}
 
 //	@RequestMapping(value = "/user", method = RequestMethod.GET)

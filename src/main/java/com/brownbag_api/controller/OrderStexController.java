@@ -53,6 +53,9 @@ public class OrderStexController {
 	@Autowired
 	PartySvc partySvc;
 
+	/*
+	 * CONVERT JPA TO JSON
+	 */
 	private List<JsonOrderStex> jpaToJson(List<OrderStex> jpaOrderStexList) {
 		List<JsonOrderStex> jsonOrderStexList = new ArrayList<JsonOrderStex>();
 		for (OrderStex jpaOrderStex : jpaOrderStexList) {
@@ -62,6 +65,9 @@ public class OrderStexController {
 		return jsonOrderStexList;
 	}
 
+	/*
+	 * GET OBJ_USER BY AUTH OBJ
+	 */
 	private ObjUser getByAuthentication(Authentication authentication) {
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 		ObjUser objUser = userRepo.findById(userDetailsImpl.getId())
@@ -86,8 +92,9 @@ public class OrderStexController {
 	public ResponseEntity<?> placeOrder(@RequestBody JsonOrderStex jsonOrderStex, Authentication authentication) {
 		ObjUser user = getByAuthentication(authentication);
 		ObjParty party = userSvc.getNaturalPerson(user);
-		ObjAsset asset = assetSvc.getById(jsonOrderStex.getAssetId());
+		if (jsonOrderStex.getAssetId() == null) return ResponseEntity.ok("Order could not be placed: No Asset selected!");
 
+		ObjAsset asset = assetSvc.getById(jsonOrderStex.getAssetId());
 		System.out.println("user" + user.getName());
 		System.out.println("party: " + party.getName());
 		System.out.println("asset: " + asset.getName());
