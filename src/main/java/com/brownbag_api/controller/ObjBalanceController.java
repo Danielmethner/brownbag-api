@@ -21,6 +21,7 @@ import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.BalSheetSectionSvc;
 import com.brownbag_api.service.BalSheetSvc;
+import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.util.UtilDate;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -35,7 +36,7 @@ public class ObjBalanceController {
 	private BalSheetSvc balSheetSvc;
 	
 	@Autowired
-	private PartyRepo partyRepo;
+	private PartySvc partySvc;
 	
 	@Autowired
 	private AssetSvc assetSvc;
@@ -94,8 +95,8 @@ public class ObjBalanceController {
 	}
 	
 	@GetMapping("/party/{id}")
-	public ResponseEntity<?> getBalSheetByPartyId(@PathVariable Long id) {
-		ObjParty party = partyRepo.getOne(id);
+	public ResponseEntity<?> getBalSheetByPartyId(@PathVariable Long partyId) {
+		ObjParty party = partySvc.getById(partyId);
 		ObjBalSheet jpaBalSheet = balSheetSvc.getBalSheet(party, UtilDate.getFinYear());
 
 		if (jpaBalSheet == null) {

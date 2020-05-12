@@ -214,4 +214,8 @@ public class OrderStexSvc extends OrderSvc {
 
 	}
 
+	public List<OrderStex> getByParty(ObjParty party) {
+		return orderStexRepo.findByParty(party);
+	}
+
 }

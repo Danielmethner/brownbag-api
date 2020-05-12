@@ -183,4 +183,8 @@ public class PartySvc {
 				party);
 
 	}
+
+	public ObjParty getById(Long partyId) {
+		return partyRepo.getOne(partyId);
+	}
 }

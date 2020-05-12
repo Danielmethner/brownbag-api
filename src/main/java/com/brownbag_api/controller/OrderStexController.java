@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +23,7 @@ import com.brownbag_api.model.json.JsonOrderStex;
 import com.brownbag_api.repo.OrderStexRepo;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.UserRepo;
+import com.brownbag_api.security.payload.response.MsgResponse;
 import com.brownbag_api.security.svc.UserDetailsImpl;
 import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.OrderStexSvc;
@@ -88,11 +90,28 @@ public class OrderStexController {
 		return jpaToJson(jpaOrderStexList);
 	}
 
+	@GetMapping("/party/{partyId}")
+	public ResponseEntity<?> getByParty(Authentication authentication, @PathVariable Long partyId) {
+
+		if (partyId == null)
+			return ResponseEntity.badRequest().body(new MsgResponse("Error: No Party ID specified!"));
+
+		ObjParty party = partySvc.getById(partyId);
+		if (party == null)
+			return ResponseEntity.badRequest()
+					.body(new MsgResponse("Error: Party with ID: " + partyId + " could not be found!"));
+
+		List<OrderStex> jpaOrderStexList = orderStexSvc.getByParty(party);
+
+		return ResponseEntity.ok(jpaToJson(jpaOrderStexList));
+	}
+
 	@PostMapping(value = "/place", consumes = "application/json")
 	public ResponseEntity<?> placeOrder(@RequestBody JsonOrderStex jsonOrderStex, Authentication authentication) {
 		ObjUser user = getByAuthentication(authentication);
 		ObjParty party = userSvc.getNaturalPerson(user);
-		if (jsonOrderStex.getAssetId() == null) return ResponseEntity.ok("Order could not be placed: No Asset selected!");
+		if (jsonOrderStex.getAssetId() == null)
+			return ResponseEntity.ok("Order could not be placed: No Asset selected!");
 
 		ObjAsset asset = assetSvc.getById(jsonOrderStex.getAssetId());
 		System.out.println("user" + user.getName());
