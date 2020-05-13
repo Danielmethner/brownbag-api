@@ -109,20 +109,19 @@ public class OrderStexController {
 	@PostMapping(value = "/place", consumes = "application/json")
 	public ResponseEntity<?> placeOrder(@RequestBody JsonOrderStex jsonOrderStex, Authentication authentication) {
 		ObjUser user = getByAuthentication(authentication);
-		ObjParty party = userSvc.getNaturalPerson(user);
+		ObjParty party = partySvc.getById(jsonOrderStex.getPartyId());
 		if (jsonOrderStex.getAssetId() == null)
 			return ResponseEntity.ok("Order could not be placed: No Asset selected!");
 
 		ObjAsset asset = assetSvc.getById(jsonOrderStex.getAssetId());
-		System.out.println("user" + user.getName());
-		System.out.println("party: " + party.getName());
-		System.out.println("asset: " + asset.getName());
-		System.out.println("getOrderDir: " + jsonOrderStex.getOrderDir());
-		System.out.println("getOrderType: " + jsonOrderStex.getOrderType());
-		System.out.println("getQty: " + jsonOrderStex.getQty());
-		System.out.println("getPriceLimit: " + jsonOrderStex.getPriceLimit());
 		OrderStex orderStex = orderStexSvc.placeNewOrder(jsonOrderStex.getOrderDir(), jsonOrderStex.getOrderType(),
 				asset, (int) jsonOrderStex.getQty(), jsonOrderStex.getPriceLimit(), user, party);
+		if (orderStex == null)
+			return ResponseEntity.badRequest()
+					.body(new MsgResponse("Error: Order could not be created: Direction: " + jsonOrderStex.getOrderDir()
+							+ " Order Type: " + jsonOrderStex.getOrderType() + " Asset: " + asset + " Quantity: "
+							+ (int) jsonOrderStex.getQty() + " Price Limit: " + jsonOrderStex.getPriceLimit()
+							+ " User: " + user + " Party: " + party + ". Please Check logs for more details."));
 		orderStexSvc.placeOrder(orderStex);
 		return ResponseEntity.ok("Order has been placed successfully!");
 	}

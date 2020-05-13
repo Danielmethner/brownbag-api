@@ -278,4 +278,8 @@ public class PosSvc {
 				execStex.getAmtExec());
 	}
 
+	public List<ObjPos> getByParty(ObjParty jpaParty) {
+		return posRepo.findByParty(jpaParty);
+	}
+
 }

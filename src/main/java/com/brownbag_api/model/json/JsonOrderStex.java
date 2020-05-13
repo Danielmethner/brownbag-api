@@ -11,6 +11,8 @@ public class JsonOrderStex extends JsonOrder {
 
 	private EOrderDir orderDir;
 
+	private Long partyId;
+	
 	private String partyName;
 
 	private double qtyExec;
@@ -20,6 +22,7 @@ public class JsonOrderStex extends JsonOrder {
 		this.priceLimit = orderStex.getPriceLimit();
 		this.orderDir = orderStex.getOrderDir();
 		this.partyName = orderStex.getParty().getName();
+		this.partyId = orderStex.getParty().getId();
 		this.qtyExec = orderStex.getQtyExec();
 	}
 
@@ -64,4 +67,13 @@ public class JsonOrderStex extends JsonOrder {
 		this.partyName = partyName;
 	}
 
+	public Long getPartyId() {
+		return partyId;
+	}
+
+	public void setPartyId(Long partyId) {
+		this.partyId = partyId;
+	}
+
+	
 }
