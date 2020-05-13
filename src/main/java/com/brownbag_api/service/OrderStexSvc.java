@@ -15,6 +15,7 @@ import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjPosStex;
 import com.brownbag_api.model.jpa.ObjUser;
+import com.brownbag_api.model.jpa.Order;
 import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.repo.ExecStexRepo;
 import com.brownbag_api.repo.OrderRepo;
@@ -244,6 +245,10 @@ public class OrderStexSvc extends OrderSvc {
 
 	public List<OrderStex> getByParty(ObjParty party) {
 		return orderStexRepo.findByParty(party);
+	}
+	
+	public List<OrderStex> getByAssetAndStatus(ObjAsset asset, EOrderStatus orderStatus) {
+		return orderStexRepo.findByAssetAndOrderStatus(asset, orderStatus);
 	}
 
 }

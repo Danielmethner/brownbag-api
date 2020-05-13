@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.enums.EOrderDir;
+import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjUser;
+import com.brownbag_api.model.jpa.Order;
 import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.model.json.JsonObjAsset;
 import com.brownbag_api.model.json.JsonOrderStex;
@@ -28,7 +30,9 @@ import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.payload.response.MsgResponse;
 import com.brownbag_api.security.svc.UserDetailsImpl;
 import com.brownbag_api.service.AssetSvc;
+import com.brownbag_api.service.LogSvc;
 import com.brownbag_api.service.OrderStexSvc;
+import com.brownbag_api.service.OrderSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
 import com.brownbag_api.service.UserSvc;
@@ -43,7 +47,10 @@ public class OrderStexController {
 
 	@Autowired
 	PosSvc posSvc;
-
+	
+	@Autowired
+	OrderSvc orderSvc;
+	
 	@Autowired
 	OrderStexRepo orderStexRepo;
 	@Autowired
@@ -60,6 +67,9 @@ public class OrderStexController {
 
 	@Autowired
 	PartySvc partySvc;
+
+	@Autowired
+	LogSvc logSvc;
 
 	/*
 	 * CONVERT JPA TO JSON
@@ -78,8 +88,8 @@ public class OrderStexController {
 	 */
 	private ObjUser getByAuthentication(Authentication authentication) {
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-		ObjUser objUser = userRepo.findById(userDetailsImpl.getId())
-				.orElseThrow(() -> new RuntimeException("ERROR API: User not found. USER.ID: " + userDetailsImpl.getId()));
+		ObjUser objUser = userRepo.findById(userDetailsImpl.getId()).orElseThrow(
+				() -> new RuntimeException("ERROR API: User not found. USER.ID: " + userDetailsImpl.getId()));
 		return objUser;
 	}
 
@@ -111,6 +121,23 @@ public class OrderStexController {
 		return ResponseEntity.ok(jpaToJson(jpaOrderStexList));
 	}
 
+	@GetMapping("/placed/asset/{assetId}")
+	public ResponseEntity<?> getPlacedByAsset(Authentication authentication, @PathVariable Long assetId) {
+
+		if (assetId == null) {
+			logSvc.write("ERROR API: No Asset ID specified!");
+			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Asset ID specified!"));
+		}
+
+		ObjAsset asset = assetSvc.getById(assetId);
+		if (asset == null)
+			return ResponseEntity.ok("ERROR API: Party with ID: " + assetId + " could not be found!");
+
+		List<OrderStex> jpaOrderStexList = orderStexSvc.getByAssetAndStatus(asset, EOrderStatus.PLACED);
+
+		return ResponseEntity.ok(jpaToJson(jpaOrderStexList));
+	}
+
 	@PostMapping(value = "/place", consumes = "application/json")
 	public ResponseEntity<?> placeOrder(@RequestBody JsonOrderStex jsonOrderStex, Authentication authentication) {
 		ObjUser user = getByAuthentication(authentication);
@@ -127,8 +154,8 @@ public class OrderStexController {
 			}
 			double avblShares = posSvc.getQtyAvbl(assetPos);
 			if (avblShares < jsonOrderStex.getQty()) {
-				return ResponseEntity.ok("ERROR API: The user does not own enough shares! Available Shares: " + avblShares
-						+ " Order Amount: " + jsonOrderStex.getQty());
+				return ResponseEntity.ok("ERROR API: The user does not own enough shares! Available Shares: "
+						+ avblShares + " Order Amount: " + jsonOrderStex.getQty());
 			}
 
 		}
@@ -137,8 +164,8 @@ public class OrderStexController {
 				asset, (int) jsonOrderStex.getQty(), jsonOrderStex.getPriceLimit(), user, party);
 
 		if (orderStex == null)
-			return ResponseEntity.ok("ERROR API: Direction: " + jsonOrderStex.getOrderDir()
-					+ " Order Type: " + jsonOrderStex.getOrderType() + " Asset: " + asset.getName() + " Quantity: "
+			return ResponseEntity.ok("ERROR API: Direction: " + jsonOrderStex.getOrderDir() + " Order Type: "
+					+ jsonOrderStex.getOrderType() + " Asset: " + asset.getName() + " Quantity: "
 					+ (int) jsonOrderStex.getQty() + " Price Limit: " + jsonOrderStex.getPriceLimit() + " User: "
 					+ user.getName() + " Party: " + party.getName() + ". Please Check logs for more details.");
 
