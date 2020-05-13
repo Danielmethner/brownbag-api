@@ -94,7 +94,7 @@ public class ObjBalanceController {
 
 	}
 	
-	@GetMapping("/party/{id}")
+	@GetMapping("/party/{partyId}")
 	public ResponseEntity<?> getBalSheetByPartyId(@PathVariable Long partyId) {
 		ObjParty party = partySvc.getById(partyId);
 		ObjBalSheet jpaBalSheet = balSheetSvc.getBalSheet(party, UtilDate.getFinYear());

@@ -212,7 +212,7 @@ public class PosSvc {
 
 		// BOOKING
 		return (ObjPosStex) bookingSvc.createBooking(orderBuy, execStex.getPosRcv(), EBookingDir.CREDIT, balTrxList,
-				orderBuy.getQty());
+				execStex.getQtyExec());
 
 	}
 
@@ -231,7 +231,7 @@ public class PosSvc {
 
 		// BOOKING
 		return (ObjPosStex) bookingSvc.createBooking(orderSell, execStex.getPosSend(), EBookingDir.DEBIT, balTrxList,
-				orderSell.getQty());
+				execStex.getQtyExec());
 
 	}
 

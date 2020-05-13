@@ -114,26 +114,45 @@ public class OrderStexSvc extends OrderSvc {
 	}
 
 	public void matchOrders(OrderStex orderBuy, OrderStex orderSell) {
+		
+		// ENSURE BUY ORDER IS NOT A SELL ORDER
 		if (orderBuy.getOrderDir() == EOrderDir.SELL) {
 			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: BUY Order has Direction 'SELL'.");
 			return;
 		}
 
+		// ENSURE SELL ORDER IS NOT A BUY ORDER
 		if (orderSell.getOrderDir() == EOrderDir.BUY) {
 			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: SELL Order has Direction 'BUY'.");
 			return;
 		}
+		
+		// ENSURE BUY ORDER IS NOT FULLY EXECUTED
 		if (orderBuy.getOrderStatus() == EOrderStatus.EXEC_FULL) {
 			logSvc.write(
 					"OrderStexSvc.matchOrders: Cannot match orders: BUY Order is already in Status 'Fully Executed'.");
 			return;
 		}
+		
+		// ENSURE SELL ORDER IS NOT FULLY EXECUTED
 		if (orderSell.getOrderStatus() == EOrderStatus.EXEC_FULL) {
 			logSvc.write(
 					"OrderStexSvc.matchOrders: Cannot match orders: SELL Order is already in Status 'Fully Executed'.");
+			return;
 		}
+		
+		// ENSURE PRICE LIMITS ARE COMPATIBLE
+		if (orderBuy.getPriceLimit() < orderSell.getPriceLimit()) {
+			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: Buy order Price: '" + orderBuy.getPriceLimit()
+					+ " is lower than Sell order Price: '" + orderSell.getPriceLimit() + "'");
+			return;
+		}
+		
+		// GET TRADING PARTIES
 		ObjParty partySeller = orderSell.getParty();
 		ObjParty partyBuyer = orderBuy.getParty();
+		
+		// GET STEX POSITIONS
 		ObjPosStex posSend = (ObjPosStex) posSvc.getByAssetAndParty(orderSell.getAsset(), partySeller); // Instanciates if not exists
 		if (posSend == null)
 			posSend = posSvc.createPosStex(orderSell.getAsset(), partySeller);
@@ -142,22 +161,19 @@ public class OrderStexSvc extends OrderSvc {
 		if (posRcv == null)
 			posRcv = posSvc.createPosStex(orderBuy.getAsset(), partyBuyer);
 
+		// DETERMINE EXECUTION QTY
 		int qtyExec = (int) (orderBuy.getQtyOpn() < orderSell.getQtyOpn() ? orderBuy.getQtyOpn()
 				: orderSell.getQtyOpn());
 
+		// BOOK TEXT
 		String book_text = "Buyer: " + partyBuyer.getName() + " Seller: " + partySeller.getName() + " Qty: " + qtyExec;
 
-		// ENSURE PRICE LIMITS ARE COMPATIBLE
-		if (orderBuy.getPriceLimit() < orderSell.getPriceLimit()) {
-			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: Buy order Price: '" + orderBuy.getPriceLimit()
-					+ " is lower than Sell order Price: '" + orderSell.getPriceLimit() + "'");
-			return;
-		}
+
 
 		// CALCULATE EXECUTION PRICE
 		double execPrice = (orderBuy.getPriceLimit() + orderSell.getPriceLimit()) / 2;
 
-		// ADJUST AVG_PRICE - POS OF BUYORDER
+		// ADJUST AVG_PRICE OF POS OF BUY ORDER
 		double newAvgBuyPrice = (posRcv.getQty() * posRcv.getPriceAvg() + qtyExec * execPrice)
 				/ (posRcv.getQty() + qtyExec);
 		posRcv.setPriceAvg(newAvgBuyPrice);
