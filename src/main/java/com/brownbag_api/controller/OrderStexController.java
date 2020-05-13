@@ -79,7 +79,7 @@ public class OrderStexController {
 	private ObjUser getByAuthentication(Authentication authentication) {
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 		ObjUser objUser = userRepo.findById(userDetailsImpl.getId())
-				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
+				.orElseThrow(() -> new RuntimeException("ERROR API: User not found. USER.ID: " + userDetailsImpl.getId()));
 		return objUser;
 	}
 
@@ -104,7 +104,7 @@ public class OrderStexController {
 
 		ObjParty party = partySvc.getById(partyId);
 		if (party == null)
-			return ResponseEntity.ok("Error: Party with ID: " + partyId + " could not be found!");
+			return ResponseEntity.ok("ERROR API: Party with ID: " + partyId + " could not be found!");
 
 		List<OrderStex> jpaOrderStexList = orderStexSvc.getByParty(party);
 
@@ -116,20 +116,18 @@ public class OrderStexController {
 		ObjUser user = getByAuthentication(authentication);
 		ObjParty party = partySvc.getById(jsonOrderStex.getPartyId());
 		if (jsonOrderStex.getAssetId() == null)
-			return ResponseEntity.ok("ERROR: No Asset selected!");
+			return ResponseEntity.ok("ERROR API: No Asset selected!");
 
 		ObjAsset asset = assetSvc.getById(jsonOrderStex.getAssetId());
 
 		if (jsonOrderStex.getOrderDir() == EOrderDir.SELL) {
 			ObjPos assetPos = posSvc.getByAssetAndParty(asset, party);
 			if (assetPos == null) {
-				return ResponseEntity.ok("Order could not be placed: The user has no position with this asset!");
+				return ResponseEntity.ok("ERROR API: The user has no position with this asset!");
 			}
 			double avblShares = posSvc.getQtyAvbl(assetPos);
-			System.out.println("Available Shares: " + avblShares);
-			System.out.println("Order Quantity: " + jsonOrderStex.getQty());
 			if (avblShares < jsonOrderStex.getQty()) {
-				return ResponseEntity.ok("ERROR: The user does not own enough shares! Available Shares: " + avblShares
+				return ResponseEntity.ok("ERROR API: The user does not own enough shares! Available Shares: " + avblShares
 						+ " Order Amount: " + jsonOrderStex.getQty());
 			}
 
@@ -139,7 +137,7 @@ public class OrderStexController {
 				asset, (int) jsonOrderStex.getQty(), jsonOrderStex.getPriceLimit(), user, party);
 
 		if (orderStex == null)
-			return ResponseEntity.ok("Error: Direction: " + jsonOrderStex.getOrderDir()
+			return ResponseEntity.ok("ERROR API: Direction: " + jsonOrderStex.getOrderDir()
 					+ " Order Type: " + jsonOrderStex.getOrderType() + " Asset: " + asset.getName() + " Quantity: "
 					+ (int) jsonOrderStex.getQty() + " Price Limit: " + jsonOrderStex.getPriceLimit() + " User: "
 					+ user.getName() + " Party: " + party.getName() + ". Please Check logs for more details.");

@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
+import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.json.JsonObjParty;
@@ -24,6 +26,7 @@ import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.payload.response.MsgResponse;
 import com.brownbag_api.security.svc.UserDetailsImpl;
+import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
 import com.brownbag_api.service.UserSvc;
@@ -34,11 +37,14 @@ import com.brownbag_api.service.UserSvc;
 public class ObjPartyController {
 
 	@Autowired
+	AssetSvc assetSvc;
+
+	@Autowired
 	PartyRepo partyRepo;
 
 	@Autowired
 	PartySvc partySvc;
-	
+
 	@Autowired
 	PosSvc posSvc;
 
@@ -93,21 +99,24 @@ public class ObjPartyController {
 			return ResponseEntity.badRequest().body(new MsgResponse("Error: No Party ID specified!"));
 		ObjParty jpaParty = partySvc.getById(partyId);
 
-		if (jpaParty == null) return null;
+		if (jpaParty == null)
+			return null;
 		JsonObjParty jsonParty = new JsonObjParty(jpaParty);
 		return ResponseEntity.ok(jsonParty);
 	}
-	
-	@GetMapping("/{partyId}/qty/avbl")
-	public ResponseEntity<?> getAvblQty(@PathVariable Long partyId) {
+
+	@GetMapping("/{partyId}/asset/{assetId}/qty/avbl")
+	public ResponseEntity<?> getAvblQty(@PathVariable Long partyId, @PathVariable Long assetId) {
 		if (partyId == null)
 			return ResponseEntity.badRequest().body(new MsgResponse("Error: No Party ID specified!"));
 		ObjParty jpaParty = partySvc.getById(partyId);
-		ObjPos objMacc = partySvc.getMacc(jpaParty);
-		double avblQty = posSvc.getQtyAvbl(objMacc);
+		ObjAsset jpaAsset = assetSvc.getById(assetId);
+		ObjPos objPos = posSvc.getByAssetAndParty(jpaAsset, jpaParty);
+		if (objPos == null)
+			return ResponseEntity.ok(0);
+		double avblQty = posSvc.getQtyAvbl(objPos);
 		return ResponseEntity.ok(avblQty);
 	}
-
 
 //	@RequestMapping(value = "/user", method = RequestMethod.GET)
 //	@ResponseBody

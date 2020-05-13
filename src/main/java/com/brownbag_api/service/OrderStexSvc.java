@@ -89,11 +89,18 @@ public class OrderStexSvc extends OrderSvc {
 			// STANDARD CASE: Selling Stocks from portfolio
 			if (orderStex.getOrderType() == EOrderType.STEX) {
 				// check if asset amount is sufficient
-				ObjPosStex posStex = posSvc.getByAssetAndParty(asset, party);
+				ObjPosStex posStex = (ObjPosStex) posSvc.getByAssetAndParty(asset, party);
+				if (posStex == null) {
+					logSvc.write(
+							"No Position with Asset: '" + asset.getName() + " exists for Party: '" + party.getName());
+					orderSvc.execAction(orderStex, EOrderAction.DISCARD);
+					return null;
+				}
 				double qtyAvbl = posSvc.getQtyAvbl(posStex);
 				if (qtyAvbl < qty) {
-					logSvc.write("OrderStexSvc.placeNewOrder: Not enough Shares! Party: '" + party.getName() + "' Asset: '"
-							+ asset.getName() + "' Order Quantity: " + qty + " Available Shares: " + qtyAvbl);
+					logSvc.write(
+							"OrderStexSvc.placeNewOrder: Not enough Shares! Party: '" + party.getName() + "' Asset: '"
+									+ asset.getName() + "' Order Quantity: " + qty + " Available Shares: " + qtyAvbl);
 					orderSvc.execAction(orderStex, EOrderAction.DISCARD);
 					return null;
 				}
@@ -127,8 +134,13 @@ public class OrderStexSvc extends OrderSvc {
 		}
 		ObjParty partySeller = orderSell.getParty();
 		ObjParty partyBuyer = orderBuy.getParty();
-		ObjPosStex posSend = posSvc.getByAssetAndParty(orderSell.getAsset(), partySeller); // Instanciates if not exists
-		ObjPosStex posRcv = posSvc.getByAssetAndParty(orderBuy.getAsset(), partyBuyer); // Instanciates if not exists
+		ObjPosStex posSend = (ObjPosStex) posSvc.getByAssetAndParty(orderSell.getAsset(), partySeller); // Instanciates if not exists
+		if (posSend == null)
+			posSend = posSvc.createPosStex(orderSell.getAsset(), partySeller);
+
+		ObjPosStex posRcv = (ObjPosStex) posSvc.getByAssetAndParty(orderBuy.getAsset(), partyBuyer); // Instanciates if not exists
+		if (posRcv == null)
+			posRcv = posSvc.createPosStex(orderBuy.getAsset(), partyBuyer);
 
 		int qtyExec = (int) (orderBuy.getQtyOpn() < orderSell.getQtyOpn() ? orderBuy.getQtyOpn()
 				: orderSell.getQtyOpn());

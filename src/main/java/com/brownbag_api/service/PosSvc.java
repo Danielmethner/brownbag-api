@@ -111,13 +111,9 @@ public class PosSvc {
 		return posStexRepo.findByAsset(asset);
 	}
 
-	public ObjPosStex getByAssetAndParty(ObjAsset asset, ObjParty party) {
-		ObjPosStex posStex = posStexRepo.findByAssetAndParty(asset, party);
+	public ObjPos getByAssetAndParty(ObjAsset asset, ObjParty party) {
+		ObjPos posStex = posRepo.findByAssetAndParty(asset, party);
 
-		// CREATE NEW POS IF NOT EXISTS
-		if (posStex == null) {
-			posStex = createPosStex(asset, party);
-		}
 		return posStex;
 	}
 

@@ -124,9 +124,13 @@ public class InitDataLoader {
 		if (ecb == null) {
 			ecb = partySvc.getByEnum(EParty.ECB);
 		}
-		// ECB is issuer of EUR, hence needs to be created beforehand
-		ObjAsset assetEUR = createAsset(EAsset.EUR);
-		posSvc.createMacc(0, assetEUR.getIssuer(), 100000000);
+
+		if (assetSvc.getByEnum(EAsset.EUR) == null) {
+			// ECB is issuer of EUR, hence needs to be created beforehand
+			ObjAsset assetEUR = createAsset(EAsset.EUR);
+			posSvc.createMacc(0, assetEUR.getIssuer(), 100000000);
+
+		}
 
 		if (assetSvc.getByEnum(EAsset.LOAN_GENERIC) == null) {
 			ObjAsset assetLoanVanilla = new ObjAsset(EAsset.LOAN_GENERIC.getName(), null,
