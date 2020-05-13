@@ -100,7 +100,7 @@ public class OrderStexController {
 	public ResponseEntity<?> getByParty(Authentication authentication, @PathVariable Long partyId) {
 
 		if (partyId == null)
-			return ResponseEntity.badRequest().body(new MsgResponse("Error: No Party ID specified!"));
+			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
 
 		ObjParty party = partySvc.getById(partyId);
 		if (party == null)

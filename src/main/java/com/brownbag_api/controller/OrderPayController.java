@@ -70,11 +70,9 @@ public class OrderPayController {
 		pay = orderPaySvc.execPay(pay);
 
 		if (pay == null) {
-			return ResponseEntity.ok("Payment could not be executed. Please see log for more details!");
+			return ResponseEntity.ok("ERROR API: Payment could not be executed. Please see log for more details!");
 		} else {
-			System.err.println("Payment executed: " + pay.getPosRcv().getParty().getName());
 			Long payId = pay.getId();
-			System.err.println("Payment executed: " + payId);
 			orderPayRepo.findById(payId);
 			return ResponseEntity.ok(pay);
 		}

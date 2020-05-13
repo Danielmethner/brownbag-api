@@ -57,7 +57,7 @@ public class ObjPosController {
 	private ObjUser getByAuthentication(Authentication authentication) {
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 		ObjUser objUser = userRepo.findById(userDetailsImpl.getId())
-				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
+				.orElseThrow(() -> new RuntimeException("ERROR API: User not found. USER.ID: " + userDetailsImpl.getId()));
 		return objUser;
 	}
 
@@ -102,7 +102,7 @@ public class ObjPosController {
 	@GetMapping("/party/{partyId}")
 	public ResponseEntity<?> getByPartyId(@PathVariable Long partyId) {
 		if (partyId == null)
-			return ResponseEntity.badRequest().body(new MsgResponse("Error: No Party ID specified!"));
+			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
 		ObjParty jpaParty = partySvc.getById(partyId);
 		List<ObjPos> jpaPosList = posSvc.getByParty(jpaParty);
 		return ResponseEntity.ok(jpaToJson(jpaPosList));

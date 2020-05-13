@@ -63,7 +63,7 @@ public class ObjPartyController {
 	private ObjUser getByAuthentication(Authentication authentication) {
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
 		ObjUser objUser = userRepo.findById(userDetailsImpl.getId())
-				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
+				.orElseThrow(() -> new RuntimeException("ERROR API: User not found. USER.ID: " + userDetailsImpl.getId()));
 		return objUser;
 	}
 
@@ -96,7 +96,7 @@ public class ObjPartyController {
 	@GetMapping("/{partyId}")
 	public ResponseEntity<?> getById(@PathVariable Long partyId) {
 		if (partyId == null)
-			return ResponseEntity.badRequest().body(new MsgResponse("Error: No Party ID specified!"));
+			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
 		ObjParty jpaParty = partySvc.getById(partyId);
 
 		if (jpaParty == null)
@@ -108,7 +108,7 @@ public class ObjPartyController {
 	@GetMapping("/{partyId}/asset/{assetId}/qty/avbl")
 	public ResponseEntity<?> getAvblQty(@PathVariable Long partyId, @PathVariable Long assetId) {
 		if (partyId == null)
-			return ResponseEntity.badRequest().body(new MsgResponse("Error: No Party ID specified!"));
+			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
 		ObjParty jpaParty = partySvc.getById(partyId);
 		ObjAsset jpaAsset = assetSvc.getById(assetId);
 		ObjPos objPos = posSvc.getByAssetAndParty(jpaAsset, jpaParty);
