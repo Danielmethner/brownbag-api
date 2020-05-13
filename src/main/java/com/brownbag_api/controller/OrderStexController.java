@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
+import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.model.json.JsonObjAsset;
@@ -28,6 +30,7 @@ import com.brownbag_api.security.svc.UserDetailsImpl;
 import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.OrderStexSvc;
 import com.brownbag_api.service.PartySvc;
+import com.brownbag_api.service.PosSvc;
 import com.brownbag_api.service.UserSvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -37,6 +40,9 @@ public class OrderStexController {
 
 	@Autowired
 	PosRepo posRepo;
+
+	@Autowired
+	PosSvc posSvc;
 
 	@Autowired
 	OrderStexRepo orderStexRepo;
@@ -98,8 +104,7 @@ public class OrderStexController {
 
 		ObjParty party = partySvc.getById(partyId);
 		if (party == null)
-			return ResponseEntity.badRequest()
-					.body(new MsgResponse("Error: Party with ID: " + partyId + " could not be found!"));
+			return ResponseEntity.ok("Error: Party with ID: " + partyId + " could not be found!");
 
 		List<OrderStex> jpaOrderStexList = orderStexSvc.getByParty(party);
 
@@ -111,17 +116,34 @@ public class OrderStexController {
 		ObjUser user = getByAuthentication(authentication);
 		ObjParty party = partySvc.getById(jsonOrderStex.getPartyId());
 		if (jsonOrderStex.getAssetId() == null)
-			return ResponseEntity.ok("Order could not be placed: No Asset selected!");
+			return ResponseEntity.ok("ERROR: No Asset selected!");
 
 		ObjAsset asset = assetSvc.getById(jsonOrderStex.getAssetId());
+
+		if (jsonOrderStex.getOrderDir() == EOrderDir.SELL) {
+			ObjPos assetPos = posSvc.getByAssetAndParty(asset, party);
+			if (assetPos == null) {
+				return ResponseEntity.ok("Order could not be placed: The user has no position with this asset!");
+			}
+			double avblShares = posSvc.getQtyAvbl(assetPos);
+			System.out.println("Available Shares: " + avblShares);
+			System.out.println("Order Quantity: " + jsonOrderStex.getQty());
+			if (avblShares < jsonOrderStex.getQty()) {
+				return ResponseEntity.ok("ERROR: The user does not own enough shares! Available Shares: " + avblShares
+						+ " Order Amount: " + jsonOrderStex.getQty());
+			}
+
+		}
+
 		OrderStex orderStex = orderStexSvc.placeNewOrder(jsonOrderStex.getOrderDir(), jsonOrderStex.getOrderType(),
 				asset, (int) jsonOrderStex.getQty(), jsonOrderStex.getPriceLimit(), user, party);
+
 		if (orderStex == null)
-			return ResponseEntity.badRequest()
-					.body(new MsgResponse("Error: Order could not be created: Direction: " + jsonOrderStex.getOrderDir()
-							+ " Order Type: " + jsonOrderStex.getOrderType() + " Asset: " + asset + " Quantity: "
-							+ (int) jsonOrderStex.getQty() + " Price Limit: " + jsonOrderStex.getPriceLimit()
-							+ " User: " + user + " Party: " + party + ". Please Check logs for more details."));
+			return ResponseEntity.ok("Error: Direction: " + jsonOrderStex.getOrderDir()
+					+ " Order Type: " + jsonOrderStex.getOrderType() + " Asset: " + asset.getName() + " Quantity: "
+					+ (int) jsonOrderStex.getQty() + " Price Limit: " + jsonOrderStex.getPriceLimit() + " User: "
+					+ user.getName() + " Party: " + party.getName() + ". Please Check logs for more details.");
+
 		orderStexSvc.placeOrder(orderStex);
 		return ResponseEntity.ok("Order has been placed successfully!");
 	}

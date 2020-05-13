@@ -92,8 +92,8 @@ public class OrderStexSvc extends OrderSvc {
 				ObjPosStex posStex = posSvc.getByAssetAndParty(asset, party);
 				double qtyAvbl = posSvc.getQtyAvbl(posStex);
 				if (qtyAvbl < qty) {
-					logSvc.write("OrderStexSvc.placeNewOrder: Not enough Shares! Party: " + party.getName() + " Asset: "
-							+ asset.getName() + " Order Quantity: " + qty + " Available Shares: " + qtyAvbl);
+					logSvc.write("OrderStexSvc.placeNewOrder: Not enough Shares! Party: '" + party.getName() + "' Asset: '"
+							+ asset.getName() + "' Order Quantity: " + qty + " Available Shares: " + qtyAvbl);
 					orderSvc.execAction(orderStex, EOrderAction.DISCARD);
 					return null;
 				}
