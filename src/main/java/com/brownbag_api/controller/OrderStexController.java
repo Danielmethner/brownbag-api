@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.jpa.ObjAsset;
@@ -136,6 +137,28 @@ public class OrderStexController {
 		List<OrderStex> jpaOrderStexList = orderStexSvc.getByAssetAndStatus(asset, EOrderStatus.PLACED);
 
 		return ResponseEntity.ok(jpaToJson(jpaOrderStexList));
+	}
+	
+	@GetMapping("/{orderId}/disc")
+	public ResponseEntity<?> discard(Authentication authentication, @PathVariable Long orderId) {
+		OrderStex orderStex = orderStexSvc.getById(orderId);
+		if(orderStex == null) {
+			logSvc.write("Order with ID: " + orderId + " could not be found!");
+			return ResponseEntity.ok("Order with ID: " + orderId + " could not be found!");
+		}
+		if(orderStex.getOrderStatus() == EOrderStatus.DISC) {
+			String msg = "Order with ID: " + orderId + " has already been discarded!";
+			logSvc.write(msg);
+			return ResponseEntity.ok(msg);
+		}
+		orderStex = orderStexSvc.discardOrder(orderStex);
+		if(orderStex == null) {
+			String msg = "Order with ID: " + orderId + " could not be discarded! Check log for more details";
+			logSvc.write(msg);
+			return ResponseEntity.ok(msg);
+		}
+		JsonOrderStex jsonOrderStex = new JsonOrderStex(orderStex);
+		return ResponseEntity.ok(jsonOrderStex);
 	}
 
 	@PostMapping(value = "/place", consumes = "application/json")

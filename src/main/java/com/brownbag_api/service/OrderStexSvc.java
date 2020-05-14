@@ -12,6 +12,7 @@ import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.jpa.ExecStex;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
+import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjPosStex;
 import com.brownbag_api.model.jpa.ObjUser;
@@ -250,5 +251,27 @@ public class OrderStexSvc extends OrderSvc {
 	public List<OrderStex> getByAssetAndStatus(ObjAsset asset, EOrderStatus orderStatus) {
 		return orderStexRepo.findByAssetAndOrderStatus(asset, orderStatus);
 	}
+	
+	public OrderStex getById(Long orderId) {
+		return orderStexRepo.getOne(orderId);
+	}
 
+	public OrderStex discardOrder(OrderStex orderStex) {
+		if(!orderStex.getOrderStatus().discardeable) {
+			logSvc.write("OrderStexSvc.discardOrder(): OrderStatus of Order with ID: " + orderStex.getId() + " does not allow it to be discarded.");
+			return null;
+		}
+		
+		if(orderStex.getOrderDir() == EOrderDir.BUY) {
+			ObjPos objPos = partySvc.getMacc(orderStex.getParty());
+			objPos.lowerQtyBlocked(orderStex.getQtyOpn() * orderStex.getPriceLimit());
+			posSvc.save(objPos);
+		} else {
+			ObjPos objPos = posSvc.getByAssetAndParty(orderStex.getAsset(), orderStex.getParty());
+			objPos.lowerQtyBlocked(orderStex.getQtyOpn());
+			posSvc.save(objPos);
+		}
+		orderStex = (OrderStex) execAction(orderStex, EOrderAction.DISCARD);
+		return orderStex;
+	}
 }
