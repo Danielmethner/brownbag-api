@@ -221,12 +221,13 @@ public class PosSvc {
 	// -----------------------------------------------------------------
 	public ObjPosStex debitPosStex(OrderStex orderSell, ExecStex execStex) {
 		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
+		double assetDbAmt = execStex.getQtyExec() * execStex.getPosSend().getPriceAvg();
 		// DEBIT STOCKS - BUYER
-		balTrxList.add(new BalTrxTrans(EBalSheetItemType.STOCKS, execStex.getAmtExec(), EBookingDir.DEBIT,
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.STOCKS, assetDbAmt, EBookingDir.DEBIT,
 				orderSell.getParty()));
 
 		// DEBIT EQUITY
-		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, execStex.getAmtExec(), EBookingDir.DEBIT,
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, assetDbAmt, EBookingDir.DEBIT,
 				orderSell.getParty()));
 
 		// BOOKING

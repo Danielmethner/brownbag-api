@@ -48,10 +48,10 @@ public class OrderStexController {
 
 	@Autowired
 	PosSvc posSvc;
-	
+
 	@Autowired
 	OrderSvc orderSvc;
-	
+
 	@Autowired
 	OrderStexRepo orderStexRepo;
 	@Autowired
@@ -138,27 +138,50 @@ public class OrderStexController {
 
 		return ResponseEntity.ok(jpaToJson(jpaOrderStexList));
 	}
-	
+
 	@GetMapping("/{orderId}/disc")
 	public ResponseEntity<?> discard(Authentication authentication, @PathVariable Long orderId) {
 		OrderStex orderStex = orderStexSvc.getById(orderId);
-		if(orderStex == null) {
+		if (orderStex == null) {
 			logSvc.write("Order with ID: " + orderId + " could not be found!");
 			return ResponseEntity.ok("Order with ID: " + orderId + " could not be found!");
 		}
-		if(orderStex.getOrderStatus() == EOrderStatus.DISC) {
+		if (orderStex.getOrderStatus() == EOrderStatus.DISC) {
 			String msg = "Order with ID: " + orderId + " has already been discarded!";
 			logSvc.write(msg);
 			return ResponseEntity.ok(msg);
 		}
 		orderStex = orderStexSvc.discardOrder(orderStex);
-		if(orderStex == null) {
+		if (orderStex == null) {
 			String msg = "Order with ID: " + orderId + " could not be discarded! Check log for more details";
 			logSvc.write(msg);
 			return ResponseEntity.ok(msg);
 		}
 		JsonOrderStex jsonOrderStex = new JsonOrderStex(orderStex);
 		return ResponseEntity.ok(jsonOrderStex);
+	}
+
+	@GetMapping("/match/buy/{orderBuyId}/sell/{orderSellId}")
+	public ResponseEntity<?> match(Authentication authentication, @PathVariable Long orderBuyId,
+			@PathVariable Long orderSellId) {
+		OrderStex orderStexBuy = orderStexSvc.getById(orderBuyId);
+		double qtyExecBuyPre = orderStexBuy.getQtyExec();
+		OrderStex orderStexSell = orderStexSvc.getById(orderSellId);
+		double qtyExecSellPre = orderStexSell.getQtyExec();
+		orderStexSvc.matchOrders(orderStexBuy, orderStexSell);
+		orderStexBuy = orderStexSvc.getById(orderBuyId);
+		orderStexSell = orderStexSvc.getById(orderSellId);
+		if (qtyExecBuyPre == orderStexBuy.getQtyExec()) {
+			String msg = "ERROR_API: Buy Order execution Qty was not successfully updated.";
+			logSvc.write(msg);
+			return ResponseEntity.ok(msg);
+		}
+		if (qtyExecSellPre == orderStexSell.getQtyExec()) {
+			String msg = "ERROR_API: Sell Order execution Qty was not successfully updated.";
+			logSvc.write(msg);
+			return ResponseEntity.ok(msg);
+		}
+		return ResponseEntity.ok("Orders were successfully executed!");
 	}
 
 	@PostMapping(value = "/place", consumes = "application/json")
