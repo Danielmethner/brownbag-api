@@ -17,7 +17,6 @@ import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.json.JsonObjBalSheet;
 import com.brownbag_api.model.json.JsonObjBalSheetSection;
 import com.brownbag_api.repo.BalSheetRepo;
-import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.BalSheetSectionSvc;
 import com.brownbag_api.service.BalSheetSvc;

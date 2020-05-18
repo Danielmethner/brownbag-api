@@ -98,9 +98,7 @@ public class InitDataLoader {
 	// -----------------------------------------------------------
 	// USER
 	// -----------------------------------------------------------
-	public void createUser(EUser eUser) {
-		Set<String> roles = new HashSet<>();
-		roles.add(eUser.getRole().getName());
+	public void createUser(EUser eUser, Set<String> roles) {
 		userSvc.registerUser(eUser.toString(), eUser.name(), eUser.toString(), roles);
 	}
 
@@ -108,12 +106,15 @@ public class InitDataLoader {
 	// USERS
 	// -----------------------------------------------------------
 	private void createOrgUsers() {
-		// ORGANISATIONS
-		createUser(EUser.MGR_ECB);
-		createUser(EUser.MGR_DEUTSCHE_BANK);
-		createUser(EUser.MGR_GOVERNMENT);
-		// BROKER
-		createUser(EUser.MGR_BROKER);
+		// ECB
+		Set<String> roles = new HashSet<>();
+		roles.add(EUser.MGR_ECB.getRole().getName());
+		createUser(EUser.MGR_ECB, roles);
+		// ECB
+		roles = new HashSet<>();
+		roles.add(EUser.MGR_GOVERNMENT.getRole().getName());
+		createUser(EUser.MGR_GOVERNMENT, roles);
+
 	}
 
 	// -----------------------------------------------------------
@@ -140,6 +141,22 @@ public class InitDataLoader {
 			assetSvc.save(assetLoan);
 		}
 
+	}
+
+	// -----------------------------------------------------------
+	// USERS
+	// -----------------------------------------------------------
+	private void createBrokerUser() {
+		// BROKER
+		Set<String> roles = new HashSet<>();
+		roles.add(EUser.MGR_BROKER.getRole().getName());
+		roles.add(ERole.ROLE_MGR.getName());
+		createUser(EUser.MGR_BROKER, roles);
+
+		// DEUTSCHE BANK
+		roles = new HashSet<>();
+		roles.add(EUser.MGR_DEUTSCHE_BANK.getRole().getName());
+		createUser(EUser.MGR_DEUTSCHE_BANK, roles);
 	}
 
 	// -----------------------------------------------------------
@@ -170,9 +187,12 @@ public class InitDataLoader {
 	// default
 	// -----------------------------------------------------------
 	public void createUsers() {
+		Set<String> roles = new HashSet<>();
+		roles.add(EUser.U_TRADER_1.getRole().getName());
+
 		// MANAGERS
-		createUser(EUser.U_TRADER_1);
-		createUser(EUser.U_TRADER_2);
+		createUser(EUser.U_TRADER_1, roles);
+		createUser(EUser.U_TRADER_2, roles);
 	}
 
 	// -----------------------------------------------------------
@@ -209,6 +229,7 @@ public class InitDataLoader {
 	public void createDemoData() {
 		createOrgUsers();
 		createCentralBank();
+		createBrokerUser();
 		createLegalEntities();
 		createAssets();
 		createUsers();

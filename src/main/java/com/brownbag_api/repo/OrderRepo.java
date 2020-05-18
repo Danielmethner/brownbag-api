@@ -9,7 +9,6 @@ import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.Order;
-import com.brownbag_api.model.jpa.OrderStex;
 
 @Repository
 public interface OrderRepo extends JpaRepository<Order, Long> {

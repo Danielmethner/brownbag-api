@@ -16,7 +16,6 @@ import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjPosStex;
 import com.brownbag_api.model.jpa.ObjUser;
-import com.brownbag_api.model.jpa.Order;
 import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.repo.ExecStexRepo;
 import com.brownbag_api.repo.OrderRepo;
