@@ -45,7 +45,7 @@ public class PosSvc {
 	@Autowired
 	private BookingSvc bookingSvc;
 	@Autowired
-	private BAdminSvc bAdminSvc;
+	private CtrlVarSvc bAdminSvc;
 	@Autowired
 	private OrderLoanSvc orderLoanSvc;
 	@Autowired

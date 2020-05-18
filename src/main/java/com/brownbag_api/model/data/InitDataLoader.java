@@ -1,5 +1,6 @@
 package com.brownbag_api.model.data;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.brownbag_api.model.enums.EAsset;
+import com.brownbag_api.model.enums.ECtrlVar;
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.enums.EParty;
@@ -20,6 +22,7 @@ import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.service.AssetSvc;
+import com.brownbag_api.service.CtrlVarSvc;
 import com.brownbag_api.service.OrderCreateMonSvc;
 import com.brownbag_api.service.OrderStexSvc;
 import com.brownbag_api.service.PartySvc;
@@ -33,6 +36,9 @@ public class InitDataLoader {
 
 	@Autowired
 	private UserSvc userSvc;
+
+	@Autowired
+	private CtrlVarSvc ctrlVarSvc;
 
 	@Autowired
 	private AssetSvc assetSvc;
@@ -226,7 +232,18 @@ public class InitDataLoader {
 		createOrdersStex();
 	}
 
+	private void createCtrlVars() {
+
+		ctrlVarSvc.create(ECtrlVar.FIN_DATE, new Date());
+		ctrlVarSvc.create(ECtrlVar.DEMO_DATA_CREATED, false);
+	}
+
 	public void createDemoData() {
+		createCtrlVars();
+		if (ctrlVarSvc.getByEnum(ECtrlVar.DEMO_DATA_CREATED).isValBool()) {
+			System.out.println("Demo data was already loaded in a previous run.");
+			return;
+		}
 		createOrgUsers();
 		createCentralBank();
 		createBrokerUser();
@@ -234,6 +251,7 @@ public class InitDataLoader {
 		createAssets();
 		createUsers();
 		createOrders();
+		ctrlVarSvc.setVal(ECtrlVar.DEMO_DATA_CREATED, true);
 		System.err.println("Demo Data Loaded Succesfully");
 	}
 
