@@ -1,4 +1,4 @@
-package com.brownbag_api.model.jpa;
+package com.brownbag_api.model.json;
 
 import java.util.Date;
 
@@ -19,66 +19,45 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.brownbag_api.model.enums.EDataType;
+import com.brownbag_api.model.jpa.Booking;
+import com.brownbag_api.model.jpa.CtrlVar;
 
-@Entity
-@Table(name = "CTRL_VAR")
-public class CtrlVar {
+public class JsonCtrlVar {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID")
 	private Long id;
-
-	@NotNull
-	@Enumerated(EnumType.STRING)
-	@Column(length = 50)
 	private EDataType dataType;
-
-	@Size(max = 100)
-	@Column(name = "NAME", unique = true)
 	private String name;
-
-	@Size(max = 100)
-	@Column(name = "KEY_SYM", unique = true)
 	private String key;
-
-	@Size(max = 100)
-	@Column(name = "VAL_STRING", unique = true)
 	private String valString;
-
-	@Column(name = "VAL_DATE")
 	private Date valDate;
-
-	@Column(name = "VAL_DOUBLE")
 	private double valDouble;
-
-	@Column(name = "VAL_BOOL", columnDefinition = "boolean default false")
 	private boolean valBool;
-
-	@CreationTimestamp
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "TIMESTAMP", updatable = false)
 	private Date timestampCreate;
-
-	@UpdateTimestamp
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "TS_LAST_MODIFIED")
 	private Date timestampModified;
 
-	public CtrlVar() {
-		// TODO Auto-generated constructor stub
+	public JsonCtrlVar() {
 	}
 
-	public CtrlVar(@NotNull EDataType dataType, @Size(max = 100) String name, @Size(max = 100) String key,
-			@Size(max = 100) String valString, Date valDate, double valDouble, boolean valBool) {
-		super();
-		this.dataType = dataType;
-		this.name = name;
-		this.key = key;
-		this.valString = valString;
-		this.valDate = valDate;
-		this.valDouble = valDouble;
-		this.valBool = valBool;
+	public JsonCtrlVar(CtrlVar ctrlVar) {
+		this.id = ctrlVar.getId();
+		this.dataType = ctrlVar.getDataType();
+		this.name = ctrlVar.getName();
+		this.key = ctrlVar.getKey();
+		this.valString = ctrlVar.getValString();
+		this.valDate = ctrlVar.getValDate();
+		this.valDouble = ctrlVar.getValDouble();
+		this.valBool = ctrlVar.isValBool();
+		this.timestampCreate = ctrlVar.getTimestampCreate();
+		this.timestampModified = ctrlVar.getTimestampModified();
+
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public EDataType getDataType() {
@@ -95,6 +74,14 @@ public class CtrlVar {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	public String getValString() {
@@ -121,14 +108,6 @@ public class CtrlVar {
 		this.valDouble = valDouble;
 	}
 
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public boolean isValBool() {
 		return valBool;
 	}
@@ -152,15 +131,5 @@ public class CtrlVar {
 	public void setTimestampModified(Date timestampModified) {
 		this.timestampModified = timestampModified;
 	}
-
-	public String getKey() {
-		return key;
-	}
-
-	public void setKey(String key) {
-		this.key = key;
-	}
-	
-	
 
 }

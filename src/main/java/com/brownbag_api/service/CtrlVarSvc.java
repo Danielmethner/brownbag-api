@@ -1,8 +1,10 @@
 package com.brownbag_api.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.enums.ECtrlVar;
@@ -58,6 +60,10 @@ public class CtrlVarSvc {
 		}
 		ctrlVar.setValBool(valBool);
 		return ctrlVarRepo.save(ctrlVar);
+	}
+
+	public List<CtrlVar> getAll() {
+		return ctrlVarRepo.findAll();
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.brownbag_api.controller;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.jpa.CtrlVar;
 import com.brownbag_api.model.jpa.Log;
+import com.brownbag_api.model.jpa.ObjAsset;
+import com.brownbag_api.model.json.JsonCtrlVar;
+import com.brownbag_api.model.json.JsonObjAsset;
+import com.brownbag_api.service.CtrlVarSvc;
 import com.brownbag_api.service.LogSvc;
 import com.brownbag_api.util.UtilDate;
 
@@ -21,16 +27,9 @@ public class SettingsController {
 
 	@Autowired
 	private LogSvc logSvc;
-
-	@GetMapping("/finyear")
-	public int getFinYear() {
-		return UtilDate.getFinYear();
-	}
-
-	@GetMapping("/finyear/increment")
-	public LocalDate incrementFinYear() {
-		return UtilDate.incrFinYear();
-	}
+	
+	@Autowired
+	private CtrlVarSvc ctrlVarSvc;
 
 	@GetMapping("/log")
 	public List<Log> getLogEntries() {
@@ -40,5 +39,20 @@ public class SettingsController {
 	@GetMapping("/log/recent")
 	public ResponseEntity<?> getRecentEntries() {
 		return ResponseEntity.ok(logSvc.getRecentEntries());
+	}
+	
+	private List<JsonCtrlVar> jpaToJson(List<CtrlVar> jpaObjList) {
+		List<JsonCtrlVar> jsonObjList = new ArrayList<JsonCtrlVar>();
+		for (CtrlVar jpaObj : jpaObjList) {
+			JsonCtrlVar jsonObj = new JsonCtrlVar(jpaObj);
+			jsonObjList.add(jsonObj);
+		}
+		return jsonObjList;
+	}
+	
+	@GetMapping("/ctrl-var")
+	public ResponseEntity<?> getCtrlVars() {
+		
+		return ResponseEntity.ok(jpaToJson(ctrlVarSvc.getAll()));
 	}
 }
