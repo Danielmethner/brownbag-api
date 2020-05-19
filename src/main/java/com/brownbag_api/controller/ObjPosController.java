@@ -12,15 +12,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.jpa.Booking;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjUser;
+import com.brownbag_api.model.json.JsonBooking;
 import com.brownbag_api.model.json.JsonObjPos;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.payload.response.MsgResponse;
 import com.brownbag_api.security.svc.UserDetailsImpl;
+import com.brownbag_api.service.BookingSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
 import com.brownbag_api.service.UserSvc;
@@ -35,6 +38,9 @@ public class ObjPosController {
 	
 	@Autowired
 	private PosSvc posSvc;
+	
+	@Autowired
+	private BookingSvc bookingSvc;
 
 	@Autowired
 	private UserRepo userRepo;
@@ -70,6 +76,15 @@ public class ObjPosController {
 		return jsonPosList;
 	}
 
+	private List<JsonBooking> jpaToJsonBooking(List<Booking> jpaBookingList) {
+		List<JsonBooking> jsonBookingList = new ArrayList<JsonBooking>();
+		for (Booking jpaBooking : jpaBookingList) {
+			JsonBooking jsonBooking = new JsonBooking(jpaBooking);
+			jsonBookingList.add(jsonBooking);
+		}
+		return jsonBookingList;
+	}
+	
 	@GetMapping("/all")
 	public List<JsonObjPos> getAll() {
 		List<ObjPos> jpaPosList = posRepo.findAll();
@@ -103,6 +118,17 @@ public class ObjPosController {
 		ObjParty jpaParty = partySvc.getById(partyId);
 		List<ObjPos> jpaPosList = posSvc.getByParty(jpaParty);
 		return ResponseEntity.ok(jpaToJson(jpaPosList));
+	}
+	
+	@GetMapping("/bookings/party/{partyId}/pos/{posId}")
+	public ResponseEntity<?> getByPartyId(@PathVariable Long partyId, @PathVariable Long posId) {
+		if (partyId == null)
+			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
+		if (posId == null)
+			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Position ID specified!"));
+		ObjPos jpaPos = posSvc.getById(posId);
+		List<Booking> jpaBookingList = bookingSvc.getByPos(jpaPos);
+		return ResponseEntity.ok(jpaToJsonBooking(jpaBookingList));
 	}
 
 }

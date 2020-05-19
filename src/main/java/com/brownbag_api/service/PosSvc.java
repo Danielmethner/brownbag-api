@@ -279,4 +279,8 @@ public class PosSvc {
 		return posRepo.findByParty(jpaParty);
 	}
 
+	public ObjPos getById(Long posId) {
+		return posRepo.getOne(posId);
+	}
+
 }

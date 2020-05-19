@@ -1,6 +1,7 @@
 package com.brownbag_api.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,5 +103,9 @@ public class BookingSvc {
 
 		pos.setQty(booking.getPosBalNew());
 		return posRepo.save(pos);
+	}
+
+	public List<Booking> getByPos(ObjPos pos) {
+		return bookingRepo.findByPos(pos);
 	}
 }
