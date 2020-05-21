@@ -45,7 +45,7 @@ public class BookingSvc {
 	private LogSvc logSvc;
 
 	public ObjPos createBooking(Order order, ObjPos pos, EBookingDir eBookingDir,
-			ArrayList<BalTrxTrans> balTrxTransientList, double bookQty) {
+			ArrayList<BalTrxTrans> balTrxTransientList, double bookQty, String bookText) {
 
 		bookQty = bookQty > 0 ? bookQty : order.getQty();
 		bookQty = eBookingDir == EBookingDir.CREDIT ? bookQty : -bookQty;
@@ -57,7 +57,7 @@ public class BookingSvc {
 		double balTrxLiabEquity = 0;
 
 		// CREATE BOOKING
-		Booking booking = new Booking(order, posQty, bookQty, posQty + bookQty, pos, order.getAdvText());
+		Booking booking = new Booking(order, posQty, bookQty, posQty + bookQty, pos, bookText);
 		booking = bookingRepo.save(booking);
 
 		// GET BALANCE SHEET (Instanciate if not exists)

@@ -134,7 +134,7 @@ public class PosSvc {
 
 		// BOOKING
 		return bookingSvc.createBooking(orderPay, orderPay.getPosSend(), EBookingDir.DEBIT, balTrxList,
-				orderPay.getQty());
+				orderPay.getQty(), orderPay.getAdvText());
 
 	}
 
@@ -152,7 +152,7 @@ public class PosSvc {
 
 		// BOOKING
 		return bookingSvc.createBooking(orderPay, orderPay.getPosRcv(), EBookingDir.CREDIT, balTrxList,
-				orderPay.getQty());
+				orderPay.getQty(), orderPay.getAdvText());
 
 	}
 
@@ -169,7 +169,7 @@ public class PosSvc {
 
 		// BOOKING
 		return bookingSvc.createBooking(orderCreateMon, orderCreateMon.getPosRcv(), EBookingDir.CREDIT, balTrxList,
-				orderCreateMon.getQty());
+				orderCreateMon.getQty(), orderCreateMon.getAdvText());
 	}
 
 	// -----------------------------------------------------------------
@@ -193,7 +193,7 @@ public class PosSvc {
 
 		// BOOKING
 		return (ObjPosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoan(), EBookingDir.CREDIT, balTrxList,
-				orderLoan.getQty());
+				orderLoan.getQty(), orderLoan.getAdvText());
 	}
 
 	// -----------------------------------------------------------------
@@ -212,7 +212,7 @@ public class PosSvc {
 
 		// BOOKING
 		return (ObjPosStex) bookingSvc.createBooking(orderBuy, execStex.getPosRcv(), EBookingDir.CREDIT, balTrxList,
-				execStex.getQtyExec());
+				execStex.getQtyExec(), execStex.getBookText());
 
 	}
 
@@ -232,7 +232,7 @@ public class PosSvc {
 
 		// BOOKING
 		return (ObjPosStex) bookingSvc.createBooking(orderSell, execStex.getPosSend(), EBookingDir.DEBIT, balTrxList,
-				execStex.getQtyExec());
+				execStex.getQtyExec(), execStex.getBookText());
 
 	}
 
@@ -252,7 +252,7 @@ public class PosSvc {
 
 		// BOOKING
 		return (ObjPosMacc) bookingSvc.createBooking(orderSell, maccSeller, EBookingDir.CREDIT, balTrxList,
-				execStex.getAmtExec());
+				execStex.getAmtExec(), execStex.getBookText());
 	}
 
 	// -----------------------------------------------------------------
@@ -272,7 +272,7 @@ public class PosSvc {
 		// BOOKING
 		ObjPosMacc maccBuyer = partySvc.getMacc(orderBuy.getParty());
 		return (ObjPosMacc) bookingSvc.createBooking(orderBuy, maccBuyer, EBookingDir.DEBIT, balTrxList,
-				execStex.getAmtExec());
+				execStex.getAmtExec(), execStex.getBookText());
 	}
 
 	public List<ObjPos> getByParty(ObjParty jpaParty) {
