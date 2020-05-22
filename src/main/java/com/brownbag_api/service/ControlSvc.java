@@ -66,6 +66,7 @@ public class ControlSvc {
 	
 	public int switchFinYear() {
 		int newFinYear = setFinYear(getFinYear() + 1);
+		//TODO: Loan redemptions, Interest Payments, Revenue generation, cost calculation
 		return newFinYear;
 	}
 	

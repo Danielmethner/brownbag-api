@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.enums.ECtrlVar;
 import com.brownbag_api.model.jpa.CtrlVar;
 import com.brownbag_api.model.jpa.Log;
 import com.brownbag_api.model.jpa.ObjAsset;
@@ -51,15 +52,11 @@ public class SettingsController {
 		return jsonObjList;
 	}
 	
-	@GetMapping("/ctrlvar/finyear/set/{finYear}")
-	public ResponseEntity<?> setFinYear(@PathVariable Integer finYear) {
-		if(finYear == null || finYear <0) {
-			return ResponseEntity.ok("Fin Year must be set and greater than 0.");
-		}
-		Integer finYearRtn = ctrlVarSvc.setFinYear(finYear);
-		return ResponseEntity.ok(finYearRtn);
+	@GetMapping("/ctrlvar/finyear")
+	public ResponseEntity<?> setFinYear() {
+		return ResponseEntity.ok(ctrlVarSvc.getFinYear());
 	}
-	
+		
 	@GetMapping("/ctrlvar/finyear/switch")
 	public ResponseEntity<?> incrFinYear() {
 		Integer finYearRtn = ctrlVarSvc.switchFinYear();
@@ -70,5 +67,12 @@ public class SettingsController {
 	public ResponseEntity<?> getCtrlVars() {
 		
 		return ResponseEntity.ok(jpaToJson(ctrlVarSvc.getAll()));
+	}
+	
+	@GetMapping("/ctrlvar/{eCtrlVar}")
+	public ResponseEntity<?> getCtrlVars(@PathVariable ECtrlVar eCtrlVar) {
+		CtrlVar controlVar = ctrlVarSvc.getByEnum(eCtrlVar);
+		JsonCtrlVar jsonCtrlVar = new JsonCtrlVar(controlVar);
+		return ResponseEntity.ok(jsonCtrlVar);
 	}
 }
