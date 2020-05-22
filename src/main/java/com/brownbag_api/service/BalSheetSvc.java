@@ -28,7 +28,7 @@ public class BalSheetSvc {
 
 	public ObjBalSheet getBalSheet(ObjParty party, int finYear) {
 		ObjBalSheet balSheet = balSheetRepo.findByPartyAndFinYear(party, finYear);
-		if (balSheet == null) {
+		if (balSheet == null && party.getFoundingDate().getYear() <= finYear) {
 			balSheet = createBalSheet(party, finYear);
 		}
 		return balSheet;

@@ -247,7 +247,6 @@ public class InitDataLoader {
 			// LOAD FIN DATE FROM DATABASE
 			controlSvc.setFinDate();
 		}
-		System.out.println("Fin Year: " + controlSvc.getByEnum(ECtrlVar.FIN_DATE).getValDate());
 		if (controlSvc.getByEnum(ECtrlVar.DEMO_DATA_CREATED).isValBool()) {
 			System.out.println("Demo data was already loaded in a previous run.");
 			return;

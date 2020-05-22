@@ -1,6 +1,7 @@
 package com.brownbag_api.model.jpa;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -57,18 +58,22 @@ public class ObjParty implements Serializable {
 	@OneToOne(targetEntity = ObjAsset.class)
 	@JoinColumn(name = "ASSET_ID")
 	private ObjAsset asset;
+	
+	@Column(name = "FOUNDING_DATE")
+	private LocalDate foundingDate;
 
 	// CONSTRUCTOR
 	public ObjParty() {
 	}
 
 	public ObjParty(@NotBlank @Size(max = 50) String name, @NotNull EPartyType partyType, @NotNull ELegalForm legalForm,
-			@NotNull ObjUser user) {
+			@NotNull ObjUser user, LocalDate foundingDate) {
 		super();
 		this.name = name;
 		this.partyType = partyType;
 		this.legalForm = legalForm;
 		this.user = user;
+		this.foundingDate = foundingDate;
 	}
 
 	public ObjParty(Long id) {
@@ -135,4 +140,13 @@ public class ObjParty implements Serializable {
 		this.asset = asset;
 	}
 
+	public LocalDate getFoundingDate() {
+		return foundingDate;
+	}
+
+	public void setFoundingDate(LocalDate foundingDate) {
+		this.foundingDate = foundingDate;
+	}
+
+	
 }

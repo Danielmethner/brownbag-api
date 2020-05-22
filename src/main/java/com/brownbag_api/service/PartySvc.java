@@ -17,6 +17,7 @@ import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.repo.PartyRepo;
+import com.brownbag_api.util.UtilDate;
 
 @Service
 public class PartySvc {
@@ -51,13 +52,43 @@ public class PartySvc {
 		ObjUser user;
 		user = userSvc.getByEnum(eParty.getUser());
 
+		ObjParty party = new ObjParty(eParty.getName(), eParty.getPartyType(), eParty.getLegalForm(), user, UtilDate.getFinDate());
+		party = save(party);
+		
 		if (eParty.getPartyType() == EPartyType.ORG_GOVT) {
-			return createOrgGovt(eParty.getName(), eParty.getLegalForm(), user, eParty.createMACC);
+			
+			if (party != null && eParty.createMACC) {
+				posSvc.createMacc(0, party, 0);
+			}
+			return party;
 		}
 
 		if (eParty.getPartyType() == EPartyType.PERSON_LEGAL) {
 			ObjParty natPerson = getNaturalPerson(user);
-			return createLegalPerson(eParty.getName(), eParty.getLegalForm(), user, natPerson, 1);
+			
+			if (party == null) {
+				return null;
+			}
+			
+			posSvc.createMacc(0, party, 0);
+			ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, party, 1);
+
+			switch (eParty.getLegalForm()) {
+			case LTD:
+				asset.setTotalShares(1);
+				break;
+			case CORP:
+				asset.setTotalShares(1);
+				break;
+			case NOT_APPL:
+				asset.setTotalShares(0);
+				break;
+			}
+			asset = assetSvc.save(asset);
+			party.setAsset(asset);
+			posSvc.createPosStex(asset, natPerson, 1);
+			party = save(party);
+			return party;
 		}
 		return null;
 	}
@@ -72,52 +103,40 @@ public class PartySvc {
 
 	}
 
-	public ObjParty createOrgGovt(String name, ELegalForm legalForm, ObjUser user, boolean addMacc) {
-		ObjParty party = new ObjParty(name, EPartyType.ORG_GOVT, legalForm, user);
-		party = save(party);
-		if (party == null) {
-			return null;
-		}
-		if (addMacc) {
-			posSvc.createMacc(0, party, 0);
-		}
-		return party;
-	}
-
-	public ObjParty createLegalPerson(String name, ELegalForm legalForm, ObjUser user, ObjParty owner, int shareQty) {
-
-		ObjParty party = new ObjParty(name, EPartyType.PERSON_LEGAL, legalForm, user);
-
-		party = save(party);
-
-		if (party == null) {
-			return null;
-		}
-		posSvc.createMacc(0, party, 0);
-		ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, party, 1);
-
-		switch (legalForm) {
-		case LTD:
-			asset.setTotalShares(1);
-			break;
-		case CORP:
-			asset.setTotalShares(shareQty);
-			break;
-		case NOT_APPL:
-			asset.setTotalShares(0);
-			break;
-		}
-		asset = assetSvc.save(asset);
-		party.setAsset(asset);
-		posSvc.createPosStex(asset, owner, 1);
-		party = save(party);
-		return party;
-	}
+//	public ObjParty createLegalPerson(String name, ELegalForm legalForm, ObjUser user, ObjParty owner, int shareQty) {
+//
+//		ObjParty party = new ObjParty(name, EPartyType.PERSON_LEGAL, legalForm, user);
+//
+//		party = save(party);
+//
+//		if (party == null) {
+//			return null;
+//		}
+//		posSvc.createMacc(0, party, 0);
+//		ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, party, 1);
+//
+//		switch (legalForm) {
+//		case LTD:
+//			asset.setTotalShares(1);
+//			break;
+//		case CORP:
+//			asset.setTotalShares(shareQty);
+//			break;
+//		case NOT_APPL:
+//			asset.setTotalShares(0);
+//			break;
+//		}
+//		asset = assetSvc.save(asset);
+//		party.setAsset(asset);
+//		posSvc.createPosStex(asset, owner, 1);
+//		party = save(party);
+//		return party;
+//	}
 
 	public ObjParty getNaturalPerson(ObjUser user) {
 		List<ObjParty> lEs = partyRepo.findByUserAndPartyType(user, EPartyType.PERSON_NATURAL);
 		if (lEs.isEmpty()) {
-			ObjParty natPerson = new ObjParty(user.getName(), EPartyType.PERSON_NATURAL, ELegalForm.NOT_APPL, user);
+			ObjParty natPerson = new ObjParty(user.getName(), EPartyType.PERSON_NATURAL, ELegalForm.NOT_APPL, user, UtilDate.getFinDate());
 			natPerson = save(natPerson);
 			if (natPerson == null) {
 				return null;
