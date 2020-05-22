@@ -101,11 +101,22 @@ public class ObjBalanceController {
 		ObjBalSheet jpaBalSheet = balSheetSvc.getBalSheet(party, controlSvc.getFinYear());
 		
 		if (jpaBalSheet == null) {
-			return ResponseEntity.noContent().build();
+			return ResponseEntity.ok("Could not find Balance Sheet");
 		} else {
 			return ResponseEntity.ok(jpaToJson(jpaBalSheet));
 		}
-
+	}
+	
+	@GetMapping("/prev/party/{partyId}")
+	public ResponseEntity<?> getBalSheetByPartyIdPrev(@PathVariable Long partyId) {
+		ObjParty party = partySvc.getById(partyId);
+		ObjBalSheet jpaBalSheet = balSheetSvc.getBalSheet(party, controlSvc.getFinYear() - 1);
+		
+		if (jpaBalSheet == null) {
+			return ResponseEntity.ok("Could not find Balance Sheet");
+		} else {
+			return ResponseEntity.ok(jpaToJson(jpaBalSheet));
+		}
 	}
 
 
