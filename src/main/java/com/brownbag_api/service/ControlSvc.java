@@ -64,8 +64,9 @@ public class ControlSvc {
 		return ctrlVarFinDate.getValDate().getYear();
 	}
 	
-	public int incrFinYear() {
-		return setFinYear(getFinYear() + 1);
+	public int switchFinYear() {
+		int newFinYear = setFinYear(getFinYear() + 1);
+		return newFinYear;
 	}
 	
 	public int getFinYear() {

@@ -60,9 +60,9 @@ public class SettingsController {
 		return ResponseEntity.ok(finYearRtn);
 	}
 	
-	@GetMapping("/ctrlvar/finyear/incr")
+	@GetMapping("/ctrlvar/finyear/switch")
 	public ResponseEntity<?> incrFinYear() {
-		Integer finYearRtn = ctrlVarSvc.incrFinYear();
+		Integer finYearRtn = ctrlVarSvc.switchFinYear();
 		return ResponseEntity.ok(finYearRtn);
 	}
 	
