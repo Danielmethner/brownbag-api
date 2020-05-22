@@ -45,18 +45,23 @@ public class ObjBalSheetSection implements Serializable {
 	private String name;
 
 	@NotNull
+	@Column(name = "FIN_YEAR", updatable = false)
+	private int finYear;
+
+	@NotNull
 	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
 	private double qty;
 
 	public ObjBalSheetSection() {
 
 	}
-
+	
 	public ObjBalSheetSection(@NotNull ObjBalSheet balSheet, EBalSheetSectionType eBalSheetSection, double qty) {
 		super();
 		this.balSheet = balSheet;
 		this.section = eBalSheetSection;
 		this.qty = qty;
+		this.finYear = balSheet.getFinYear();
 		this.name = balSheet.getParty().getName() + ": " + eBalSheetSection.getName() + ": " + "Year: "
 				+ balSheet.getFinYear();
 	}
@@ -107,6 +112,14 @@ public class ObjBalSheetSection implements Serializable {
 
 	public void increaseQty(double qty) {
 		this.qty = this.qty + qty;
+	}
+
+	public int getFinYear() {
+		return finYear;
+	}
+
+	public void setFinYear(int finYear) {
+		this.finYear = finYear;
 	}
 
 }

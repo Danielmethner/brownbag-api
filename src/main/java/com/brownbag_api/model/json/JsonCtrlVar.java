@@ -1,5 +1,6 @@
 package com.brownbag_api.model.json;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -29,7 +30,7 @@ public class JsonCtrlVar {
 	private String name;
 	private String key;
 	private String valString;
-	private Date valDate;
+	private LocalDate valDate;
 	private double valDouble;
 	private boolean valBool;
 	private Date timestampCreate;
@@ -92,13 +93,6 @@ public class JsonCtrlVar {
 		this.valString = valString;
 	}
 
-	public Date getValDate() {
-		return valDate;
-	}
-
-	public void setValDate(Date valDate) {
-		this.valDate = valDate;
-	}
 
 	public double getValDouble() {
 		return valDouble;
@@ -130,6 +124,14 @@ public class JsonCtrlVar {
 
 	public void setTimestampModified(Date timestampModified) {
 		this.timestampModified = timestampModified;
+	}
+
+	public LocalDate getValDate() {
+		return valDate;
+	}
+
+	public void setValDate(LocalDate valDate) {
+		this.valDate = valDate;
 	}
 
 }

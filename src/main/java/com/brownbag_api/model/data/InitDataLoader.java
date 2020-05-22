@@ -1,5 +1,6 @@
 package com.brownbag_api.model.data;
 
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,6 +15,7 @@ import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.enums.EParty;
 import com.brownbag_api.model.enums.ERole;
 import com.brownbag_api.model.enums.EUser;
+import com.brownbag_api.model.jpa.CtrlVar;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjAssetLoan;
 import com.brownbag_api.model.jpa.ObjParty;
@@ -234,12 +236,18 @@ public class InitDataLoader {
 
 	private void createCtrlVars() {
 
-		ctrlVarSvc.create(ECtrlVar.FIN_DATE, new Date());
+		ctrlVarSvc.create(ECtrlVar.FIN_DATE, new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 		ctrlVarSvc.create(ECtrlVar.DEMO_DATA_CREATED, false);
 	}
 
 	public void createDemoData() {
-		createCtrlVars();
+		CtrlVar demoDataCreate = ctrlVarSvc.getByEnum(ECtrlVar.DEMO_DATA_CREATED);
+		if (demoDataCreate == null) {
+			createCtrlVars();
+			// LOAD FIN DATE FROM DATABASE
+			ctrlVarSvc.setFinDate();
+		}
+		System.out.println("Fin Year: " + ctrlVarSvc.getByEnum(ECtrlVar.FIN_DATE).getValDate());
 		if (ctrlVarSvc.getByEnum(ECtrlVar.DEMO_DATA_CREATED).isValBool()) {
 			System.out.println("Demo data was already loaded in a previous run.");
 			return;

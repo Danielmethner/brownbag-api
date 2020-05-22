@@ -17,7 +17,7 @@ public class UtilDate {
 	// Central Dates
 	public static Date minDate = new GregorianCalendar(1000, 0, 1).getTime();
 	public static Date maxDate = new GregorianCalendar(3000, 11, 1).getTime();
-	public static LocalDate finDate = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	private static LocalDate finDate = new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
 	public static Calendar cal() {
 		Calendar cal = new GregorianCalendar();
@@ -39,12 +39,21 @@ public class UtilDate {
 	public static String nowAsAPITimeStamp() {
 		return dateFormatSQLTimeStamp.format(now());
 	}
-
+	
 	public static int getFinYear() {
-		return finDate.getYear();
+		return getFinDate().getYear();
 	}
 
 	public static LocalDate incrFinYear() {
-		return finDate = finDate.plusYears(1);
+		return setFinDate(getFinDate().plusYears(1));
+	}
+
+	public static LocalDate getFinDate() {
+		return finDate;
+	}
+
+	public static LocalDate setFinDate(LocalDate finDate) {
+		UtilDate.finDate = finDate;
+		return finDate;
 	}
 }

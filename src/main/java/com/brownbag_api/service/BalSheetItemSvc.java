@@ -20,7 +20,14 @@ public class BalSheetItemSvc {
 
 	public ObjBalSheetItem createItem(EBalSheetItemType eBalSheetItemType, ObjBalSheetSection balSheetSectionType,
 			int finYear, ObjParty party) {
-		ObjBalSheetItem balSheetItem = new ObjBalSheetItem(0, eBalSheetItemType, finYear, party, balSheetSectionType);
+		double qty = 0;
+		// GET PREVIOUS YEARS ITEM AND TRANSFER ITS AMOUNT
+		ObjBalSheetItem balSheetItemPrevYear = getByPartyAndFinYearAndItemType(party, finYear - 1, eBalSheetItemType);
+
+		if(balSheetItemPrevYear != null) {
+			qty = balSheetItemPrevYear.getQty();
+		}
+		ObjBalSheetItem balSheetItem = new ObjBalSheetItem(qty, eBalSheetItemType, finYear, party, balSheetSectionType);
 		balSheetItem = balSheetItemRepo.save(balSheetItem);
 		return balSheetItem;
 	}
@@ -30,12 +37,13 @@ public class BalSheetItemSvc {
 
 	}
 
-	public ObjBalSheetItem getItem(ObjParty party, int finYear, EBalSheetItemType eBalSheetItem) {
+	public ObjBalSheetItem getByPartyAndFinYearAndItemType(ObjParty party, int finYear,
+			EBalSheetItemType eBalSheetItem) {
 		ObjBalSheetItem balSheetItem = balSheetItemRepo.findByPartyAndFinYearAndItemType(party, finYear, eBalSheetItem);
 		return balSheetItem;
 	}
 
-	public ObjBalSheetItem getItem(ObjPos pos, int finYear, EBalSheetItemType eBalSheetItem) {
+	public ObjBalSheetItem getByPosAndFinYearAndItemType(ObjPos pos, int finYear, EBalSheetItemType eBalSheetItem) {
 		ObjBalSheetItem balSheetItem = balSheetItemRepo.findByPartyAndFinYearAndItemType(pos.getParty(), finYear,
 				eBalSheetItem);
 		return balSheetItem;

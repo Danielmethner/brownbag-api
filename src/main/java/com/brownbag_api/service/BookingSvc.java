@@ -43,6 +43,9 @@ public class BookingSvc {
 
 	@Autowired
 	private LogSvc logSvc;
+	
+	@Autowired
+	private CtrlVarSvc ctrlVarSvc;
 
 	public ObjPos createBooking(Order order, ObjPos pos, EBookingDir eBookingDir,
 			ArrayList<BalTrxTrans> balTrxTransientList, double bookQty, String bookText) {
@@ -51,7 +54,8 @@ public class BookingSvc {
 		bookQty = eBookingDir == EBookingDir.CREDIT ? bookQty : -bookQty;
 
 		double posQty = pos.getQty();
-		int finYear = UtilDate.getFinYear();
+		//TODO: Fix fixYear
+		int finYear = ctrlVarSvc.getFinYear();
 
 		double balTrxAssets = 0;
 		double balTrxLiabEquity = 0;
@@ -77,7 +81,7 @@ public class BookingSvc {
 					: balTrxLiabEquity;
 
 			// UPDATE BALANCE SHEET ITEM
-			ObjBalSheetItem bsi = balSheetItemSvc.getItem(balTrxTransient.getParty(), finYear,
+			ObjBalSheetItem bsi = balSheetItemSvc.getByPartyAndFinYearAndItemType(balTrxTransient.getParty(), finYear,
 					balTrxTransient.getItemType());
 			bsi.setQty(bsi.getQty() + balTrxQty);
 			balSheetItemSvc.save(bsi);

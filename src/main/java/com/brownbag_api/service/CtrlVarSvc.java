@@ -1,5 +1,7 @@
 package com.brownbag_api.service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.brownbag_api.model.enums.ECtrlVar;
 import com.brownbag_api.model.jpa.CtrlVar;
 import com.brownbag_api.repo.CtrlVarRepo;
+import com.brownbag_api.util.UtilDate;
 
 @Service
 public class CtrlVarSvc {
@@ -20,7 +23,7 @@ public class CtrlVarSvc {
 	@Autowired
 	private LogSvc logSvc;
 
-	public CtrlVar create(ECtrlVar eCtrlVar, Date dateVal) {
+	public CtrlVar create(ECtrlVar eCtrlVar, LocalDate dateVal) {
 		if (ctrlVarRepo.findByKey(eCtrlVar.toString()) != null) {
 			return null;
 		}
@@ -37,17 +40,37 @@ public class CtrlVarSvc {
 				valBool);
 		return ctrlVarRepo.save(ctrlVar);
 	}
-	
+
 	public CtrlVar getByEnum(ECtrlVar eCtrlVar) {
 		return ctrlVarRepo.findByKey(eCtrlVar.toString());
 	}
-//	public double setIntrRate() {
-//		return ctrlVarRepo.
-//	}
-//
-//	public double getIntrRate() {
-//		return UtilBA.getIntrRate();
-//	}
+
+	public LocalDate getFinDateDB() {
+		LocalDate finDate = getByEnum(ECtrlVar.FIN_DATE).getValDate();
+		return finDate;
+	}
+	public void setFinDate() { 
+		LocalDate finDateLocal = getFinDateDB();
+		UtilDate.setFinDate(finDateLocal);
+	}
+
+	public int setFinYear(int finYear) {
+		CtrlVar ctrlVarFinDate = getByEnum(ECtrlVar.FIN_DATE);
+		LocalDate finDateLocal = ctrlVarFinDate.getValDate();
+		finDateLocal = finDateLocal.plusYears(finYear - finDateLocal.getYear());
+		ctrlVarFinDate.setValDate(finDateLocal);
+		ctrlVarFinDate = ctrlVarRepo.save(ctrlVarFinDate);
+		UtilDate.setFinDate(finDateLocal);
+		return ctrlVarFinDate.getValDate().getYear();
+	}
+	
+	public int incrFinYear() {
+		return setFinYear(getFinYear() + 1);
+	}
+	
+	public int getFinYear() {
+		return UtilDate.getFinYear();
+	}
 
 	public double getIntrRate() {
 		return 1.25;

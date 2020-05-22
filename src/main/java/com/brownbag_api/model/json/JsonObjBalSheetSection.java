@@ -24,6 +24,7 @@ public class JsonObjBalSheetSection {
 		this.id = objBalSheetSection.getId();
 		this.name = objBalSheetSection.getName();
 		this.section = objBalSheetSection.getSection();
+		this.qty = objBalSheetSection.getQty();
 		this.items = items;
 	}
 
@@ -31,6 +32,7 @@ public class JsonObjBalSheetSection {
 		this.id = objBalSheetSection.getId();
 		this.name = objBalSheetSection.getName();
 		this.section = objBalSheetSection.getSection();
+		this.qty = objBalSheetSection.getQty();
 	}
 
 	public double getId() {

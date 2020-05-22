@@ -20,6 +20,7 @@ import com.brownbag_api.repo.BalSheetRepo;
 import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.BalSheetSectionSvc;
 import com.brownbag_api.service.BalSheetSvc;
+import com.brownbag_api.service.CtrlVarSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.util.UtilDate;
 
@@ -39,7 +40,8 @@ public class ObjBalanceController {
 	
 	@Autowired
 	private AssetSvc assetSvc;
-
+	@Autowired
+	private CtrlVarSvc ctrlVarSvc;
 	@Autowired
 	private BalSheetSectionSvc balSheetSectionSvc;
 
@@ -47,17 +49,17 @@ public class ObjBalanceController {
 
 		JsonObjBalSheet jsonBalSheet = new JsonObjBalSheet(jpaBalSheet);
 		List<JsonObjBalSheetSection> balSheetSections = new ArrayList<JsonObjBalSheetSection>();
-		JsonObjBalSheetSection assets = balSheetSectionSvc.getByBalSheetAndSection(jpaBalSheet,
+		JsonObjBalSheetSection assets = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaBalSheet,
 				EBalSheetSectionType.ASSETS);
 		assets.setStyle("bg-success");
 		balSheetSections.add(assets);
 
-		JsonObjBalSheetSection liablities = balSheetSectionSvc.getByBalSheetAndSection(jpaBalSheet,
+		JsonObjBalSheetSection liablities = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaBalSheet,
 				EBalSheetSectionType.LIABILITIES);
 		liablities.setStyle("bg-danger");
 		balSheetSections.add(liablities);
 
-		JsonObjBalSheetSection equity = balSheetSectionSvc.getByBalSheetAndSection(jpaBalSheet,
+		JsonObjBalSheetSection equity = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaBalSheet,
 				EBalSheetSectionType.EQUITY);
 		equity.setStyle("bg-primary");
 		balSheetSections.add(equity);
@@ -96,8 +98,8 @@ public class ObjBalanceController {
 	@GetMapping("/party/{partyId}")
 	public ResponseEntity<?> getBalSheetByPartyId(@PathVariable Long partyId) {
 		ObjParty party = partySvc.getById(partyId);
-		ObjBalSheet jpaBalSheet = balSheetSvc.getBalSheet(party, UtilDate.getFinYear());
-
+		ObjBalSheet jpaBalSheet = balSheetSvc.getBalSheet(party, ctrlVarSvc.getFinYear());
+		
 		if (jpaBalSheet == null) {
 			return ResponseEntity.noContent().build();
 		} else {

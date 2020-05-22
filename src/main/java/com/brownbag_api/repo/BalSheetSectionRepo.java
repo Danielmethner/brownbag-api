@@ -11,5 +11,7 @@ import com.brownbag_api.model.jpa.ObjBalSheetSection;
 public interface BalSheetSectionRepo extends JpaRepository<ObjBalSheetSection, Long> {
 
 	ObjBalSheetSection findByBalSheetAndSection(ObjBalSheet balSheet, EBalSheetSectionType section);
+	
+	ObjBalSheetSection findByBalSheetAndSectionAndFinYear(ObjBalSheet balSheet, EBalSheetSectionType section, int finYear);
 
 }

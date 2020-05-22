@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,7 +51,22 @@ public class SettingsController {
 		return jsonObjList;
 	}
 	
-	@GetMapping("/ctrl-var")
+	@GetMapping("/ctrlvar/finyear/set/{finYear}")
+	public ResponseEntity<?> setFinYear(@PathVariable Integer finYear) {
+		if(finYear == null || finYear <0) {
+			return ResponseEntity.ok("Fin Year must be set and greater than 0.");
+		}
+		Integer finYearRtn = ctrlVarSvc.setFinYear(finYear);
+		return ResponseEntity.ok(finYearRtn);
+	}
+	
+	@GetMapping("/ctrlvar/finyear/incr")
+	public ResponseEntity<?> incrFinYear() {
+		Integer finYearRtn = ctrlVarSvc.incrFinYear();
+		return ResponseEntity.ok(finYearRtn);
+	}
+	
+	@GetMapping("/ctrlvar")
 	public ResponseEntity<?> getCtrlVars() {
 		
 		return ResponseEntity.ok(jpaToJson(ctrlVarSvc.getAll()));

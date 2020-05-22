@@ -13,6 +13,7 @@ import com.brownbag_api.model.jpa.ObjBalSheet;
 import com.brownbag_api.model.jpa.ObjBalSheetItem;
 import com.brownbag_api.model.jpa.ObjBalSheetSection;
 import com.brownbag_api.model.json.JsonObjBalSheetSection;
+import com.brownbag_api.repo.BalSheetRepo;
 import com.brownbag_api.repo.BalSheetSectionRepo;
 
 @Service
@@ -24,6 +25,12 @@ public class BalSheetSectionSvc {
 	@Autowired
 	private BalSheetItemSvc balSheetItemSvc;
 
+	@Autowired
+	private BalSheetSvc balSheetSvc;
+	
+	@Autowired
+	private CtrlVarSvc ctrlVarSvc;
+
 	public List<EBalSheetItemType> getItemsBySection(EBalSheetSectionType section) {
 		List<EBalSheetItemType> items;
 		Stream<EBalSheetItemType> sItems;
@@ -33,12 +40,24 @@ public class BalSheetSectionSvc {
 	}
 
 	public ObjBalSheetSection createBalSheetSection(ObjBalSheet balSheet, EBalSheetSectionType eBalSheetSection) {
-		ObjBalSheetSection balSheetSection = new ObjBalSheetSection(balSheet, eBalSheetSection, 0);
+		double qty = 0;
+		// GET LAST YEARS BALANCE SHEET
+		ObjBalSheet balSheetPrevYear = balSheetSvc.getBalSheet(balSheet.getParty(), ctrlVarSvc.getFinYear() - 1);
+		if (balSheetPrevYear != null) {
+			ObjBalSheetSection balSheetSectionPrevYear = getByBalSheetAndSection(balSheetPrevYear, eBalSheetSection);
+
+			if (balSheetSectionPrevYear != null) {
+				qty = balSheetSectionPrevYear.getQty();
+			}
+		}
+
+		ObjBalSheetSection balSheetSection = new ObjBalSheetSection(balSheet, eBalSheetSection, qty);
 		ObjBalSheetSection balSheetSectionDb = balSheetSectionRepo.save(balSheetSection);
 		List<EBalSheetItemType> items = getItemsBySection(eBalSheetSection);
 		items.forEach(eBalSheetItem -> {
 			balSheetItemSvc.createItem(eBalSheetItem, balSheetSectionDb, balSheet.getFinYear(), balSheet.getParty());
 		});
+
 		return balSheetSection;
 	}
 
@@ -47,12 +66,24 @@ public class BalSheetSectionSvc {
 
 	}
 
-	public JsonObjBalSheetSection getByBalSheetAndSection(ObjBalSheet balSheet, EBalSheetSectionType sectionType) {
+	public ObjBalSheetSection getByBalSheetAndSection(ObjBalSheet balSheet, EBalSheetSectionType sectionType) {
 		ObjBalSheetSection section = balSheetSectionRepo.findByBalSheetAndSection(balSheet, sectionType);
+		return section;
+	}
+
+	public JsonObjBalSheetSection getByBalSheetAndSectionJson(ObjBalSheet balSheet, EBalSheetSectionType sectionType) {
+		ObjBalSheetSection section = getByBalSheetAndSection(balSheet, sectionType);
 		JsonObjBalSheetSection jsonObjBalSheetSection = new JsonObjBalSheetSection(section);
 		List<ObjBalSheetItem> items = balSheetItemSvc.getByBalSheetSection(section);
 		jsonObjBalSheetSection.setItems(items);
 
 		return jsonObjBalSheetSection;
+	}
+
+	public ObjBalSheetSection getByBalSheetAndSectionAndFinYear(ObjBalSheet balSheet, EBalSheetSectionType sectionType,
+			int finYear) {
+		ObjBalSheetSection section = balSheetSectionRepo.findByBalSheetAndSectionAndFinYear(balSheet, sectionType,
+				finYear);
+		return section;
 	}
 }

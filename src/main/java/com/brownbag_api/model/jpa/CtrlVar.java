@@ -1,5 +1,6 @@
 package com.brownbag_api.model.jpa;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -47,7 +48,7 @@ public class CtrlVar {
 	private String valString;
 
 	@Column(name = "VAL_DATE")
-	private Date valDate;
+	private LocalDate valDate;
 
 	@Column(name = "VAL_DOUBLE")
 	private double valDouble;
@@ -70,7 +71,7 @@ public class CtrlVar {
 	}
 
 	public CtrlVar(@NotNull EDataType dataType, @Size(max = 100) String name, @Size(max = 100) String key,
-			@Size(max = 100) String valString, Date valDate, double valDouble, boolean valBool) {
+			@Size(max = 100) String valString, LocalDate valDate, double valDouble, boolean valBool) {
 		super();
 		this.dataType = dataType;
 		this.name = name;
@@ -103,14 +104,6 @@ public class CtrlVar {
 
 	public void setValString(String valString) {
 		this.valString = valString;
-	}
-
-	public Date getValDate() {
-		return valDate;
-	}
-
-	public void setValDate(Date valDate) {
-		this.valDate = valDate;
 	}
 
 	public double getValDouble() {
@@ -160,7 +153,13 @@ public class CtrlVar {
 	public void setKey(String key) {
 		this.key = key;
 	}
-	
-	
+
+	public LocalDate getValDate() {
+		return valDate;
+	}
+
+	public void setValDate(LocalDate valDate) {
+		this.valDate = valDate;
+	}
 
 }
