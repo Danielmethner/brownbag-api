@@ -20,7 +20,7 @@ import com.brownbag_api.repo.BalSheetRepo;
 import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.BalSheetSectionSvc;
 import com.brownbag_api.service.BalSheetSvc;
-import com.brownbag_api.service.CtrlVarSvc;
+import com.brownbag_api.service.ControlSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.util.UtilDate;
 
@@ -41,7 +41,7 @@ public class ObjBalanceController {
 	@Autowired
 	private AssetSvc assetSvc;
 	@Autowired
-	private CtrlVarSvc ctrlVarSvc;
+	private ControlSvc controlSvc;
 	@Autowired
 	private BalSheetSectionSvc balSheetSectionSvc;
 
@@ -98,7 +98,7 @@ public class ObjBalanceController {
 	@GetMapping("/party/{partyId}")
 	public ResponseEntity<?> getBalSheetByPartyId(@PathVariable Long partyId) {
 		ObjParty party = partySvc.getById(partyId);
-		ObjBalSheet jpaBalSheet = balSheetSvc.getBalSheet(party, ctrlVarSvc.getFinYear());
+		ObjBalSheet jpaBalSheet = balSheetSvc.getBalSheet(party, controlSvc.getFinYear());
 		
 		if (jpaBalSheet == null) {
 			return ResponseEntity.noContent().build();

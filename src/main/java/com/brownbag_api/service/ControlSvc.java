@@ -15,7 +15,7 @@ import com.brownbag_api.repo.CtrlVarRepo;
 import com.brownbag_api.util.UtilDate;
 
 @Service
-public class CtrlVarSvc {
+public class ControlSvc {
 
 	@Autowired
 	private CtrlVarRepo ctrlVarRepo;

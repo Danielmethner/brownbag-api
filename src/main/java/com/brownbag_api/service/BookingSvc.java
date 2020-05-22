@@ -45,7 +45,7 @@ public class BookingSvc {
 	private LogSvc logSvc;
 	
 	@Autowired
-	private CtrlVarSvc ctrlVarSvc;
+	private ControlSvc controlSvc;
 
 	public ObjPos createBooking(Order order, ObjPos pos, EBookingDir eBookingDir,
 			ArrayList<BalTrxTrans> balTrxTransientList, double bookQty, String bookText) {
@@ -55,7 +55,7 @@ public class BookingSvc {
 
 		double posQty = pos.getQty();
 		//TODO: Fix fixYear
-		int finYear = ctrlVarSvc.getFinYear();
+		int finYear = controlSvc.getFinYear();
 
 		double balTrxAssets = 0;
 		double balTrxLiabEquity = 0;

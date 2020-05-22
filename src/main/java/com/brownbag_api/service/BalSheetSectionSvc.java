@@ -29,7 +29,7 @@ public class BalSheetSectionSvc {
 	private BalSheetSvc balSheetSvc;
 	
 	@Autowired
-	private CtrlVarSvc ctrlVarSvc;
+	private ControlSvc controlSvc;
 
 	public List<EBalSheetItemType> getItemsBySection(EBalSheetSectionType section) {
 		List<EBalSheetItemType> items;
@@ -42,7 +42,7 @@ public class BalSheetSectionSvc {
 	public ObjBalSheetSection createBalSheetSection(ObjBalSheet balSheet, EBalSheetSectionType eBalSheetSection) {
 		double qty = 0;
 		// GET LAST YEARS BALANCE SHEET
-		ObjBalSheet balSheetPrevYear = balSheetSvc.getBalSheet(balSheet.getParty(), ctrlVarSvc.getFinYear() - 1);
+		ObjBalSheet balSheetPrevYear = balSheetSvc.getBalSheet(balSheet.getParty(), controlSvc.getFinYear() - 1);
 		if (balSheetPrevYear != null) {
 			ObjBalSheetSection balSheetSectionPrevYear = getByBalSheetAndSection(balSheetPrevYear, eBalSheetSection);
 

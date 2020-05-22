@@ -24,7 +24,7 @@ import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.service.AssetSvc;
-import com.brownbag_api.service.CtrlVarSvc;
+import com.brownbag_api.service.ControlSvc;
 import com.brownbag_api.service.OrderCreateMonSvc;
 import com.brownbag_api.service.OrderStexSvc;
 import com.brownbag_api.service.PartySvc;
@@ -40,7 +40,7 @@ public class InitDataLoader {
 	private UserSvc userSvc;
 
 	@Autowired
-	private CtrlVarSvc ctrlVarSvc;
+	private ControlSvc controlSvc;
 
 	@Autowired
 	private AssetSvc assetSvc;
@@ -236,19 +236,19 @@ public class InitDataLoader {
 
 	private void createCtrlVars() {
 
-		ctrlVarSvc.create(ECtrlVar.FIN_DATE, new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-		ctrlVarSvc.create(ECtrlVar.DEMO_DATA_CREATED, false);
+		controlSvc.create(ECtrlVar.FIN_DATE, new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+		controlSvc.create(ECtrlVar.DEMO_DATA_CREATED, false);
 	}
 
 	public void createDemoData() {
-		CtrlVar demoDataCreate = ctrlVarSvc.getByEnum(ECtrlVar.DEMO_DATA_CREATED);
+		CtrlVar demoDataCreate = controlSvc.getByEnum(ECtrlVar.DEMO_DATA_CREATED);
 		if (demoDataCreate == null) {
 			createCtrlVars();
 			// LOAD FIN DATE FROM DATABASE
-			ctrlVarSvc.setFinDate();
+			controlSvc.setFinDate();
 		}
-		System.out.println("Fin Year: " + ctrlVarSvc.getByEnum(ECtrlVar.FIN_DATE).getValDate());
-		if (ctrlVarSvc.getByEnum(ECtrlVar.DEMO_DATA_CREATED).isValBool()) {
+		System.out.println("Fin Year: " + controlSvc.getByEnum(ECtrlVar.FIN_DATE).getValDate());
+		if (controlSvc.getByEnum(ECtrlVar.DEMO_DATA_CREATED).isValBool()) {
 			System.out.println("Demo data was already loaded in a previous run.");
 			return;
 		}
@@ -259,7 +259,7 @@ public class InitDataLoader {
 		createAssets();
 		createUsers();
 		createOrders();
-		ctrlVarSvc.setVal(ECtrlVar.DEMO_DATA_CREATED, true);
+		controlSvc.setVal(ECtrlVar.DEMO_DATA_CREATED, true);
 		System.err.println("Demo Data Loaded Succesfully");
 	}
 

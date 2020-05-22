@@ -17,7 +17,7 @@ import com.brownbag_api.model.jpa.Log;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.json.JsonCtrlVar;
 import com.brownbag_api.model.json.JsonObjAsset;
-import com.brownbag_api.service.CtrlVarSvc;
+import com.brownbag_api.service.ControlSvc;
 import com.brownbag_api.service.LogSvc;
 import com.brownbag_api.util.UtilDate;
 
@@ -30,7 +30,7 @@ public class SettingsController {
 	private LogSvc logSvc;
 	
 	@Autowired
-	private CtrlVarSvc ctrlVarSvc;
+	private ControlSvc ctrlVarSvc;
 
 	@GetMapping("/log")
 	public List<Log> getLogEntries() {
