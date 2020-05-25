@@ -23,6 +23,7 @@ import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.payload.response.MsgResponse;
 import com.brownbag_api.security.svc.UserDetailsImpl;
+import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.BookingSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
@@ -35,10 +36,13 @@ public class ObjPosController {
 
 	@Autowired
 	private PosRepo posRepo;
-	
+
 	@Autowired
 	private PosSvc posSvc;
-	
+
+	@Autowired
+	private AssetSvc assetSvc;
+
 	@Autowired
 	private BookingSvc bookingSvc;
 
@@ -50,27 +54,38 @@ public class ObjPosController {
 
 	@Autowired
 	UserSvc userSvc;
-	
+
 	@Autowired
 	PartySvc partySvc;
-	
+
 	/*
 	 * GET OBJ_USER BY AUTHENTICATION
 	 */
 	private ObjUser getByAuthentication(Authentication authentication) {
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-		ObjUser objUser = userRepo.findById(userDetailsImpl.getId())
-				.orElseThrow(() -> new RuntimeException("ERROR API: User not found. USER.ID: " + userDetailsImpl.getId()));
+		ObjUser objUser = userRepo.findById(userDetailsImpl.getId()).orElseThrow(
+				() -> new RuntimeException("ERROR API: User not found. USER.ID: " + userDetailsImpl.getId()));
 		return objUser;
 	}
 
 	/*
 	 * CONVERT JPA TO JSON
 	 */
-	private List<JsonObjPos> jpaToJson(List<ObjPos> jpaPosList) {
+	private List<JsonObjPos> jpaToJson(List<ObjPos> jpaPosList, boolean addPriceData) {
 		List<JsonObjPos> jsonPosList = new ArrayList<JsonObjPos>();
 		for (ObjPos jpaPos : jpaPosList) {
 			JsonObjPos jsonPos = new JsonObjPos(jpaPos);
+
+			// DELIVER PRICE DATA
+			if (addPriceData == true) {
+				double lastPrice = assetSvc.getLastPrice(jpaPos.getAsset());
+				jsonPos.setPriceLast(lastPrice);
+				if ((jsonPos.getPriceLast() - jsonPos.getPriceAvg()) != 0) {
+					double profitLoss = (jsonPos.getPriceLast() - jsonPos.getPriceAvg()) / jsonPos.getPriceAvg() * 100 ;
+					jsonPos.setProfitLoss(profitLoss);
+
+				}
+			}
 			jsonPosList.add(jsonPos);
 		}
 		return jsonPosList;
@@ -84,11 +99,11 @@ public class ObjPosController {
 		}
 		return jsonBookingList;
 	}
-	
+
 	@GetMapping("/all")
 	public List<JsonObjPos> getAll() {
 		List<ObjPos> jpaPosList = posRepo.findAll();
-		return jpaToJson(jpaPosList);
+		return jpaToJson(jpaPosList, false);
 	}
 
 	@GetMapping("/user")
@@ -98,9 +113,9 @@ public class ObjPosController {
 		ObjParty partyPerson = userSvc.getNaturalPerson(user);
 		List<ObjPos> jpaPosList = posSvc.getByParty(partyPerson);
 
-		return jpaToJson(jpaPosList);
+		return jpaToJson(jpaPosList, false);
 	}
-	
+
 	@GetMapping("/private/user")
 	public List<JsonObjPos> getPrivateByUser(Authentication authentication) {
 
@@ -108,18 +123,19 @@ public class ObjPosController {
 		ObjParty partyPerson = userSvc.getNaturalPerson(user);
 		List<ObjPos> jpaPosList = posSvc.getByParty(partyPerson);
 
-		return jpaToJson(jpaPosList);
+		return jpaToJson(jpaPosList, false);
 	}
-	
+
 	@GetMapping("/party/{partyId}")
 	public ResponseEntity<?> getByPartyId(@PathVariable Long partyId) {
 		if (partyId == null)
 			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
 		ObjParty jpaParty = partySvc.getById(partyId);
 		List<ObjPos> jpaPosList = posSvc.getByParty(jpaParty);
-		return ResponseEntity.ok(jpaToJson(jpaPosList));
+		List<JsonObjPos> jsonPosList = jpaToJson(jpaPosList, true);
+		return ResponseEntity.ok(jsonPosList);
 	}
-	
+
 	@GetMapping("/bookings/party/{partyId}/pos/{posId}")
 	public ResponseEntity<?> getByPartyId(@PathVariable Long partyId, @PathVariable Long posId) {
 		if (partyId == null)

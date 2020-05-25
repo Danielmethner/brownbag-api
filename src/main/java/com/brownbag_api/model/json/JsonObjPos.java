@@ -11,6 +11,8 @@ public class JsonObjPos {
 	public String assetName;
 	private String partyName;
 	private double priceAvg;
+	private double priceLast;
+	private double profitLoss;
 
 	public JsonObjPos(ObjPos jpaPos) {
 		super();
@@ -77,6 +79,22 @@ public class JsonObjPos {
 
 	public void setPartyName(String partyName) {
 		this.partyName = partyName;
+	}
+
+	public double getPriceLast() {
+		return priceLast;
+	}
+
+	public void setPriceLast(double priceLast) {
+		this.priceLast = priceLast;
+	}
+
+	public double getProfitLoss() {
+		return profitLoss;
+	}
+
+	public void setProfitLoss(double profitLoss) {
+		this.profitLoss = profitLoss;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.brownbag_api.service;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
@@ -42,7 +43,7 @@ public class OrderLoanSvc extends OrderSvc {
 	 * Does not persist order!
 	 *
 	 */
-	public OrderLoan createLoan(double qty, @NotNull ObjUser user, ObjPos maccGrant, ObjPos maccRcv, Date matDate,
+	public OrderLoan createLoan(double qty, @NotNull ObjUser user, ObjPos maccGrant, ObjPos maccRcv, LocalDate matDate,
 			double intrRate) {
 
 		String bookText = "Loan from: '" + maccGrant.getParty().getName() + "' to: '" + maccRcv.getParty().getName()

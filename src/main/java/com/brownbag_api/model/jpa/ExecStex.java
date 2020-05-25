@@ -57,6 +57,11 @@ public class ExecStex implements Serializable {
 	private String bookText;
 
 	@NotNull
+	@ManyToOne(targetEntity = ObjAsset.class)
+	@JoinColumn(name = "ASSET_ID")
+	private ObjAsset asset;
+
+	@NotNull
 	@Column(name = "QTY_EXEC", columnDefinition = "Decimal(20,2)")
 	private int qtyExec;
 
@@ -68,13 +73,15 @@ public class ExecStex implements Serializable {
 	}
 
 	public ExecStex(@NotNull ObjPosStex posSend, @NotNull ObjPosStex posRcv, @NotNull OrderStex orderSell,
-			@NotNull OrderStex orderBuy, String bookText, @NotNull int qtyExec, @NotNull double price) {
+			@NotNull OrderStex orderBuy, String bookText, @NotNull int qtyExec,
+			@NotNull double price) {
 		super();
 		this.posSend = posSend;
 		this.posRcv = posRcv;
 		this.orderSell = orderSell;
 		this.orderBuy = orderBuy;
 		this.bookText = bookText;
+		this.asset = orderSell.getAsset();
 		this.qtyExec = qtyExec;
 		this.price = price;
 	}
@@ -157,6 +164,14 @@ public class ExecStex implements Serializable {
 
 	public double getAmtExec() {
 		return this.price * this.qtyExec;
+	}
+
+	public ObjAsset getAsset() {
+		return asset;
+	}
+
+	public void setAsset(ObjAsset asset) {
+		this.asset = asset;
 	}
 
 }
