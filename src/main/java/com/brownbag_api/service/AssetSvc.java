@@ -41,7 +41,7 @@ public class AssetSvc {
 
 	public ObjAssetLoan createAssetLoan(String advText, EAssetGrp loan, @NotNull int totalShares, ObjParty partyLender, Date matDate,
 			double intrRate) {
-		ObjAssetLoan assetLoan = new ObjAssetLoan(advText, advText, EAssetGrp.LOAN, totalShares, partyLender, intrRate, matDate, intrRate);
+		ObjAssetLoan assetLoan = new ObjAssetLoan(advText, advText, EAssetGrp.LOAN, totalShares, partyLender, 1, matDate, intrRate);
 		return assetRepo.save(assetLoan);
 	}
 
