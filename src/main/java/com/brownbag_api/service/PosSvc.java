@@ -173,11 +173,10 @@ public class PosSvc {
 	}
 
 	// -----------------------------------------------------------------
-	// LOAN - CREDIT
+	// LOAN - CREDIT LENDER 
 	// -----------------------------------------------------------------
 	public ObjPosLoan creditPos(OrderLoan orderLoan) {
 		ObjParty partyLender = orderLoan.getMaccLender().getParty();
-		ObjParty partyDebtor = orderLoan.getMaccDebtor().getParty();
 		double qty = orderLoan.getQty();
 
 		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
@@ -186,13 +185,27 @@ public class PosSvc {
 		// EQUITY - LENDER
 		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, qty, EBookingDir.CREDIT, partyLender));
 
-		// LIABILITIES - DEBTOR
+		// BOOKING
+		return (ObjPosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoanLender(), EBookingDir.CREDIT, balTrxList,
+				orderLoan.getQty(), orderLoan.getAdvText());
+	}
+	
+	// -----------------------------------------------------------------
+	// LOAN - DEBIT BORROWER
+	// -----------------------------------------------------------------
+	public ObjPosLoan debitPos(OrderLoan orderLoan) {
+		ObjParty partyDebtor = orderLoan.getMaccDebtor().getParty();
+		double qty = orderLoan.getQty();
+
+		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
+
+		// LIABILITIES - BORROWER
 		balTrxList.add(new BalTrxTrans(EBalSheetItemType.LOANS_LIAB, qty, EBookingDir.CREDIT, partyDebtor));
-		// EQUITY - DEBTOR
+		// EQUITY - BORROWER
 		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, qty, EBookingDir.DEBIT, partyDebtor));
 
 		// BOOKING
-		return (ObjPosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoan(), EBookingDir.CREDIT, balTrxList,
+		return (ObjPosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoanBorrower(), EBookingDir.DEBIT, balTrxList,
 				orderLoan.getQty(), orderLoan.getAdvText());
 	}
 
@@ -282,5 +295,6 @@ public class PosSvc {
 	public ObjPos getById(Long posId) {
 		return posRepo.getOne(posId);
 	}
+
 
 }

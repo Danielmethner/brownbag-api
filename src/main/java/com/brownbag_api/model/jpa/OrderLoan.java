@@ -30,8 +30,12 @@ public class OrderLoan extends Order implements Serializable {
 	private ObjPos maccDebtor;
 
 	@OneToOne(targetEntity = ObjPosLoan.class)
-	@JoinColumn(name = "POS_LOAN_ID")
-	private ObjPosLoan posLoan;
+	@JoinColumn(name = "POS_LOAN_LENDER_ID")
+	private ObjPosLoan posLoanLender;
+
+	@OneToOne(targetEntity = ObjPosLoan.class)
+	@JoinColumn(name = "POS_LOAN_BORROWER_ID")
+	private ObjPosLoan posLoanBorrower;
 
 	@Column(name = "MAT_DATE")
 	private Date matDate;
@@ -42,17 +46,22 @@ public class OrderLoan extends Order implements Serializable {
 
 	public OrderLoan() {
 	}
+	
+	
 
 	public OrderLoan(@NotNull double qty, @NotNull ObjAsset asset, EOrderType orderType, EOrderStatus orderStatus,
 			@NotNull ObjUser user, String advText, @NotNull ObjPos maccLender, @NotNull ObjPos maccDebtor,
-			ObjPosLoan posLoan, Date matDate, @NotNull double intrRate) {
+			ObjPosLoan posLoanLender, ObjPosLoan posLoanBorrower, Date matDate, @NotNull double intrRate) {
 		super(qty, asset, orderType, orderStatus, user, advText);
 		this.maccLender = maccLender;
 		this.maccDebtor = maccDebtor;
-		this.posLoan = posLoan;
+		this.posLoanLender = posLoanLender;
+		this.posLoanBorrower = posLoanBorrower;
 		this.matDate = matDate;
 		this.intrRate = intrRate;
 	}
+
+
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -90,12 +99,20 @@ public class OrderLoan extends Order implements Serializable {
 		this.maccDebtor = maccDebtor;
 	}
 
-	public ObjPosLoan getPosLoan() {
-		return posLoan;
+	public ObjPosLoan getPosLoanLender() {
+		return posLoanLender;
 	}
 
-	public void setPosLoan(ObjPosLoan posLoan) {
-		this.posLoan = posLoan;
+	public void setPosLoanLender(ObjPosLoan posLoanLender) {
+		this.posLoanLender = posLoanLender;
+	}
+
+	public ObjPosLoan getPosLoanBorrower() {
+		return posLoanBorrower;
+	}
+
+	public void setPosLoanBorrower(ObjPosLoan posLoanBorrower) {
+		this.posLoanBorrower = posLoanBorrower;
 	}
 
 }

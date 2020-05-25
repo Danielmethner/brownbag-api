@@ -57,7 +57,7 @@ public class OrderLoanSvc extends OrderSvc {
 		}
 		ObjAssetLoan assetLoan = (ObjAssetLoan) assetSvc.getByEnum(EAsset.LOAN_GENERIC);
 		OrderLoan orderLoan = new OrderLoan(qty, assetLoan, EOrderType.LOAN, EOrderStatus.NEW, user, bookText,
-				maccGrant, maccRcv, null, matDate, intrRate);
+				maccGrant, maccRcv, null, null, matDate, intrRate);
 
 		orderSvc.execAction(orderLoan, EOrderAction.HOLD);
 
@@ -77,6 +77,7 @@ public class OrderLoanSvc extends OrderSvc {
 		}
 
 		ObjParty partyLender = orderLoan.getMaccLender().getParty();
+		ObjParty partyBorrower = orderLoan.getMaccDebtor().getParty();
 
 		// TRANSFER CASH
 		OrderPay orderPay = orderPaySvc.createPay(orderLoan.getQty(), orderLoan.getUser(),
@@ -85,19 +86,21 @@ public class OrderLoanSvc extends OrderSvc {
 		orderPay = orderPaySvc.execPay(orderPay);
 
 		// CREATE LOAN ASSET
-		ObjAssetLoan assetLoan = assetSvc.createAssetLoan(orderLoan.getAdvText(), EAssetGrp.LOAN, (@NotNull int) orderLoan.getQty(), partyLender,
-				orderLoan.getMatDate(), orderLoan.getIntrRate());
+		ObjAssetLoan assetLoan = assetSvc.createAssetLoan(orderLoan.getAdvText(), EAssetGrp.LOAN,
+				(@NotNull int) orderLoan.getQty(), partyLender, orderLoan.getMatDate(), orderLoan.getIntrRate());
 
-		// CREATE LOAN POSITION
-		ObjPosLoan posLoan = posSvc.createPosLoan(0, assetLoan, partyLender, orderLoan.getMaccLender(),
+		// CREATE LOAN POSITION - LENDER
+		ObjPosLoan posLoanLender = posSvc.createPosLoan(0, assetLoan, partyLender, orderLoan.getMaccLender(),
 				orderLoan.getMaccDebtor());
+		orderLoan.setPosLoanLender(posLoanLender);
+		posLoanLender = posSvc.creditPos(orderLoan);
 
-		orderLoan.setPosLoan(posLoan);
-
-		posLoan = posSvc.creditPos(orderLoan);
-
-		orderLoan.setPosLoan(posLoan);
-
+		// CREATE LOAN POSITION - BORROWER
+		ObjPosLoan posLoanBorrower = posSvc.createPosLoan(0, assetLoan, partyBorrower, orderLoan.getMaccLender(),
+				orderLoan.getMaccDebtor());
+		orderLoan.setPosLoanBorrower(posLoanBorrower);
+		posLoanBorrower = posSvc.debitPos(orderLoan);
+		
 		return (OrderLoan) orderSvc.execAction(orderLoan, EOrderAction.VERIFY);
 	}
 

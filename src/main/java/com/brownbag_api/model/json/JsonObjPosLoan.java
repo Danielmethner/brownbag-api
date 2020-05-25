@@ -1,6 +1,8 @@
 package com.brownbag_api.model.json;
 
 import com.brownbag_api.model.jpa.ObjPos;
+import com.brownbag_api.model.jpa.ObjPosLoan;
+import com.brownbag_api.model.jpa.ObjAssetLoan;
 
 public class JsonObjPosLoan {
 
@@ -11,16 +13,18 @@ public class JsonObjPosLoan {
 	public String assetName;
 	private String partyName;
 	private double priceAvg;
+	private Long partyId;
+	private double intrRate;
 
-	public JsonObjPosLoan(ObjPos jpaPos) {
+	public JsonObjPosLoan(ObjPosLoan jpaPos) {
 		super();
 		this.id = jpaPos.getId();
 		this.name = jpaPos.getName();
 		this.qty = jpaPos.getQty();
 		this.qtyBlocked = jpaPos.getQtyBlocked();
-		this.assetName = jpaPos.getAsset().getName();
+		this.partyId = jpaPos.getParty().getId();
 		this.partyName = jpaPos.getParty().getName();
-		this.priceAvg = jpaPos.getPriceAvg();
+		this.intrRate = jpaPos.getAssetLoan().getIntrRate();
 	}
 
 	public Long getId() {
@@ -79,4 +83,21 @@ public class JsonObjPosLoan {
 		this.partyName = partyName;
 	}
 
+	public Long getPartyId() {
+		return partyId;
+	}
+
+	public void setPartyId(Long partyId) {
+		this.partyId = partyId;
+	}
+
+	public double getIntrRate() {
+		return intrRate;
+	}
+
+	public void setIntrRate(double intrRate) {
+		this.intrRate = intrRate;
+	}
+
+	
 }
