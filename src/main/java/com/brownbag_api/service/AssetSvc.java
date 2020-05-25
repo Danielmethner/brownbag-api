@@ -2,6 +2,8 @@ package com.brownbag_api.service;
 
 import java.util.Date;
 
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,14 +39,14 @@ public class AssetSvc {
 		return assetRepo.save(asset);
 	}
 
-	public ObjAssetLoan createAssetLoan(String advText, EAssetGrp loan, ObjParty partyLender, Date matDate,
+	public ObjAssetLoan createAssetLoan(String advText, EAssetGrp loan, @NotNull int totalShares, ObjParty partyLender, Date matDate,
 			double intrRate) {
-		ObjAssetLoan assetLoan = new ObjAssetLoan(advText, EAssetGrp.LOAN, partyLender, matDate, intrRate);
+		ObjAssetLoan assetLoan = new ObjAssetLoan(advText, advText, EAssetGrp.LOAN, totalShares, partyLender, intrRate, matDate, intrRate);
 		return assetRepo.save(assetLoan);
 	}
 
 	public ObjAsset createAssetStex(String name, String isin, EAssetGrp assetGrp, ObjParty issuer, double nomVal) {
-		ObjAsset asset = new ObjAsset(name, isin, assetGrp, issuer, nomVal);
+		ObjAsset asset = new ObjAsset(name, isin, assetGrp, 1, issuer, nomVal);
 		return save(asset);
 	}
 

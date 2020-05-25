@@ -85,7 +85,7 @@ public class OrderLoanSvc extends OrderSvc {
 		orderPay = orderPaySvc.execPay(orderPay);
 
 		// CREATE LOAN ASSET
-		ObjAssetLoan assetLoan = assetSvc.createAssetLoan(orderLoan.getAdvText(), EAssetGrp.LOAN, partyLender,
+		ObjAssetLoan assetLoan = assetSvc.createAssetLoan(orderLoan.getAdvText(), EAssetGrp.LOAN, (@NotNull int) orderLoan.getQty(), partyLender,
 				orderLoan.getMatDate(), orderLoan.getIntrRate());
 
 		// CREATE LOAN POSITION

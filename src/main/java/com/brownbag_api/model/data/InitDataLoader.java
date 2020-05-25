@@ -143,9 +143,9 @@ public class InitDataLoader {
 
 		if (assetSvc.getByEnum(EAsset.LOAN_GENERIC) == null) {
 			ObjAsset assetLoanVanilla = new ObjAsset(EAsset.LOAN_GENERIC.getName(), null,
-					EAsset.LOAN_GENERIC.getAssetGrp(), ecb, 1);
+					EAsset.LOAN_GENERIC.getAssetGrp(), 0, ecb, 1);
 
-			ObjAssetLoan assetLoan = new ObjAssetLoan(assetLoanVanilla);
+			ObjAssetLoan assetLoan = new ObjAssetLoan(assetLoanVanilla, 0);
 			assetSvc.save(assetLoan);
 		}
 

@@ -10,6 +10,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import com.brownbag_api.model.enums.EAssetGrp;
 
@@ -30,14 +31,15 @@ public class ObjAssetLoan extends ObjAsset implements Serializable {
 	public ObjAssetLoan() {
 	}
 
-	public ObjAssetLoan(ObjAsset asset) {
-		super(asset.getName(), null, asset.getAssetGrp(), asset.getIssuer(), 1);
+	public ObjAssetLoan(ObjAsset asset, int totalShares) {
+		super(asset.getName(), null, asset.getAssetGrp(), totalShares, asset.getIssuer(), 1);
 		this.intrRate = 0;
 	}
 
-	public ObjAssetLoan(@NotBlank String name, EAssetGrp eAssetGrp, @NotNull ObjParty issuer, Date matDate,
+	public ObjAssetLoan(@NotBlank @Size(max = 150) String name, @Size(max = 12) String isin, EAssetGrp assetGrp,
+			@NotNull int totalShares, @NotNull ObjParty issuer, @NotNull double nomVal, Date matDate,
 			@NotNull double intrRate) {
-		super(name, null, eAssetGrp, issuer, 1);
+		super(name, null, assetGrp, totalShares, issuer, nomVal);
 		this.matDate = matDate;
 		this.intrRate = intrRate;
 	}

@@ -66,15 +66,19 @@ public class ObjAsset implements Serializable {
 	@NotNull
 	private double nomVal;
 
-	public ObjAsset(@NotBlank @Size(max = 150) String name, @Size(max = 50) String isin, EAssetGrp assetGrp,
-			@NotNull ObjParty issuer, @NotNull double nomVal) {
+
+	public ObjAsset( @NotBlank @Size(max = 150) String name, @Size(max = 12) String isin, EAssetGrp assetGrp,
+			@NotNull int totalShares, @NotNull ObjParty issuer,  @NotNull double nomVal) {
 		super();
 		this.name = name;
 		this.isin = isin;
 		this.assetGrp = assetGrp;
+		this.totalShares = totalShares;
 		this.issuer = issuer;
 		this.nomVal = nomVal;
 	}
+
+
 
 	public ObjAsset() {
 	}
@@ -164,4 +168,5 @@ public class ObjAsset implements Serializable {
 
 	}
 
+	
 }
