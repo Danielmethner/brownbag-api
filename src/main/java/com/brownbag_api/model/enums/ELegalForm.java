@@ -1,7 +1,7 @@
 package com.brownbag_api.model.enums;
 
 public enum ELegalForm {
-	NOT_APPL("Not Applicable"), CORP("Public Corporation"), LTD("Limitied Liability Corporation");
+	CORP("Public Corporation"), LTD("Limitied Liability Corporation");
 
 	public final String name;
 

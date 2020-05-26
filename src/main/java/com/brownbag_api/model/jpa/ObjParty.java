@@ -46,7 +46,6 @@ public class ObjParty implements Serializable {
 	@Column(length = 50)
 	private EPartyType partyType;
 
-	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(length = 50)
 	private ELegalForm legalForm;
@@ -59,16 +58,16 @@ public class ObjParty implements Serializable {
 	@OneToOne(targetEntity = ObjAsset.class)
 	@JoinColumn(name = "ASSET_ID")
 	private ObjAsset asset;
-	
+
 	@Column(name = "FOUNDING_DATE")
-	private LocalDateTime  foundingDate;
+	private LocalDateTime foundingDate;
 
 	// CONSTRUCTOR
 	public ObjParty() {
 	}
 
-	public ObjParty(@NotBlank @Size(max = 50) String name, @NotNull EPartyType partyType, @NotNull ELegalForm legalForm,
-			@NotNull ObjUser user, LocalDateTime  foundingDate) {
+	public ObjParty(@NotBlank @Size(max = 50) String name, @NotNull EPartyType partyType, ELegalForm legalForm,
+			@NotNull ObjUser user, LocalDateTime foundingDate) {
 		super();
 		this.name = name;
 		this.partyType = partyType;
@@ -141,13 +140,12 @@ public class ObjParty implements Serializable {
 		this.asset = asset;
 	}
 
-	public LocalDateTime  getFoundingDate() {
+	public LocalDateTime getFoundingDate() {
 		return foundingDate;
 	}
 
-	public void setFoundingDate(LocalDateTime  foundingDate) {
+	public void setFoundingDate(LocalDateTime foundingDate) {
 		this.foundingDate = foundingDate;
 	}
 
-	
 }

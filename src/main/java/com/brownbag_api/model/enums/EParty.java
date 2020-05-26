@@ -1,10 +1,10 @@
 package com.brownbag_api.model.enums;
 
 public enum EParty {
-	ECB("European  Central Bank", EUser.MGR_ECB, EPartyType.ORG_GOVT, ELegalForm.NOT_APPL, false),
+	ECB("European  Central Bank", EUser.MGR_ECB, EPartyType.ORG_GOVT, null, false),
 	BROKER("Broker", EUser.MGR_BROKER, EPartyType.PERSON_LEGAL, ELegalForm.LTD, true),
 	DEUTSCHE_BANK("Deutsche Bank", EUser.MGR_DEUTSCHE_BANK, EPartyType.PERSON_LEGAL, ELegalForm.LTD, true),
-	GOVERNMENT("Government", EUser.MGR_GOVERNMENT, EPartyType.ORG_GOVT, ELegalForm.NOT_APPL, true);
+	GOVERNMENT("Government", EUser.MGR_GOVERNMENT, EPartyType.ORG_GOVT, null, true);
 
 	public final String name;
 	public final EUser user;

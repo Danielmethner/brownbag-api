@@ -46,16 +46,16 @@ public class PartySvc {
 
 	@Autowired
 	private LogSvc logSvc;
-	
+
 	@Autowired
 	private ControlSvc controlSvc;
 
 	@Autowired
 	private OrderStexSvc orderStexSvc;
-	
+
 	@Autowired
 	private AssetRepo assetRepo;
-	
+
 	@Autowired
 	private OrderCreateMonSvc orderCreateMonSvc;
 	@Autowired
@@ -70,11 +70,12 @@ public class PartySvc {
 		ObjUser user;
 		user = userSvc.getByEnum(eParty.getUser());
 
-		ObjParty party = new ObjParty(eParty.getName(), eParty.getPartyType(), eParty.getLegalForm(), user, UtilDate.getFinDate());
+		ObjParty party = new ObjParty(eParty.getName(), eParty.getPartyType(), eParty.getLegalForm(), user,
+				UtilDate.getFinDate());
 		party = save(party);
-		
+
 		if (eParty.getPartyType() == EPartyType.ORG_GOVT) {
-			
+
 			if (party != null && eParty.createMACC) {
 				posSvc.createMacc(party, 0, null);
 			}
@@ -83,13 +84,13 @@ public class PartySvc {
 
 		if (eParty.getPartyType() == EPartyType.PERSON_LEGAL) {
 			ObjParty natPerson = getNaturalPerson(user);
-			
+
 			if (party == null) {
 				return null;
 			}
-			
+
 			posSvc.createMacc(party, 0, null);
-			
+
 			// CREATE ASSET FOR OWNERSHIP
 			ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, party, 1);
 
@@ -100,7 +101,7 @@ public class PartySvc {
 			case CORP:
 				asset.setTotalShares(1);
 				break;
-			case NOT_APPL:
+			default:
 				asset.setTotalShares(0);
 				break;
 			}
@@ -156,7 +157,8 @@ public class PartySvc {
 	public ObjParty getNaturalPerson(ObjUser user) {
 		List<ObjParty> lEs = partyRepo.findByUserAndPartyType(user, EPartyType.PERSON_NATURAL);
 		if (lEs.isEmpty()) {
-			ObjParty natPerson = new ObjParty(user.getName(), EPartyType.PERSON_NATURAL, ELegalForm.NOT_APPL, user, UtilDate.getFinDate());
+			ObjParty natPerson = new ObjParty(user.getName(), EPartyType.PERSON_NATURAL, null, user,
+					UtilDate.getFinDate());
 			natPerson = save(natPerson);
 			if (natPerson == null) {
 				return null;
@@ -164,21 +166,20 @@ public class PartySvc {
 			// ADD MACC
 			double initialDeposit = controlSvc.getByEnum(ECtrlVar.NATP_INIT_DEPOSIT_AMT).getValDouble();
 			ObjPosMacc newMacc = posSvc.createMacc(natPerson, 0, null);
-			
+
 			// ADD INITIAL DEPOSIT FROM CENTRAL BANK
 			if (initialDeposit > 0) {
 
-				
 				ObjParty leSend = newMacc.getAsset().getIssuer();
 				orderCreateMonSvc.createMon(leSend, initialDeposit);
 
 				ObjPos maccCentralBank = partySvc.getMacc(leSend);
-				LocalDateTime  matDate =UtilDate.getLastDayOfYear(UtilDate.getFinDate().plusYears(40)); 
-				OrderLoan orderLoan = orderLoanSvc.createLoan(initialDeposit, natPerson.getUser(), maccCentralBank, newMacc,
-						matDate, controlSvc.getIntrRate());
+				LocalDateTime matDate = UtilDate.getLastDayOfYear(UtilDate.getFinDate().plusYears(40));
+				OrderLoan orderLoan = orderLoanSvc.createLoan(initialDeposit, natPerson.getUser(), maccCentralBank,
+						newMacc, matDate, controlSvc.getIntrRate());
 				orderLoanSvc.grantLoan(orderLoan);
 			}
-			
+
 			return natPerson;
 		} else {
 			return lEs.get(0);
