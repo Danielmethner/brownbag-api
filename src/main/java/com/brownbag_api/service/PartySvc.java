@@ -12,6 +12,7 @@ import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.model.enums.ECtrlVar;
 import com.brownbag_api.model.enums.ELegalForm;
 import com.brownbag_api.model.enums.EOrderDir;
+import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.enums.EParty;
 import com.brownbag_api.model.enums.EPartyType;
@@ -124,35 +125,38 @@ public class PartySvc {
 
 	}
 
-//	public ObjParty createLegalPerson(String name, ELegalForm legalForm, ObjUser user, ObjParty owner, int shareQty) {
-//
-//		ObjParty party = new ObjParty(name, EPartyType.PERSON_LEGAL, legalForm, user);
-//
-//		party = save(party);
-//
-//		if (party == null) {
-//			return null;
-//		}
-//		posSvc.createMacc(0, party, 0);
-//		ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, party, 1);
-//
-//		switch (legalForm) {
-//		case LTD:
-//			asset.setTotalShares(1);
-//			break;
-//		case CORP:
-//			asset.setTotalShares(shareQty);
-//			break;
-//		case NOT_APPL:
-//			asset.setTotalShares(0);
-//			break;
-//		}
-//		asset = assetSvc.save(asset);
-//		party.setAsset(asset);
-//		posSvc.createPosStex(asset, owner, 1);
-//		party = save(party);
-//		return party;
-//	}
+	public ObjParty createLegalPerson(String name, ELegalForm legalForm, ObjUser objUser, ObjParty owner, int shareQty,
+			double shareCapital) {
+
+		ObjParty party = new ObjParty(name, EPartyType.PERSON_LEGAL, legalForm, objUser, controlSvc.getFinDateDB());
+		party = save(party);
+
+		if (party == null) {
+			return null;
+		}
+		posSvc.createMacc(party, 0, null);
+		shareQty = shareQty == 0 ? 1 : shareQty;
+
+		ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, party, 1);
+		asset.setTotalShares(1);
+
+		asset = assetSvc.save(asset);
+		party.setAsset(asset);
+		party = save(party);
+		posSvc.createPosStex(asset, owner);
+		double transferPrice = shareCapital / shareQty;
+		
+		OrderStex ipoSellOrder = issueShares(party, shareQty, transferPrice);
+		OrderStex ipoBuyOrder = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, asset, shareQty,
+				transferPrice, objUser, owner);
+		orderStexSvc.matchOrders(ipoBuyOrder, ipoSellOrder);
+		if (orderStexSvc.getById(ipoBuyOrder.getId()).getOrderStatus() != EOrderStatus.EXEC_FULL) {
+			logSvc.write("Emission of new shares failed for Party ID: '" + party.getId() + "'. Party Name: '"
+					+ party.getName() + "'");
+			return null;
+		}
+		return party;
+	}
 
 	public ObjParty getNaturalPerson(ObjUser user) {
 		List<ObjParty> lEs = partyRepo.findByUserAndPartyType(user, EPartyType.PERSON_NATURAL);
@@ -227,13 +231,6 @@ public class PartySvc {
 	}
 
 	public OrderStex issueShares(ObjParty party, int qty, double minPrice) {
-
-		if (party.getLegalForm() != ELegalForm.CORP) {
-			logSvc.write(
-					"PartySvc.issueShares(): A party must have the legal form 'corporation' to issue new shares. Party: "
-							+ party.getName());
-			return null;
-		}
 		ObjAsset asset = assetSvc.getByIssuer(party);
 		return orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX_IPO, asset, qty, minPrice, party.getUser(),
 				party);

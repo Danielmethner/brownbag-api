@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.payload.response.MsgResponse;
+import com.brownbag_api.security.svc.UserDetailsImpl;
 
 @Service
 public class UserSvcImpl implements UserSvc {
@@ -47,6 +49,17 @@ public class UserSvcImpl implements UserSvc {
 		userRepo.save(user);
 	}
 
+	/*
+	 * GET OBJ_USER BY AUTH OBJ
+	 */
+	@Override
+	public ObjUser getByAuthentication(Authentication authentication) {
+		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
+		ObjUser objUser = userRepo.findById(userDetailsImpl.getId()).orElseThrow(
+				() -> new RuntimeException("ERROR API: User not found. USER.ID: " + userDetailsImpl.getId()));
+		return objUser;
+	}
+	
 	@Override
 	public boolean hasRole(ObjUser user, ERole eRole) {
 		for (ObjRole role : user.getRoles()) {

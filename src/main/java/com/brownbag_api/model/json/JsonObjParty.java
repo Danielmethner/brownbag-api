@@ -12,8 +12,20 @@ public class JsonObjParty {
 	private ELegalForm legalForm;
 	private Long userId;
 	private String userName;
+	private Long ownerPartyId;
+	private Long ownerPartyName;
 	private Long assetId;
 	private String assetName;
+	private int assetShareQty;
+	private double shareCapital;
+
+	public JsonObjParty(String name, ELegalForm legalForm, int assetShareQty, double shareCapital) {
+		super();
+		this.name = name;
+		this.legalForm = legalForm;
+		this.assetShareQty = assetShareQty;
+		this.shareCapital = shareCapital;
+	}
 
 	public JsonObjParty(ObjParty jpaParty) {
 		this.id = jpaParty.getId();
@@ -25,6 +37,7 @@ public class JsonObjParty {
 		if (jpaParty.getAsset() != null) {
 			this.assetId = jpaParty.getAsset().getId();
 			this.assetName = jpaParty.getAsset().getName();
+			this.setAssetShareQty(jpaParty.getAsset().getTotalShares());
 		}
 	}
 
@@ -90,6 +103,38 @@ public class JsonObjParty {
 
 	public void setAssetName(String assetName) {
 		this.assetName = assetName;
+	}
+
+	public int getAssetShareQty() {
+		return assetShareQty;
+	}
+
+	public void setAssetShareQty(int assetShareQty) {
+		this.assetShareQty = assetShareQty;
+	}
+
+	public Long getOwnerPartyId() {
+		return ownerPartyId;
+	}
+
+	public void setOwnerPartyId(Long ownerPartyId) {
+		this.ownerPartyId = ownerPartyId;
+	}
+
+	public Long getOwnerPartyName() {
+		return ownerPartyName;
+	}
+
+	public void setOwnerPartyName(Long ownerPartyName) {
+		this.ownerPartyName = ownerPartyName;
+	}
+
+	public double getShareCapital() {
+		return shareCapital;
+	}
+
+	public void setShareCapital(double shareCapital) {
+		this.shareCapital = shareCapital;
 	}
 
 }

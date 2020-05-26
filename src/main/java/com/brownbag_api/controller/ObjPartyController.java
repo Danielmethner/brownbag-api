@@ -9,19 +9,27 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.enums.ELegalForm;
+import com.brownbag_api.model.enums.EPartyType;
+import com.brownbag_api.model.jpa.CtrlVar;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.json.JsonObjParty;
+import com.brownbag_api.model.json.JsonOrderStex;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.payload.response.MsgResponse;
 import com.brownbag_api.security.svc.UserDetailsImpl;
 import com.brownbag_api.service.AssetSvc;
+import com.brownbag_api.service.ControlSvc;
+import com.brownbag_api.service.LogSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
 import com.brownbag_api.service.UserSvc;
@@ -33,6 +41,9 @@ public class ObjPartyController {
 
 	@Autowired
 	AssetSvc assetSvc;
+	
+	@Autowired
+	ControlSvc ctrlVarSvc;
 
 	@Autowired
 	PartyRepo partyRepo;
@@ -51,6 +62,9 @@ public class ObjPartyController {
 
 	@Autowired
 	UserSvc userSvc;
+	
+	@Autowired
+	LogSvc logSvc;
 
 	/*
 	 * GET OBJ_USER BY AUTH OBJ
@@ -113,17 +127,23 @@ public class ObjPartyController {
 		return ResponseEntity.ok(avblQty);
 	}
 
-//	@RequestMapping(value = "/user", method = RequestMethod.GET)
-//	@ResponseBody
-//	public List<JsonObjParty> getByUser(Authentication authentication) {
-//
-//		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-//		ObjUser user = userRepo.findById(userDetailsImpl.getId())
-//				.orElseThrow(() -> new RuntimeException("Error: User not found. USER.ID: " + userDetailsImpl.getId()));
-//		ObjParty partyPerson = userSvc.getNaturalPerson(user);
-//		List<ObjParty> jpaPartyList = posRepo.findByParty(partyPerson);
-//
-//		return jpaToJson(jpaPartyList);
-//	}
-
+	@PostMapping(value = "/legalperson/create", consumes = "application/json")
+	public ResponseEntity<?> createLegalPerson(@RequestBody JsonObjParty jsonObjParty, Authentication authentication) {
+		String partyName = jsonObjParty.getName();
+		ELegalForm legalForm = jsonObjParty.getLegalForm();
+		ObjUser objUser = userSvc.getByAuthentication(authentication);
+		ObjParty objParty = userSvc.getNaturalPerson(objUser);
+		int shareQty = jsonObjParty.getAssetShareQty();
+		ObjParty jpaParty = partySvc.createLegalPerson(partyName, legalForm, objUser, objParty, shareQty, jsonObjParty.getShareCapital());
+		
+		if(jpaParty == null) {
+			logSvc.write("Party could not be created.");
+			return ResponseEntity.ok("Party with Name: '" + jsonObjParty.getName() + "' could not be created. Please check logs for more details!");
+		}
+		if(jpaParty.getLegalForm() == ELegalForm.CORP) {
+			ObjAsset asset = assetSvc.getByIssuer(jpaParty);
+			assetSvc.split(asset, jsonObjParty.getAssetShareQty());
+		}
+		return ResponseEntity.ok("New Party created: " + jpaParty.getId());
+	}
 }

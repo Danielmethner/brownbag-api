@@ -3,6 +3,7 @@ package com.brownbag_api.service;
 import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 
 import com.brownbag_api.model.enums.ERole;
 import com.brownbag_api.model.enums.EUser;
@@ -23,4 +24,6 @@ public interface UserSvc {
 	ObjParty getOrganisation(ObjUser user);
 
 	ObjUser getByEnum(EUser eUser);
+
+	public ObjUser getByAuthentication(Authentication authentication);
 }
