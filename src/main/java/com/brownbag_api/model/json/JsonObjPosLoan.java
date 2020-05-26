@@ -4,6 +4,7 @@ import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosLoan;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.brownbag_api.model.jpa.ObjAssetLoan;
 
@@ -17,7 +18,7 @@ public class JsonObjPosLoan {
 	private Long lenderId;
 	private String lenderName;
 	private double intrRate;
-	private LocalDate matDate;
+	private LocalDateTime  matDate;
 
 	public JsonObjPosLoan(ObjPosLoan jpaPos) {
 		super();
@@ -95,11 +96,11 @@ public class JsonObjPosLoan {
 		this.lenderName = lenderName;
 	}
 
-	public LocalDate getMatDate() {
+	public LocalDateTime  getMatDate() {
 		return matDate;
 	}
 
-	public void setMatDate(LocalDate matDate) {
+	public void setMatDate(LocalDateTime  matDate) {
 		this.matDate = matDate;
 	}
 

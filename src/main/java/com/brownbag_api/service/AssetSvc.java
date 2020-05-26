@@ -1,6 +1,7 @@
 package com.brownbag_api.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.validation.constraints.NotNull;
@@ -49,7 +50,7 @@ public class AssetSvc {
 		return assetRepo.save(asset);
 	}
 
-	public ObjAssetLoan createAssetLoan(String advText, EAssetGrp loan, @NotNull int totalShares, ObjParty partyLender, LocalDate matDate,
+	public ObjAssetLoan createAssetLoan(String advText, EAssetGrp loan, @NotNull int totalShares, ObjParty partyLender, LocalDateTime  matDate,
 			double intrRate) {
 		ObjAssetLoan assetLoan = new ObjAssetLoan(advText, advText, EAssetGrp.LOAN, totalShares, partyLender, 1, matDate, intrRate);
 		return assetRepo.save(assetLoan);

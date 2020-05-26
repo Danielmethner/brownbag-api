@@ -1,6 +1,7 @@
 package com.brownbag_api.service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +24,7 @@ public class ControlSvc {
 	@Autowired
 	private LogSvc logSvc;
 
-	public CtrlVar create(ECtrlVar eCtrlVar, LocalDate dateVal) {
+	public CtrlVar create(ECtrlVar eCtrlVar, LocalDateTime dateVal) {
 		if (ctrlVarRepo.findByKey(eCtrlVar.toString()) != null) {
 			return null;
 		}
@@ -54,18 +55,18 @@ public class ControlSvc {
 		return ctrlVarRepo.findByKey(eCtrlVar.toString());
 	}
 
-	public LocalDate getFinDateDB() {
-		LocalDate finDate = getByEnum(ECtrlVar.FIN_DATE).getValDate();
+	public LocalDateTime  getFinDateDB() {
+		LocalDateTime  finDate = (LocalDateTime) getByEnum(ECtrlVar.FIN_DATE).getValDate();
 		return finDate;
 	}
 	public void setFinDate() { 
-		LocalDate finDateLocal = getFinDateDB();
+		LocalDateTime  finDateLocal = getFinDateDB();
 		UtilDate.setFinDate(finDateLocal);
 	}
 
 	public int setFinYear(int finYear) {
 		CtrlVar ctrlVarFinDate = getByEnum(ECtrlVar.FIN_DATE);
-		LocalDate finDateLocal = ctrlVarFinDate.getValDate();
+		LocalDateTime  finDateLocal = ctrlVarFinDate.getValDate();
 		finDateLocal = finDateLocal.plusYears(finYear - finDateLocal.getYear());
 		ctrlVarFinDate.setValDate(finDateLocal);
 		ctrlVarFinDate = ctrlVarRepo.save(ctrlVarFinDate);

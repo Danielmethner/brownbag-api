@@ -30,6 +30,7 @@ import com.brownbag_api.service.OrderStexSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
 import com.brownbag_api.service.UserSvc;
+import com.brownbag_api.util.UtilDate;
 
 @Component
 public class InitDataLoader {
@@ -236,7 +237,7 @@ public class InitDataLoader {
 
 	private void createCtrlVars() {
 
-		controlSvc.create(ECtrlVar.FIN_DATE, new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+		controlSvc.create(ECtrlVar.FIN_DATE, UtilDate.getFinDate());
 		controlSvc.create(ECtrlVar.DEMO_DATA_CREATED, false);
 		controlSvc.create(ECtrlVar.NATP_INIT_DEPOSIT_AMT, 250000);
 		controlSvc.create(ECtrlVar.NATP_INIT_DEPOSIT_DURATION, 40);

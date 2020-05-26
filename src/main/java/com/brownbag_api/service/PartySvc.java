@@ -1,5 +1,7 @@
 package com.brownbag_api.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,8 +173,9 @@ public class PartySvc {
 				orderCreateMonSvc.createMon(leSend, initialDeposit);
 
 				ObjPos maccCentralBank = partySvc.getMacc(leSend);
+				LocalDateTime  matDate =UtilDate.getLastDayOfYear(UtilDate.getFinDate().plusYears(40)); 
 				OrderLoan orderLoan = orderLoanSvc.createLoan(initialDeposit, natPerson.getUser(), maccCentralBank, newMacc,
-						UtilDate.getFinDate().plusYears(40), controlSvc.getIntrRate());
+						matDate, controlSvc.getIntrRate());
 				orderLoanSvc.grantLoan(orderLoan);
 			}
 			

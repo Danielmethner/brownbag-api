@@ -2,6 +2,7 @@ package com.brownbag_api.model.jpa;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -23,7 +24,7 @@ public class ObjAssetLoan extends ObjAsset implements Serializable {
 	private static final long serialVersionUID = -8337101973240362473L;
 
 	@Column(name = "MAT_DATE")
-	private LocalDate matDate;
+	private LocalDateTime  matDate;
 
 	@NotNull
 	@Column(name = "INTR_RATE")
@@ -38,14 +39,14 @@ public class ObjAssetLoan extends ObjAsset implements Serializable {
 	}
 
 	public ObjAssetLoan(@NotBlank @Size(max = 150) String name, @Size(max = 12) String isin, EAssetGrp assetGrp,
-			@NotNull int totalShares, @NotNull ObjParty issuer, @NotNull double nomVal, LocalDate matDate,
+			@NotNull int totalShares, @NotNull ObjParty issuer, @NotNull double nomVal, LocalDateTime  matDate,
 			@NotNull double intrRate) {
 		super(name, null, assetGrp, totalShares, issuer, nomVal);
 		this.matDate = matDate;
 		this.intrRate = intrRate;
 	}
 
-	public LocalDate getMatDate() {
+	public LocalDateTime  getMatDate() {
 		return matDate;
 	}
 
@@ -61,7 +62,7 @@ public class ObjAssetLoan extends ObjAsset implements Serializable {
 		return serialVersionUID;
 	}
 
-	public void setMatDate(LocalDate matDate) {
+	public void setMatDate(LocalDateTime  matDate) {
 		this.matDate = matDate;
 	}
 	
