@@ -5,7 +5,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EAssetGrp;
+import com.brownbag_api.model.enums.ECtrlVar;
 import com.brownbag_api.model.enums.ELegalForm;
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderType;
@@ -13,9 +15,12 @@ import com.brownbag_api.model.enums.EParty;
 import com.brownbag_api.model.enums.EPartyType;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
+import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjUser;
+import com.brownbag_api.model.jpa.OrderLoan;
 import com.brownbag_api.model.jpa.OrderStex;
+import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.util.UtilDate;
 
@@ -39,9 +44,20 @@ public class PartySvc {
 
 	@Autowired
 	private LogSvc logSvc;
+	
+	@Autowired
+	private ControlSvc controlSvc;
 
 	@Autowired
 	private OrderStexSvc orderStexSvc;
+	
+	@Autowired
+	private AssetRepo assetRepo;
+	
+	@Autowired
+	private OrderCreateMonSvc orderCreateMonSvc;
+	@Autowired
+	private OrderLoanSvc orderLoanSvc;
 
 	/**
 	 *
@@ -58,7 +74,7 @@ public class PartySvc {
 		if (eParty.getPartyType() == EPartyType.ORG_GOVT) {
 			
 			if (party != null && eParty.createMACC) {
-				posSvc.createMacc(0, party, 0);
+				posSvc.createMacc(party, 0, null);
 			}
 			return party;
 		}
@@ -70,7 +86,9 @@ public class PartySvc {
 				return null;
 			}
 			
-			posSvc.createMacc(0, party, 0);
+			posSvc.createMacc(party, 0, null);
+			
+			// CREATE ASSET FOR OWNERSHIP
 			ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, party, 1);
 
 			switch (eParty.getLegalForm()) {
@@ -142,7 +160,22 @@ public class PartySvc {
 				return null;
 			}
 			// ADD MACC
-			posSvc.createMacc(200000, natPerson, 0);
+			double initialDeposit = controlSvc.getByEnum(ECtrlVar.NATP_INIT_DEPOSIT_AMT).getValDouble();
+			ObjPosMacc newMacc = posSvc.createMacc(natPerson, 0, null);
+			
+			// ADD INITIAL DEPOSIT FROM CENTRAL BANK
+			if (initialDeposit > 0) {
+
+				
+				ObjParty leSend = newMacc.getAsset().getIssuer();
+				orderCreateMonSvc.createMon(leSend, initialDeposit);
+
+				ObjPos maccCentralBank = partySvc.getMacc(leSend);
+				OrderLoan orderLoan = orderLoanSvc.createLoan(initialDeposit, natPerson.getUser(), maccCentralBank, newMacc,
+						UtilDate.getFinDate().plusYears(40), controlSvc.getIntrRate());
+				orderLoanSvc.grantLoan(orderLoan);
+			}
+			
 			return natPerson;
 		} else {
 			return lEs.get(0);

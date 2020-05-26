@@ -137,7 +137,7 @@ public class InitDataLoader {
 		if (assetSvc.getByEnum(EAsset.EUR) == null) {
 			// ECB is issuer of EUR, hence needs to be created beforehand
 			ObjAsset assetEUR = createAsset(EAsset.EUR);
-			posSvc.createMacc(0, assetEUR.getIssuer(), 100000000);
+			posSvc.createMacc(assetEUR.getIssuer(), 100000000, assetEUR);
 
 		}
 
@@ -238,15 +238,21 @@ public class InitDataLoader {
 
 		controlSvc.create(ECtrlVar.FIN_DATE, new Date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
 		controlSvc.create(ECtrlVar.DEMO_DATA_CREATED, false);
+		controlSvc.create(ECtrlVar.NATP_INIT_DEPOSIT_AMT, 250000);
+		controlSvc.create(ECtrlVar.NATP_INIT_DEPOSIT_DURATION, 40);
 	}
 
-	public void createDemoData() {
+	private void setCtrlVars() {
 		CtrlVar demoDataCreate = controlSvc.getByEnum(ECtrlVar.DEMO_DATA_CREATED);
 		if (demoDataCreate == null) {
 			createCtrlVars();
 			// LOAD FIN DATE FROM DATABASE
 			controlSvc.setFinDate();
 		}
+	}
+
+	public void createDemoData() {
+		setCtrlVars();
 		if (controlSvc.getByEnum(ECtrlVar.DEMO_DATA_CREATED).isValBool()) {
 			System.out.println("Demo data was already loaded in a previous run.");
 			return;

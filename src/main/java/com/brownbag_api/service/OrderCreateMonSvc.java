@@ -81,14 +81,14 @@ public class OrderCreateMonSvc extends OrderSvc {
 	}
 
 	@Transactional
-	public OrderCreateMon createMon(ObjParty partySend, @NotNull int amount) {
+	public OrderCreateMon createMon(ObjParty partySend, @NotNull double amount) {
 		ObjPos maccCentralBank = partySvc.getMacc(partySend);
 		OrderCreateMon orderCreateMon = new OrderCreateMon(amount, maccCentralBank.getAsset(), EOrderType.CREATE_MONEY,
 				EOrderStatus.NEW, partySend.getUser(), maccCentralBank, "Money Creation: " + partySend.getName());
 		orderCreateMon = (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.HOLD);
 		orderCreateMon.setPosRcv(posSvc.creditPos(orderCreateMon));
 		ObjAsset curry = maccCentralBank.getAsset();
-		curry.raiseTotalShares(amount);
+		curry.raiseTotalShares((@NotNull int) amount);
 
 		return (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.VERIFY);
 	}

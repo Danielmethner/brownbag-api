@@ -24,7 +24,7 @@ public class JsonObjPosLoan {
 		this.id = jpaPos.getId();
 		this.name = jpaPos.getName();
 		this.balance = jpaPos.getQty();
-		this.principal = jpaPos.getAsset().getTotalShares();
+		this.principal = (-1) * jpaPos.getAsset().getTotalShares();
 		this.qtyBlocked = jpaPos.getQtyBlocked();
 		this.lenderId = jpaPos.getParty().getId();
 		this.lenderName = jpaPos.getMaccLender().getParty().getName();
@@ -46,14 +46,6 @@ public class JsonObjPosLoan {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public double getQty() {
-		return balance;
-	}
-
-	public void setQty(double qty) {
-		this.balance = qty;
 	}
 
 	public double getQtyBlocked() {

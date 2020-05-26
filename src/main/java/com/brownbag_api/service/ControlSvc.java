@@ -40,6 +40,15 @@ public class ControlSvc {
 				valBool);
 		return ctrlVarRepo.save(ctrlVar);
 	}
+	
+	public CtrlVar create(ECtrlVar eCtrlVar, double valDbl) {
+		if (ctrlVarRepo.findByKey(eCtrlVar.toString()) != null) {
+			return null;
+		}
+		CtrlVar ctrlVar = new CtrlVar(eCtrlVar.getDataType(), eCtrlVar.getName(), eCtrlVar.toString(), null, null, valDbl,
+				false);
+		return ctrlVarRepo.save(ctrlVar);
+	}
 
 	public CtrlVar getByEnum(ECtrlVar eCtrlVar) {
 		return ctrlVarRepo.findByKey(eCtrlVar.toString());

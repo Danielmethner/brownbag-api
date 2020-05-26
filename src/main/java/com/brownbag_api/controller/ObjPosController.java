@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.brownbag_api.model.jpa.Booking;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
+import com.brownbag_api.model.jpa.ObjPosLoan;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.json.JsonBooking;
 import com.brownbag_api.model.json.JsonObjPos;
+import com.brownbag_api.model.json.JsonObjPosLoan;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.UserRepo;
@@ -90,7 +92,9 @@ public class ObjPosController {
 		}
 		return jsonPosList;
 	}
-
+	/*
+	 * CONVERT JPA TO JSON - BOOKING
+	 */
 	private List<JsonBooking> jpaToJsonBooking(List<Booking> jpaBookingList) {
 		List<JsonBooking> jsonBookingList = new ArrayList<JsonBooking>();
 		for (Booking jpaBooking : jpaBookingList) {
@@ -98,6 +102,18 @@ public class ObjPosController {
 			jsonBookingList.add(jsonBooking);
 		}
 		return jsonBookingList;
+	}
+	
+	/*
+	 * CONVERT JPA TO JSON - OBJ_POS_LOAN
+	 */
+	private List<JsonObjPosLoan> jpaToJsonPosLoan(List<ObjPosLoan> jpaPosList) {
+		List<JsonObjPosLoan> jsonPosLoanList = new ArrayList<JsonObjPosLoan>();
+		for (ObjPosLoan jpaPosLoan : jpaPosList) {
+			JsonObjPosLoan jsonPosLoan = new JsonObjPosLoan(jpaPosLoan);
+			jsonPosLoanList.add(jsonPosLoan);
+		}
+		return jsonPosLoanList;
 	}
 
 	@GetMapping("/all")
@@ -135,6 +151,17 @@ public class ObjPosController {
 		List<JsonObjPos> jsonPosList = jpaToJson(jpaPosList, true);
 		return ResponseEntity.ok(jsonPosList);
 	}
+	
+	@GetMapping("/financing/party/{partyId}")
+	public ResponseEntity<?> getFinancingByPartyId(@PathVariable Long partyId) {
+		if (partyId == null)
+			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
+		ObjParty jpaParty = partySvc.getById(partyId);
+		List<ObjPosLoan> jpaPosList = posSvc.getFinancingByParty(jpaParty);
+		List<JsonObjPosLoan> jsonPosList = jpaToJsonPosLoan(jpaPosList);
+		return ResponseEntity.ok(jsonPosList);
+	}
+
 
 	@GetMapping("/bookings/party/{partyId}/pos/{posId}")
 	public ResponseEntity<?> getByPartyId(@PathVariable Long partyId, @PathVariable Long posId) {

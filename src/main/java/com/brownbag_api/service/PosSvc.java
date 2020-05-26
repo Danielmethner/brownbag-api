@@ -27,9 +27,11 @@ import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.model.trans.BalTrxTrans;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.PartyRepo;
+import com.brownbag_api.repo.PosLoanRepo;
 import com.brownbag_api.repo.PosMaccRepo;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.PosStexRepo;
+import com.brownbag_api.util.UtilDate;
 
 @Service
 public class PosSvc {
@@ -43,17 +45,18 @@ public class PosSvc {
 	@Autowired
 	private PosStexRepo posStexRepo;
 	@Autowired
+	private PosLoanRepo posLoanRepo;
+	@Autowired
 	private BookingSvc bookingSvc;
 	@Autowired
-	private ControlSvc bAdminSvc;
+	private OrderCreateMonSvc orderCreateMonSvc;
 	@Autowired
 	private OrderLoanSvc orderLoanSvc;
 	@Autowired
 	private PartyRepo partyRepo;
 	@Autowired
 	private PartySvc partySvc;
-	@Autowired
-	private OrderCreateMonSvc orderCreateMonSvc;
+
 
 	public ObjPos save(ObjPos pos) {
 		return posRepo.save(pos);
@@ -83,21 +86,14 @@ public class PosSvc {
 		return posRepo.save(posStex);
 	}
 
-	public ObjPos createMacc(@NotNull int initialDeposit, @NotNull ObjParty owner, double odLimit) {
-		ObjAsset assetCash = assetRepo.findByName(EAsset.EUR.getName());
-		ObjPosMacc newMacc = createPosMacc(0, assetCash, owner);
-
-		// ADD INITIAL DEPOSIT FROM CENTRAL BANK
-		if (initialDeposit > 0) {
-
-			ObjParty leSend = partyRepo.findByName(EParty.ECB.getName());
-			orderCreateMonSvc.createMon(leSend, initialDeposit);
-
-			ObjPos maccCentralBank = partySvc.getMacc(leSend);
-			OrderLoan orderLoan = orderLoanSvc.createLoan(initialDeposit, owner.getUser(), maccCentralBank, newMacc,
-					null, bAdminSvc.getIntrRate());
-			orderLoanSvc.grantLoan(orderLoan);
+	public ObjPosMacc createMacc(@NotNull ObjParty owner, double odLimit, ObjAsset currency) {
+		
+		// SET EUR AS DEFAULT CURRENCY
+		if (currency == null) {
+			currency = assetRepo.findByName(EAsset.EUR.getName());
 		}
+
+		ObjPosMacc newMacc = createPosMacc(0, currency, owner);
 
 		return newMacc;
 	}
@@ -173,7 +169,7 @@ public class PosSvc {
 	}
 
 	// -----------------------------------------------------------------
-	// LOAN - CREDIT LENDER 
+	// LOAN - CREDIT LENDER
 	// -----------------------------------------------------------------
 	public ObjPosLoan creditPos(OrderLoan orderLoan) {
 		ObjParty partyLender = orderLoan.getMaccLender().getParty();
@@ -186,10 +182,10 @@ public class PosSvc {
 		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, qty, EBookingDir.CREDIT, partyLender));
 
 		// BOOKING
-		return (ObjPosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoanLender(), EBookingDir.CREDIT, balTrxList,
-				orderLoan.getQty(), orderLoan.getAdvText());
+		return (ObjPosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoanLender(), EBookingDir.CREDIT,
+				balTrxList, orderLoan.getQty(), orderLoan.getAdvText());
 	}
-	
+
 	// -----------------------------------------------------------------
 	// LOAN - DEBIT BORROWER
 	// -----------------------------------------------------------------
@@ -205,8 +201,8 @@ public class PosSvc {
 		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, qty, EBookingDir.DEBIT, partyDebtor));
 
 		// BOOKING
-		return (ObjPosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoanBorrower(), EBookingDir.DEBIT, balTrxList,
-				orderLoan.getQty(), orderLoan.getAdvText());
+		return (ObjPosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoanBorrower(), EBookingDir.DEBIT,
+				balTrxList, orderLoan.getQty(), orderLoan.getAdvText());
 	}
 
 	// -----------------------------------------------------------------
@@ -236,12 +232,10 @@ public class PosSvc {
 		ArrayList<BalTrxTrans> balTrxList = new ArrayList<BalTrxTrans>();
 		double assetDbAmt = execStex.getQtyExec() * execStex.getPosSend().getPriceAvg();
 		// DEBIT STOCKS - BUYER
-		balTrxList.add(new BalTrxTrans(EBalSheetItemType.STOCKS, assetDbAmt, EBookingDir.DEBIT,
-				orderSell.getParty()));
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.STOCKS, assetDbAmt, EBookingDir.DEBIT, orderSell.getParty()));
 
 		// DEBIT EQUITY
-		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, assetDbAmt, EBookingDir.DEBIT,
-				orderSell.getParty()));
+		balTrxList.add(new BalTrxTrans(EBalSheetItemType.EQUITY, assetDbAmt, EBookingDir.DEBIT, orderSell.getParty()));
 
 		// BOOKING
 		return (ObjPosStex) bookingSvc.createBooking(orderSell, execStex.getPosSend(), EBookingDir.DEBIT, balTrxList,
@@ -292,9 +286,12 @@ public class PosSvc {
 		return posRepo.findByParty(jpaParty);
 	}
 
+	public List<ObjPosLoan> getFinancingByParty(ObjParty jpaParty) {
+		return posLoanRepo.findByParty(jpaParty);
+	}
+
 	public ObjPos getById(Long posId) {
 		return posRepo.getOne(posId);
 	}
-
 
 }
