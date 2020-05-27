@@ -23,7 +23,7 @@ public interface OrderStexRepo extends JpaRepository<OrderStex, Long> {
 
 	List<OrderStex> findByParty(ObjParty party);
 
-	List<OrderStex> findByAssetAndOrderStatus(ObjAsset asset, EOrderStatus orderStatus);
+	List<OrderStex> findByAssetAndOrderStatusIn(ObjAsset asset, List<EOrderStatus> orderStatusList);
 	
 	OrderStex findFirstByAssetAndOrderStatusOrderByTimestampModifiedDesc(ObjAsset asset, EOrderStatus orderStatus);
 

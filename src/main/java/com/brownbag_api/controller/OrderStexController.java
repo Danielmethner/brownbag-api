@@ -131,7 +131,10 @@ public class OrderStexController {
 		if (asset == null)
 			return ResponseEntity.ok("ERROR API: Party with ID: " + assetId + " could not be found!");
 
-		List<OrderStex> jpaOrderStexList = orderStexSvc.getByAssetAndStatus(asset, EOrderStatus.PLACED);
+		List<EOrderStatus> orderStatusList = new ArrayList<EOrderStatus>();
+		orderStatusList.add(EOrderStatus.PLACED);
+		orderStatusList.add(EOrderStatus.EXEC_PART);
+		List<OrderStex> jpaOrderStexList = orderStexSvc.getByAssetAndStatusList(asset, orderStatusList);
 
 		return ResponseEntity.ok(jpaToJson(jpaOrderStexList));
 	}

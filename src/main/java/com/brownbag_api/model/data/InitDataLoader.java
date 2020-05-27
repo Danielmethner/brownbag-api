@@ -184,7 +184,10 @@ public class InitDataLoader {
 		createAsset(EAsset.BOND_GOVERNMENT);
 		ObjParty deutscheBank = partySvc.getByEnum(EParty.DEUTSCHE_BANK);
 
+		// GO PUBLIC: Convert ownership into 10,000 shares
 		deutscheBank = partySvc.goPublic(deutscheBank, 10000);
+		
+		// raise capital by offering 5,000 shares
 		if (deutscheBank != null) {
 			partySvc.issueShares(deutscheBank, 5000, 15);
 		}

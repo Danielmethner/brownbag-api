@@ -247,8 +247,8 @@ public class OrderStexSvc extends OrderSvc {
 		return orderStexRepo.findByParty(party);
 	}
 	
-	public List<OrderStex> getByAssetAndStatus(ObjAsset asset, EOrderStatus orderStatus) {
-		return orderStexRepo.findByAssetAndOrderStatus(asset, orderStatus);
+	public List<OrderStex> getByAssetAndStatusList(ObjAsset asset, List<EOrderStatus> orderStatusList) {
+		return orderStexRepo.findByAssetAndOrderStatusIn(asset, orderStatusList);
 	}
 	
 	public OrderStex getById(Long orderId) {
