@@ -21,12 +21,12 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.brownbag_api.model.enums.EBalSheetItemType;
+import com.brownbag_api.model.enums.EFinStmtItemType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "OBJ_BAL_SHEET_ITEM")
-public class ObjBalSheetItem implements Serializable {
+public class ObjFinStmtItem implements Serializable {
 
 	/**
 	 *
@@ -48,7 +48,7 @@ public class ObjBalSheetItem implements Serializable {
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 50)
-	private EBalSheetItemType itemType;
+	private EFinStmtItemType itemType;
 
 	@NotNull
 	@Column(name = "FIN_YEAR", updatable = false)
@@ -66,16 +66,16 @@ public class ObjBalSheetItem implements Serializable {
 	private Date timestampCreate;
 
 	@NotNull
-	@ManyToOne(targetEntity = ObjBalSheetSection.class)
+	@ManyToOne(targetEntity = ObjFinStmtSection.class)
 	@JoinColumn(name = "BAL_SHEET_SECTION_ID")
 	@JsonBackReference
-	private ObjBalSheetSection balSheetSection;
+	private ObjFinStmtSection balSheetSection;
 
-	public ObjBalSheetItem() {
+	public ObjFinStmtItem() {
 	}
 
-	public ObjBalSheetItem(@NotNull double qty, EBalSheetItemType itemType, @NotNull int finYear,
-			@NotNull ObjParty party, @NotNull ObjBalSheetSection balSheetSection) {
+	public ObjFinStmtItem(@NotNull double qty, EFinStmtItemType itemType, @NotNull int finYear,
+			@NotNull ObjParty party, @NotNull ObjFinStmtSection balSheetSection) {
 		super();
 		this.name = balSheetSection.getName() + ": " + itemType.getName();
 		this.qty = qty;
@@ -85,11 +85,11 @@ public class ObjBalSheetItem implements Serializable {
 		this.balSheetSection = balSheetSection;
 	}
 
-	public ObjBalSheetSection getBalSheetSection() {
+	public ObjFinStmtSection getBalSheetSection() {
 		return balSheetSection;
 	}
 
-	public void setBalSheetSection(ObjBalSheetSection balSheetSection) {
+	public void setBalSheetSection(ObjFinStmtSection balSheetSection) {
 		this.balSheetSection = balSheetSection;
 	}
 
@@ -109,11 +109,11 @@ public class ObjBalSheetItem implements Serializable {
 		this.qty = qty;
 	}
 
-	public EBalSheetItemType getItemType() {
+	public EFinStmtItemType getItemType() {
 		return itemType;
 	}
 
-	public void setItemType(EBalSheetItemType itemType) {
+	public void setItemType(EFinStmtItemType itemType) {
 		this.itemType = itemType;
 	}
 

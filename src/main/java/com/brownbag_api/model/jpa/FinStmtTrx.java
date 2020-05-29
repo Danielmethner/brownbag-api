@@ -21,7 +21,7 @@ import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "BAL_TRX")
-public class BalTrx implements Serializable {
+public class FinStmtTrx implements Serializable {
 
 	/**
 	 *
@@ -48,9 +48,9 @@ public class BalTrx implements Serializable {
 	private Date timestampCreate;
 
 	@NotNull
-	@ManyToOne(targetEntity = ObjBalSheetItem.class)
+	@ManyToOne(targetEntity = ObjFinStmtItem.class)
 	@JoinColumn(name = "BAL_SHEET_ITEM_ID")
-	private ObjBalSheetItem bsi;
+	private ObjFinStmtItem bsi;
 
 	@NotNull
 	@ManyToOne(targetEntity = Booking.class)
@@ -61,11 +61,11 @@ public class BalTrx implements Serializable {
 	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
 	private double qty;
 
-	public BalTrx() {
+	public FinStmtTrx() {
 
 	}
 
-	public BalTrx(@NotNull Order order, @NotNull ObjBalSheetItem bsi, Booking booking, @NotNull double qty) {
+	public FinStmtTrx(@NotNull Order order, @NotNull ObjFinStmtItem bsi, Booking booking, @NotNull double qty) {
 		super();
 		this.order = order;
 		this.name = genName();
@@ -102,11 +102,11 @@ public class BalTrx implements Serializable {
 		this.timestampCreate = timestampCreate;
 	}
 
-	public ObjBalSheetItem getBsi() {
+	public ObjFinStmtItem getBsi() {
 		return bsi;
 	}
 
-	public void setBsi(ObjBalSheetItem bsi) {
+	public void setBsi(ObjFinStmtItem bsi) {
 		this.bsi = bsi;
 	}
 

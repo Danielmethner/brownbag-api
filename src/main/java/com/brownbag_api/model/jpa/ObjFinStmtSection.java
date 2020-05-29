@@ -16,12 +16,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.brownbag_api.model.enums.EBalSheetSectionType;
+import com.brownbag_api.model.enums.EFinStmtSectionType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "OBJ_BAL_SHEET_SECTION")
-public class ObjBalSheetSection implements Serializable {
+public class ObjFinStmtSection implements Serializable {
 
 	private static final long serialVersionUID = 7386741814449599918L;
 
@@ -31,14 +31,14 @@ public class ObjBalSheetSection implements Serializable {
 	private Long id;
 
 	@NotNull
-	@ManyToOne(targetEntity = ObjBalSheet.class)
+	@ManyToOne(targetEntity = ObjFinStmt.class)
 	@JoinColumn(name = "BAL_SHEET_ID")
 	@JsonBackReference
-	private ObjBalSheet balSheet;
+	private ObjFinStmt balSheet;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20)
-	private EBalSheetSectionType section;
+	private EFinStmtSectionType section;
 
 	@NotBlank
 	@Size(max = 100)
@@ -52,11 +52,11 @@ public class ObjBalSheetSection implements Serializable {
 	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
 	private double qty;
 
-	public ObjBalSheetSection() {
+	public ObjFinStmtSection() {
 
 	}
 	
-	public ObjBalSheetSection(@NotNull ObjBalSheet balSheet, EBalSheetSectionType eBalSheetSection, double qty) {
+	public ObjFinStmtSection(@NotNull ObjFinStmt balSheet, EFinStmtSectionType eBalSheetSection, double qty) {
 		super();
 		this.balSheet = balSheet;
 		this.section = eBalSheetSection;
@@ -78,11 +78,11 @@ public class ObjBalSheetSection implements Serializable {
 		return serialVersionUID;
 	}
 
-	public ObjBalSheet getBalSheet() {
+	public ObjFinStmt getBalSheet() {
 		return balSheet;
 	}
 
-	public void setBalSheet(ObjBalSheet balSheet) {
+	public void setBalSheet(ObjFinStmt balSheet) {
 		this.balSheet = balSheet;
 	}
 
@@ -94,11 +94,11 @@ public class ObjBalSheetSection implements Serializable {
 		this.name = name;
 	}
 
-	public EBalSheetSectionType getSection() {
+	public EFinStmtSectionType getSection() {
 		return section;
 	}
 
-	public void setSection(EBalSheetSectionType section) {
+	public void setSection(EFinStmtSectionType section) {
 		this.section = section;
 	}
 

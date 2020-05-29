@@ -6,16 +6,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.enums.EBalSheetSectionType;
+import com.brownbag_api.model.enums.EFinStmtSectionType;
 import com.brownbag_api.model.enums.EBookingDir;
-import com.brownbag_api.model.jpa.BalTrx;
+import com.brownbag_api.model.jpa.FinStmtTrx;
 import com.brownbag_api.model.jpa.Booking;
-import com.brownbag_api.model.jpa.ObjBalSheetItem;
-import com.brownbag_api.model.jpa.ObjBalSheetSection;
+import com.brownbag_api.model.jpa.ObjFinStmtItem;
+import com.brownbag_api.model.jpa.ObjFinStmtSection;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.Order;
 import com.brownbag_api.model.trans.BalTrxTrans;
-import com.brownbag_api.repo.BalTrxRepo;
+import com.brownbag_api.repo.FinStmtTrxRepo;
 import com.brownbag_api.repo.BookingRepo;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.util.UtilDate;
@@ -24,7 +24,7 @@ import com.brownbag_api.util.UtilDate;
 public class BookingSvc {
 
 	@Autowired
-	private BalTrxRepo balTrxRepo;
+	private FinStmtTrxRepo balTrxRepo;
 
 	@Autowired
 	private BookingRepo bookingRepo;
@@ -33,13 +33,13 @@ public class BookingSvc {
 	private PosRepo posRepo;
 
 	@Autowired
-	private BalSheetSvc balSheetSvc;
+	private FinStmtSvc balSheetSvc;
 
 	@Autowired
-	private BalSheetSectionSvc balSheetSectionSvc;
+	private FinStmtSectionSvc balSheetSectionSvc;
 
 	@Autowired
-	private BalSheetItemSvc balSheetItemSvc;
+	private FinStmtItemSvc balSheetItemSvc;
 
 	@Autowired
 	private LogSvc logSvc;
@@ -73,26 +73,26 @@ public class BookingSvc {
 			double balTrxQty = balTrxTransient.getBookingDir() == EBookingDir.CREDIT ? balTrxTransient.getQty()
 					: (-1) * balTrxTransient.getQty();
 
-			balTrxAssets = balTrxTransient.getItemType().getSection() == EBalSheetSectionType.ASSETS
+			balTrxAssets = balTrxTransient.getItemType().getSection() == EFinStmtSectionType.ASSETS
 					? balTrxAssets + balTrxQty
 					: balTrxAssets;
-			balTrxLiabEquity = balTrxTransient.getItemType().getSection() != EBalSheetSectionType.ASSETS
+			balTrxLiabEquity = balTrxTransient.getItemType().getSection() != EFinStmtSectionType.ASSETS
 					? balTrxLiabEquity + balTrxQty
 					: balTrxLiabEquity;
 
 			// UPDATE BALANCE SHEET ITEM
-			ObjBalSheetItem bsi = balSheetItemSvc.getByPartyAndFinYearAndItemType(balTrxTransient.getParty(), finYear,
+			ObjFinStmtItem bsi = balSheetItemSvc.getByPartyAndFinYearAndItemType(balTrxTransient.getParty(), finYear,
 					balTrxTransient.getItemType());
 			bsi.setQty(bsi.getQty() + balTrxQty);
 			balSheetItemSvc.save(bsi);
 
 			// UPDATE BALANCE SHEET SECTION
-			ObjBalSheetSection bss = bsi.getBalSheetSection();
+			ObjFinStmtSection bss = bsi.getBalSheetSection();
 			bss.increaseQty(balTrxQty);
 			balSheetSectionSvc.save(bss);
 
 			// BALANCE SHEET TRANSACTION
-			BalTrx balTrx = new BalTrx(order, bsi, booking, balTrxQty);
+			FinStmtTrx balTrx = new FinStmtTrx(order, bsi, booking, balTrxQty);
 			balTrxRepo.save(balTrx);
 		}
 

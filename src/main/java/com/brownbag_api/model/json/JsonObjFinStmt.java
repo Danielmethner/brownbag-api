@@ -3,9 +3,9 @@ package com.brownbag_api.model.json;
 import java.util.Date;
 import java.util.List;
 
-import com.brownbag_api.model.jpa.ObjBalSheet;
+import com.brownbag_api.model.jpa.ObjFinStmt;
 
-public class JsonObjBalSheet {
+public class JsonObjFinStmt {
 
 	private double id;
 
@@ -17,9 +17,9 @@ public class JsonObjBalSheet {
 
 	private int finYear;
 
-	private List<JsonObjBalSheetSection> sections;
+	private List<JsonObjFinStmtSection> sections;
 
-	public JsonObjBalSheet(ObjBalSheet objBalSheet) {
+	public JsonObjFinStmt(ObjFinStmt objBalSheet) {
 		this.id = objBalSheet.getId();
 		this.name = objBalSheet.getName();
 		this.partyName = objBalSheet.getParty().getName();
@@ -67,11 +67,11 @@ public class JsonObjBalSheet {
 		this.partyName = partyName;
 	}
 
-	public List<JsonObjBalSheetSection> getSections() {
+	public List<JsonObjFinStmtSection> getSections() {
 		return sections;
 	}
 
-	public void setSections(List<JsonObjBalSheetSection> sections) {
+	public void setSections(List<JsonObjFinStmtSection> sections) {
 		this.sections = sections;
 	}
 	

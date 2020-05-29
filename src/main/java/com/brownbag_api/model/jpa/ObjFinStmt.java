@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "OBJ_BAL_SHEET")
-public class ObjBalSheet implements Serializable {
+public class ObjFinStmt implements Serializable {
 
 	/**
 	 *
@@ -54,10 +54,10 @@ public class ObjBalSheet implements Serializable {
 	@Column(name = "FIN_YEAR", updatable = false)
 	private int finYear;
 
-	public ObjBalSheet() {
+	public ObjFinStmt() {
 	}
 
-	public ObjBalSheet(@NotNull ObjParty party, @NotNull int finYear) {
+	public ObjFinStmt(@NotNull ObjParty party, @NotNull int finYear) {
 		super();
 		this.name = "Balance Sheet for " + party.getName() + " as of Financial Year: " + finYear;
 		this.party = party;

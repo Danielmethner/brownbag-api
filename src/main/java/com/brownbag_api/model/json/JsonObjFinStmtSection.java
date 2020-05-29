@@ -2,25 +2,25 @@ package com.brownbag_api.model.json;
 
 import java.util.List;
 
-import com.brownbag_api.model.enums.EBalSheetSectionType;
-import com.brownbag_api.model.jpa.ObjBalSheetItem;
-import com.brownbag_api.model.jpa.ObjBalSheetSection;
+import com.brownbag_api.model.enums.EFinStmtSectionType;
+import com.brownbag_api.model.jpa.ObjFinStmtItem;
+import com.brownbag_api.model.jpa.ObjFinStmtSection;
 
-public class JsonObjBalSheetSection {
+public class JsonObjFinStmtSection {
 
 	private double id;
 
 	private String name;
 
-	private EBalSheetSectionType section;
+	private EFinStmtSectionType section;
 
 	private double qty;
 
 	private String style;
 
-	private List<ObjBalSheetItem> items;
+	private List<ObjFinStmtItem> items;
 
-	public JsonObjBalSheetSection(ObjBalSheetSection objBalSheetSection, List<ObjBalSheetItem> items) {
+	public JsonObjFinStmtSection(ObjFinStmtSection objBalSheetSection, List<ObjFinStmtItem> items) {
 		this.id = objBalSheetSection.getId();
 		this.name = objBalSheetSection.getName();
 		this.section = objBalSheetSection.getSection();
@@ -28,7 +28,7 @@ public class JsonObjBalSheetSection {
 		this.items = items;
 	}
 
-	public JsonObjBalSheetSection(ObjBalSheetSection objBalSheetSection) {
+	public JsonObjFinStmtSection(ObjFinStmtSection objBalSheetSection) {
 		this.id = objBalSheetSection.getId();
 		this.name = objBalSheetSection.getName();
 		this.section = objBalSheetSection.getSection();
@@ -51,11 +51,11 @@ public class JsonObjBalSheetSection {
 		this.name = name;
 	}
 
-	public EBalSheetSectionType getSection() {
+	public EFinStmtSectionType getSection() {
 		return section;
 	}
 
-	public void setSection(EBalSheetSectionType section) {
+	public void setSection(EFinStmtSectionType section) {
 		this.section = section;
 	}
 
@@ -67,11 +67,11 @@ public class JsonObjBalSheetSection {
 		this.qty = qty;
 	}
 
-	public List<ObjBalSheetItem> getItems() {
+	public List<ObjFinStmtItem> getItems() {
 		return items;
 	}
 
-	public void setItems(List<ObjBalSheetItem> items) {
+	public void setItems(List<ObjFinStmtItem> items) {
 		this.items = items;
 	}
 

@@ -1,11 +1,11 @@
 package com.brownbag_api.model.enums;
 
-public enum EBalSheetSectionType {
+public enum EFinStmtSectionType {
 	ASSETS("Assets"), LIABILITIES("Liabilities"), EQUITY("Equity");
 
 	public final String name;
 
-	private EBalSheetSectionType(String name) {
+	private EFinStmtSectionType(String name) {
 		this.name = name;
 	}
 
