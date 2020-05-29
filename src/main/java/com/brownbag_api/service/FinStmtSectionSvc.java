@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.enums.EFinStmtItemType;
 import com.brownbag_api.model.enums.EFinStmtSectionType;
+import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.jpa.ObjFinStmt;
 import com.brownbag_api.model.jpa.ObjFinStmtItem;
 import com.brownbag_api.model.jpa.ObjFinStmtSection;
@@ -27,7 +28,7 @@ public class FinStmtSectionSvc {
 
 	@Autowired
 	private FinStmtSvc balSheetSvc;
-	
+
 	@Autowired
 	private ControlSvc controlSvc;
 
@@ -39,23 +40,30 @@ public class FinStmtSectionSvc {
 		return items;
 	}
 
-	public ObjFinStmtSection createBalSheetSection(ObjFinStmt balSheet, EFinStmtSectionType eBalSheetSection) {
+	public ObjFinStmtSection createFinStmtSection(ObjFinStmt balSheet, EFinStmtSectionType eBalSheetSection,
+			EFinStmtType finStmtType) {
+		
 		double qty = 0;
-		// GET LAST YEARS BALANCE SHEET
-		ObjFinStmt balSheetPrevYear = balSheetSvc.getBalSheet(balSheet.getParty(), controlSvc.getFinYear() - 1);
-		if (balSheetPrevYear != null) {
-			ObjFinStmtSection balSheetSectionPrevYear = getByBalSheetAndSection(balSheetPrevYear, eBalSheetSection);
 
-			if (balSheetSectionPrevYear != null) {
-				qty = balSheetSectionPrevYear.getQty();
+		// IF BALANCE SHEET: GET LAST YEARS BALANCE SHEET
+		if (finStmtType == EFinStmtType.BAL_SHEET) {
+
+			ObjFinStmt balSheetPrevYear = balSheetSvc.getBalSheet(balSheet.getParty(), controlSvc.getFinYear() - 1);
+			if (balSheetPrevYear != null) {
+				ObjFinStmtSection balSheetSectionPrevYear = getByBalSheetAndSection(balSheetPrevYear, eBalSheetSection);
+
+				if (balSheetSectionPrevYear != null) {
+					qty = balSheetSectionPrevYear.getQty();
+				}
 			}
 		}
 
-		ObjFinStmtSection balSheetSection = new ObjFinStmtSection(balSheet, eBalSheetSection, qty);
+		ObjFinStmtSection balSheetSection = new ObjFinStmtSection(balSheet, eBalSheetSection, qty, finStmtType);
 		ObjFinStmtSection balSheetSectionDb = balSheetSectionRepo.save(balSheetSection);
 		List<EFinStmtItemType> items = getItemsBySection(eBalSheetSection);
 		items.forEach(eBalSheetItem -> {
-			balSheetItemSvc.createItem(eBalSheetItem, balSheetSectionDb, balSheet.getFinYear(), balSheet.getParty());
+			balSheetItemSvc.createItem(eBalSheetItem, balSheetSectionDb, balSheet.getFinYear(), balSheet.getParty(),
+					balSheetSection.getFinStmtType());
 		});
 
 		return balSheetSection;

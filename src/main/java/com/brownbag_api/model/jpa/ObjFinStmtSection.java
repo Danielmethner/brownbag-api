@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.brownbag_api.model.enums.EFinStmtSectionType;
+import com.brownbag_api.model.enums.EFinStmtType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
@@ -51,12 +52,17 @@ public class ObjFinStmtSection implements Serializable {
 	@NotNull
 	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
 	private double qty;
+	
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(length = 50)
+	private EFinStmtType finStmtType;
 
 	public ObjFinStmtSection() {
 
 	}
-	
-	public ObjFinStmtSection(@NotNull ObjFinStmt balSheet, EFinStmtSectionType eBalSheetSection, double qty) {
+
+	public ObjFinStmtSection(@NotNull ObjFinStmt balSheet, EFinStmtSectionType eBalSheetSection, double qty, @NotNull EFinStmtType finStmtType) {
 		super();
 		this.balSheet = balSheet;
 		this.section = eBalSheetSection;
@@ -64,6 +70,7 @@ public class ObjFinStmtSection implements Serializable {
 		this.finYear = balSheet.getFinYear();
 		this.name = balSheet.getParty().getName() + ": " + eBalSheetSection.getName() + ": " + "Year: "
 				+ balSheet.getFinYear();
+		this.finStmtType = finStmtType;
 	}
 
 	public Long getId() {
@@ -122,4 +129,13 @@ public class ObjFinStmtSection implements Serializable {
 		this.finYear = finYear;
 	}
 
+	public EFinStmtType getFinStmtType() {
+		return finStmtType;
+	}
+
+	public void setFinStmtType(EFinStmtType finStmtType) {
+		this.finStmtType = finStmtType;
+	}
+
+	
 }

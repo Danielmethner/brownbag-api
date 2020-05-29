@@ -5,6 +5,8 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -19,6 +21,8 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import com.brownbag_api.model.enums.EFinStmtType;
+import com.brownbag_api.model.enums.EPartyType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
@@ -54,11 +58,17 @@ public class ObjFinStmt implements Serializable {
 	@Column(name = "FIN_YEAR", updatable = false)
 	private int finYear;
 
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(length = 50)
+	private EFinStmtType finStmtType;
+
 	public ObjFinStmt() {
 	}
 
-	public ObjFinStmt(@NotNull ObjParty party, @NotNull int finYear) {
+	public ObjFinStmt(@NotNull ObjParty party, @NotNull int finYear, @NotNull EFinStmtType finStmtType) {
 		super();
+		this.finStmtType = finStmtType;
 		this.name = "Balance Sheet for " + party.getName() + " as of Financial Year: " + finYear;
 		this.party = party;
 		this.finYear = finYear;
@@ -106,6 +116,14 @@ public class ObjFinStmt implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public EFinStmtType getFinStmtType() {
+		return finStmtType;
+	}
+
+	public void setFinStmtType(EFinStmtType finStmtType) {
+		this.finStmtType = finStmtType;
 	}
 
 }

@@ -22,6 +22,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.brownbag_api.model.enums.EFinStmtItemType;
+import com.brownbag_api.model.enums.EFinStmtType;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
@@ -71,11 +72,16 @@ public class ObjFinStmtItem implements Serializable {
 	@JsonBackReference
 	private ObjFinStmtSection balSheetSection;
 
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	@Column(length = 50)
+	private EFinStmtType finStmtType;
+
 	public ObjFinStmtItem() {
 	}
 
-	public ObjFinStmtItem(@NotNull double qty, EFinStmtItemType itemType, @NotNull int finYear,
-			@NotNull ObjParty party, @NotNull ObjFinStmtSection balSheetSection) {
+	public ObjFinStmtItem(@NotNull double qty, EFinStmtItemType itemType, @NotNull int finYear, @NotNull ObjParty party,
+			@NotNull ObjFinStmtSection balSheetSection, @NotNull EFinStmtType finStmtType) {
 		super();
 		this.name = balSheetSection.getName() + ": " + itemType.getName();
 		this.qty = qty;
@@ -83,6 +89,7 @@ public class ObjFinStmtItem implements Serializable {
 		this.finYear = finYear;
 		this.party = party;
 		this.balSheetSection = balSheetSection;
+		this.finStmtType = finStmtType;
 	}
 
 	public ObjFinStmtSection getBalSheetSection() {
@@ -131,6 +138,34 @@ public class ObjFinStmtItem implements Serializable {
 
 	public void setParty(ObjParty party) {
 		this.party = party;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Date getTimestampCreate() {
+		return timestampCreate;
+	}
+
+	public void setTimestampCreate(Date timestampCreate) {
+		this.timestampCreate = timestampCreate;
+	}
+
+	public EFinStmtType getFinStmtType() {
+		return finStmtType;
+	}
+
+	public void setFinStmtType(EFinStmtType finStmtType) {
+		this.finStmtType = finStmtType;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

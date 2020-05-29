@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.enums.EFinStmtSectionType;
+import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.jpa.ObjFinStmt;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.repo.FinStmtRepo;
@@ -12,22 +13,23 @@ import com.brownbag_api.repo.FinStmtRepo;
 public class FinStmtSvc {
 
 	@Autowired
-	private FinStmtRepo balSheetRepo;
+	private FinStmtRepo finStmtRepo;
 
 	@Autowired
-	private FinStmtSectionSvc balSheetSectionSvc;
+	private FinStmtSectionSvc finStmtSectionSvc;
 
 	public ObjFinStmt createBalSheet(ObjParty party, int finYear) {
-		ObjFinStmt balSheet = new ObjFinStmt(party, finYear);
-		balSheet = balSheetRepo.save(balSheet);
-		balSheetSectionSvc.createBalSheetSection(balSheet, EFinStmtSectionType.ASSETS);
-		balSheetSectionSvc.createBalSheetSection(balSheet, EFinStmtSectionType.LIABILITIES);
-		balSheetSectionSvc.createBalSheetSection(balSheet, EFinStmtSectionType.EQUITY);
+		EFinStmtType finStmtType = EFinStmtType.BAL_SHEET;
+		ObjFinStmt balSheet = new ObjFinStmt(party, finYear, finStmtType);
+		balSheet = finStmtRepo.save(balSheet);
+		finStmtSectionSvc.createFinStmtSection(balSheet, EFinStmtSectionType.ASSETS, finStmtType);
+		finStmtSectionSvc.createFinStmtSection(balSheet, EFinStmtSectionType.LIABILITIES, finStmtType);
+		finStmtSectionSvc.createFinStmtSection(balSheet, EFinStmtSectionType.EQUITY, finStmtType);
 		return balSheet;
 	}
 
 	public ObjFinStmt getBalSheet(ObjParty party, int finYear) {
-		ObjFinStmt balSheet = balSheetRepo.findByPartyAndFinYear(party, finYear);
+		ObjFinStmt balSheet = finStmtRepo.findByPartyAndFinYearAndFinStmtType(party, finYear, EFinStmtType.BAL_SHEET);
 		if (balSheet == null && party.getFoundingDate().getYear() <= finYear) {
 			balSheet = createBalSheet(party, finYear);
 		}
