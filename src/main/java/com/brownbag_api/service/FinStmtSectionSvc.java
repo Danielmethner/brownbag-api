@@ -14,7 +14,6 @@ import com.brownbag_api.model.jpa.ObjFinStmt;
 import com.brownbag_api.model.jpa.ObjFinStmtItem;
 import com.brownbag_api.model.jpa.ObjFinStmtSection;
 import com.brownbag_api.model.json.JsonObjFinStmtSection;
-import com.brownbag_api.repo.FinStmtRepo;
 import com.brownbag_api.repo.FinStmtSectionRepo;
 
 @Service

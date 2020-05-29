@@ -1,7 +1,5 @@
 package com.brownbag_api.model.data;
 
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,7 +29,6 @@ import com.brownbag_api.service.OrderStexSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
 import com.brownbag_api.service.UserSvc;
-import com.brownbag_api.util.UtilDate;
 
 @Component
 public class InitDataLoader {
@@ -246,7 +243,7 @@ public class InitDataLoader {
 
 	private void createCtrlVars() {
 
-		controlSvc.create(ECtrlVar.FIN_DATE, UtilDate.getFinDate());
+		controlSvc.create(ECtrlVar.FIN_DATE, controlSvc.getFinDate());
 		controlSvc.create(ECtrlVar.DEMO_DATA_CREATED, false);
 		controlSvc.create(ECtrlVar.NATP_INIT_DEPOSIT_AMT, 250000);
 		controlSvc.create(ECtrlVar.NATP_INIT_DEPOSIT_DURATION, 40);

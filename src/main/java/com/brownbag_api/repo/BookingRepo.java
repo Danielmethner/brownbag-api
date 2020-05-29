@@ -6,8 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.brownbag_api.model.jpa.Booking;
-import com.brownbag_api.model.jpa.ObjAsset;
-import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
 
 @Repository

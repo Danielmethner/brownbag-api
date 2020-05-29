@@ -1,9 +1,7 @@
 package com.brownbag_api.model.jpa;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

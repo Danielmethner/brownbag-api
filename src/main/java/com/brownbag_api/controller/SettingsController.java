@@ -1,6 +1,5 @@
 package com.brownbag_api.controller;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,12 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.brownbag_api.model.enums.ECtrlVar;
 import com.brownbag_api.model.jpa.CtrlVar;
 import com.brownbag_api.model.jpa.Log;
-import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.json.JsonCtrlVar;
-import com.brownbag_api.model.json.JsonObjAsset;
 import com.brownbag_api.service.ControlSvc;
 import com.brownbag_api.service.LogSvc;
-import com.brownbag_api.util.UtilDate;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController

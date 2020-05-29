@@ -1,6 +1,5 @@
 package com.brownbag_api.model.jpa;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 

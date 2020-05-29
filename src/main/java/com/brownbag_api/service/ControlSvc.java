@@ -1,13 +1,9 @@
 package com.brownbag_api.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.enums.ECtrlVar;
@@ -41,13 +37,13 @@ public class ControlSvc {
 				valBool);
 		return ctrlVarRepo.save(ctrlVar);
 	}
-	
+
 	public CtrlVar create(ECtrlVar eCtrlVar, double valDbl) {
 		if (ctrlVarRepo.findByKey(eCtrlVar.toString()) != null) {
 			return null;
 		}
-		CtrlVar ctrlVar = new CtrlVar(eCtrlVar.getDataType(), eCtrlVar.getName(), eCtrlVar.toString(), null, null, valDbl,
-				false);
+		CtrlVar ctrlVar = new CtrlVar(eCtrlVar.getDataType(), eCtrlVar.getName(), eCtrlVar.toString(), null, null,
+				valDbl, false);
 		return ctrlVarRepo.save(ctrlVar);
 	}
 
@@ -55,33 +51,56 @@ public class ControlSvc {
 		return ctrlVarRepo.findByKey(eCtrlVar.toString());
 	}
 
-	public LocalDateTime  getFinDateDB() {
-		LocalDateTime  finDate = (LocalDateTime) getByEnum(ECtrlVar.FIN_DATE).getValDate();
+	public LocalDateTime getFinDateDB() {
+		LocalDateTime finDate = (LocalDateTime) getByEnum(ECtrlVar.FIN_DATE).getValDate();
 		return finDate;
 	}
-	public void setFinDate() { 
-		LocalDateTime  finDateLocal = getFinDateDB();
+
+	public void setFinDate() {
+		LocalDateTime finDateLocal = getFinDateDB();
 		UtilDate.setFinDate(finDateLocal);
 	}
 
 	public int setFinYear(int finYear) {
 		CtrlVar ctrlVarFinDate = getByEnum(ECtrlVar.FIN_DATE);
-		LocalDateTime  finDateLocal = ctrlVarFinDate.getValDate();
+		LocalDateTime finDateLocal = ctrlVarFinDate.getValDate();
 		finDateLocal = finDateLocal.plusYears(finYear - finDateLocal.getYear());
 		ctrlVarFinDate.setValDate(finDateLocal);
 		ctrlVarFinDate = ctrlVarRepo.save(ctrlVarFinDate);
 		UtilDate.setFinDate(finDateLocal);
 		return ctrlVarFinDate.getValDate().getYear();
 	}
-	
+
+	// --------------------------------------------------------------
+	// YEAR END PROCESSING
+	// --------------------------------------------------------------
 	public int switchFinYear() {
 		int newFinYear = setFinYear(getFinYear() + 1);
-		//TODO: Loan redemptions, Interest Payments, Revenue generation, cost calculation
+		// TODO: Loan redemptions, Interest Payments, Revenue generation, cost
+		// calculation
 		return newFinYear;
 	}
-	
+
+	public LocalDateTime getFinDate() {
+
+		// ENSURE DATE IN CACHE IS IN SYNC WITH DB
+		if (UtilDate.isFinDateSynced()) {
+			return UtilDate.getFinDate();
+		} else {
+			LocalDateTime finDateDB = getFinDateDB();
+			if (finDateDB != null) {
+				UtilDate.setFinDateSynced(true);
+				UtilDate.setFinDate(finDateDB);
+				return finDateDB;
+			} else {
+				return null;
+			}
+
+		}
+	}
+
 	public int getFinYear() {
-		return UtilDate.getFinYear();
+		return getFinDate().getYear();
 	}
 
 	public double getIntrRate() {

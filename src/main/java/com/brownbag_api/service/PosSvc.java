@@ -9,9 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.enums.EAsset;
-import com.brownbag_api.model.enums.EFinStmtItemType;
 import com.brownbag_api.model.enums.EBookingDir;
-import com.brownbag_api.model.enums.EParty;
+import com.brownbag_api.model.enums.EFinStmtItemType;
 import com.brownbag_api.model.jpa.ExecStex;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjAssetLoan;
@@ -31,7 +30,6 @@ import com.brownbag_api.repo.PosLoanRepo;
 import com.brownbag_api.repo.PosMaccRepo;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.PosStexRepo;
-import com.brownbag_api.util.UtilDate;
 
 @Service
 public class PosSvc {

@@ -1,7 +1,6 @@
 package com.brownbag_api.util;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
@@ -20,6 +19,7 @@ public class UtilDate {
 	public static Date minDate = new GregorianCalendar(1000, 0, 1).getTime();
 	public static Date maxDate = new GregorianCalendar(3000, 11, 1).getTime();
 	private static LocalDateTime  finDate = null;
+	private static boolean finDateSynced = false;
 
 	public static Calendar cal() {
 		Calendar cal = new GregorianCalendar();
@@ -46,11 +46,9 @@ public class UtilDate {
 		return getFinDate().getYear();
 	}
 
-	public static LocalDateTime  incrFinYear() {
-		return setFinDate(getFinDate().plusYears(1));
-	}
 
 	public static LocalDateTime  getFinDate() {
+		
 		if (finDate == null) {
 			finDate = new Date().toInstant().atZone(ZoneId.of("Asia/Manila")).toLocalDateTime();
 			finDate = getLastDayOfYear(finDate);
@@ -69,4 +67,13 @@ public class UtilDate {
 	public static LocalDateTime  getLastDayOfYear(LocalDateTime  localDate) {
 		return localDate.with(TemporalAdjusters.lastDayOfYear());
 	}
+
+	public static boolean isFinDateSynced() {
+		return finDateSynced;
+	}
+
+	public static void setFinDateSynced(boolean finDateSynced) {
+		UtilDate.finDateSynced = finDateSynced;
+	}
+
 }

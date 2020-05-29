@@ -15,14 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.enums.ELegalForm;
-import com.brownbag_api.model.enums.EPartyType;
-import com.brownbag_api.model.jpa.CtrlVar;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.json.JsonObjParty;
-import com.brownbag_api.model.json.JsonOrderStex;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.payload.response.MsgResponse;

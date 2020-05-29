@@ -1,8 +1,6 @@
 package com.brownbag_api.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import javax.validation.constraints.NotNull;
 
@@ -11,16 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EAssetGrp;
-import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.jpa.ExecStex;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjAssetLoan;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPosStex;
-import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.ExecStexRepo;
-import com.brownbag_api.repo.OrderStexRepo;
 
 @Service
 public class AssetSvc {

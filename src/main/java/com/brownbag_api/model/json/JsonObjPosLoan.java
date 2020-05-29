@@ -1,12 +1,8 @@
 package com.brownbag_api.model.json;
 
-import com.brownbag_api.model.jpa.ObjPos;
-import com.brownbag_api.model.jpa.ObjPosLoan;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.brownbag_api.model.jpa.ObjAssetLoan;
+import com.brownbag_api.model.jpa.ObjPosLoan;
 
 public class JsonObjPosLoan {
 

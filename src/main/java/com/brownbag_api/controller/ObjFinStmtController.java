@@ -18,16 +18,15 @@ import com.brownbag_api.model.json.JsonObjFinStmt;
 import com.brownbag_api.model.json.JsonObjFinStmtSection;
 import com.brownbag_api.repo.FinStmtRepo;
 import com.brownbag_api.service.AssetSvc;
+import com.brownbag_api.service.ControlSvc;
 import com.brownbag_api.service.FinStmtSectionSvc;
 import com.brownbag_api.service.FinStmtSvc;
-import com.brownbag_api.service.ControlSvc;
 import com.brownbag_api.service.PartySvc;
-import com.brownbag_api.util.UtilDate;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/fin-stmt")
-public class ObjBalanceController {
+public class ObjFinStmtController {
 
 	@Autowired
 	private FinStmtRepo balSheetRepo;
@@ -95,29 +94,16 @@ public class ObjBalanceController {
 
 	}
 	
-	@GetMapping("/balsheet/party/{partyId}")
-	public ResponseEntity<?> getBalSheetByPartyId(@PathVariable Long partyId) {
+	@GetMapping("/type/balsheet/finyear/{finYear}/party/{partyId}")
+	public ResponseEntity<?> getBalSheetByPartyId(@PathVariable int finYear, @PathVariable Long partyId) {
 		ObjParty party = partySvc.getById(partyId);
-		ObjFinStmt jpaBalSheet = balSheetSvc.getBalSheet(party, controlSvc.getFinYear());
+		ObjFinStmt jpaBalSheet = balSheetSvc.getBalSheet(party, finYear);
 		
 		if (jpaBalSheet == null) {
-			return ResponseEntity.ok("Could not find Balance Sheet");
+			return ResponseEntity.ok("Could not find Balance Sheet for year: '" + finYear + "' and Party ID: ' "+ partyId + "'");
 		} else {
 			return ResponseEntity.ok(jpaToJson(jpaBalSheet));
 		}
 	}
-	
-	@GetMapping("/balsheet/prev/party/{partyId}")
-	public ResponseEntity<?> getBalSheetByPartyIdPrev(@PathVariable Long partyId) {
-		ObjParty party = partySvc.getById(partyId);
-		ObjFinStmt jpaBalSheet = balSheetSvc.getBalSheet(party, controlSvc.getFinYear() - 1);
-		
-		if (jpaBalSheet == null) {
-			return ResponseEntity.ok("Could not find Balance Sheet");
-		} else {
-			return ResponseEntity.ok(jpaToJson(jpaBalSheet));
-		}
-	}
-
 
 }

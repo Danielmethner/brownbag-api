@@ -1,6 +1,5 @@
 package com.brownbag_api.service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -8,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.model.enums.ECtrlVar;
 import com.brownbag_api.model.enums.ELegalForm;
@@ -74,7 +72,7 @@ public class PartySvc {
 		String partyName = eParty.getNameNonNaturalPerson();
 
 		ObjParty party = new ObjParty(partyName, eParty.getPartyType(), eParty.getLegalForm(), user,
-				UtilDate.getFinDate());
+				controlSvc.getFinDate());
 		party = save(party);
 
 		if (eParty.getPartyType() == EPartyType.ORG_GOVT) {
@@ -169,7 +167,7 @@ public class PartySvc {
 
 		if (objPartyList.isEmpty()) {
 			ObjParty natPerson = new ObjParty(user.getName(), EPartyType.PERSON_NATURAL, null, user,
-					UtilDate.getFinDate());
+					controlSvc.getFinDate());
 			natPerson = save(natPerson);
 			if (natPerson == null) {
 				return null;
@@ -185,7 +183,7 @@ public class PartySvc {
 				orderCreateMonSvc.createMon(leSend, initialDeposit);
 
 				ObjPos maccCentralBank = partySvc.getMacc(leSend);
-				LocalDateTime matDate = UtilDate.getLastDayOfYear(UtilDate.getFinDate().plusYears(40));
+				LocalDateTime matDate = UtilDate.getLastDayOfYear(controlSvc.getFinDate().plusYears(40));
 				OrderLoan orderLoan = orderLoanSvc.createLoan(initialDeposit, natPerson.getUser(), maccCentralBank,
 						newMacc, matDate, controlSvc.getIntrRate());
 				orderLoanSvc.grantLoan(orderLoan);

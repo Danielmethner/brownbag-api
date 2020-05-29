@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPosLoan;
-import com.brownbag_api.model.jpa.ObjPosMacc;
 
 @Repository
 public interface PosLoanRepo extends JpaRepository<ObjPosLoan, Long> {

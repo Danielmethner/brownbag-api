@@ -2,7 +2,6 @@ package com.brownbag_api.model.json;
 
 import java.util.List;
 
-import com.brownbag_api.model.enums.EFinStmtSectionType;
 import com.brownbag_api.model.jpa.ObjFinStmtItem;
 import com.brownbag_api.model.jpa.ObjFinStmtSection;
 
@@ -12,9 +11,10 @@ public class JsonObjFinStmtSection {
 
 	private String name;
 
-	private EFinStmtSectionType section;
+	private String section;
 
-	private double qty;
+	private double totalQty;
+	private String totalCaption;
 
 	private String style;
 
@@ -23,16 +23,18 @@ public class JsonObjFinStmtSection {
 	public JsonObjFinStmtSection(ObjFinStmtSection objBalSheetSection, List<ObjFinStmtItem> items) {
 		this.id = objBalSheetSection.getId();
 		this.name = objBalSheetSection.getName();
-		this.section = objBalSheetSection.getSection();
-		this.qty = objBalSheetSection.getQty();
+		this.section = objBalSheetSection.getSection().getName();
+		this.totalQty = objBalSheetSection.getQty();
+		this.totalCaption = objBalSheetSection.getSection().getTotalCaption();
 		this.items = items;
 	}
 
 	public JsonObjFinStmtSection(ObjFinStmtSection objBalSheetSection) {
 		this.id = objBalSheetSection.getId();
 		this.name = objBalSheetSection.getName();
-		this.section = objBalSheetSection.getSection();
-		this.qty = objBalSheetSection.getQty();
+		this.section = objBalSheetSection.getSection().getName();
+		this.totalQty = objBalSheetSection.getQty();
+		this.totalCaption = objBalSheetSection.getSection().getTotalCaption();
 	}
 
 	public double getId() {
@@ -51,21 +53,24 @@ public class JsonObjFinStmtSection {
 		this.name = name;
 	}
 
-	public EFinStmtSectionType getSection() {
+	
+	
+	public String getSection() {
 		return section;
 	}
 
-	public void setSection(EFinStmtSectionType section) {
+	public void setSection(String section) {
 		this.section = section;
 	}
 
-	public double getQty() {
-		return qty;
+	public double getTotalQty() {
+		return totalQty;
 	}
 
-	public void setQty(double qty) {
-		this.qty = qty;
+	public void setTotalQty(double totalQty) {
+		this.totalQty = totalQty;
 	}
+
 
 	public List<ObjFinStmtItem> getItems() {
 		return items;
@@ -81,6 +86,14 @@ public class JsonObjFinStmtSection {
 
 	public void setStyle(String style) {
 		this.style = style;
+	}
+
+	public String getTotalCaption() {
+		return totalCaption;
+	}
+
+	public void setTotalCaption(String totalCaption) {
+		this.totalCaption = totalCaption;
 	}
 
 }

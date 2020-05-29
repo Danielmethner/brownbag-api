@@ -1,13 +1,6 @@
 package com.brownbag_api.model.json;
 
-import java.util.Date;
-
 import com.brownbag_api.model.enums.ELegalForm;
-import com.brownbag_api.model.enums.EOrderStatus;
-import com.brownbag_api.model.enums.EOrderType;
-import com.brownbag_api.model.jpa.Booking;
-import com.brownbag_api.model.jpa.ObjPos;
-import com.brownbag_api.model.jpa.Order;
 
 public class JsonELegalForm {
 
