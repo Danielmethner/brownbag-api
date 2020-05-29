@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EAssetGrp;
@@ -70,14 +71,15 @@ public class PartySvc {
 	public ObjParty createParty(EParty eParty) {
 		ObjUser user;
 		user = userSvc.getByEnum(eParty.getUser());
+		String partyName = eParty.getNameNonNaturalPerson();
 
-		ObjParty party = new ObjParty(eParty.getName(), eParty.getPartyType(), eParty.getLegalForm(), user,
+		ObjParty party = new ObjParty(partyName, eParty.getPartyType(), eParty.getLegalForm(), user,
 				UtilDate.getFinDate());
 		party = save(party);
 
 		if (eParty.getPartyType() == EPartyType.ORG_GOVT) {
 
-			if (party != null && eParty.createMACC) {
+			if (party != null && eParty.isCreateMACC()) {
 				posSvc.createMacc(party, 0, null);
 			}
 			return party;
@@ -125,6 +127,7 @@ public class PartySvc {
 
 	}
 
+	@Transactional
 	public ObjParty createLegalPerson(String name, ELegalForm legalForm, ObjUser objUser, ObjParty owner, int shareQty,
 			double shareCapital) {
 
@@ -145,12 +148,15 @@ public class PartySvc {
 		party = save(party);
 		posSvc.createPosStex(asset, owner);
 		double transferPrice = shareCapital / shareQty;
-		
+
 		OrderStex ipoSellOrder = issueShares(party, shareQty, transferPrice);
 		OrderStex ipoBuyOrder = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, asset, shareQty,
 				transferPrice, objUser, owner);
 		orderStexSvc.matchOrders(ipoBuyOrder, ipoSellOrder);
-		if (orderStexSvc.getById(ipoBuyOrder.getId()).getOrderStatus() != EOrderStatus.EXEC_FULL) {
+
+		OrderStex ipoBuyOrder2 = orderStexSvc.getById(ipoBuyOrder.getId());
+
+		if (ipoBuyOrder2.getOrderStatus() != EOrderStatus.EXEC_FULL) {
 			logSvc.write("Emission of new shares failed for Party ID: '" + party.getId() + "'. Party Name: '"
 					+ party.getName() + "'");
 			return null;
@@ -159,8 +165,9 @@ public class PartySvc {
 	}
 
 	public ObjParty getNaturalPerson(ObjUser user) {
-		List<ObjParty> lEs = partyRepo.findByUserAndPartyType(user, EPartyType.PERSON_NATURAL);
-		if (lEs.isEmpty()) {
+		List<ObjParty> objPartyList = partyRepo.findByUserAndPartyType(user, EPartyType.PERSON_NATURAL);
+
+		if (objPartyList.isEmpty()) {
 			ObjParty natPerson = new ObjParty(user.getName(), EPartyType.PERSON_NATURAL, null, user,
 					UtilDate.getFinDate());
 			natPerson = save(natPerson);
@@ -186,7 +193,7 @@ public class PartySvc {
 
 			return natPerson;
 		} else {
-			return lEs.get(0);
+			return objPartyList.get(0);
 		}
 	}
 
@@ -203,12 +210,11 @@ public class PartySvc {
 	}
 
 	public ObjParty getByEnum(EParty eParty) {
-		return partyRepo.findByName(eParty.getName());
+		return partyRepo.findByName(eParty.getNameNonNaturalPerson());
 	}
 
 	public ObjParty goPublic(ObjParty party, int qty) {
 
-		System.err.println("Party: " + party.getName() + " Qty: " + qty);
 		// ENSURE ONLY LTDs CAN GO PUBLIC
 		if (party.getLegalForm() == ELegalForm.LTD) {
 

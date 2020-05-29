@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.ECtrlVar;
+import com.brownbag_api.model.enums.ELegalForm;
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.enums.EParty;
@@ -108,7 +109,7 @@ public class InitDataLoader {
 	// USER
 	// -----------------------------------------------------------
 	public void createUser(EUser eUser, Set<String> roles) {
-		userSvc.registerUser(eUser.toString(), eUser.name(), eUser.toString(), roles);
+		userSvc.registerUser(eUser.toString(), eUser.getName(), eUser.toString(), roles);
 	}
 
 	// -----------------------------------------------------------
@@ -205,6 +206,11 @@ public class InitDataLoader {
 		// MANAGERS
 		createUser(EUser.U_TRADER_1, roles);
 		createUser(EUser.U_TRADER_2, roles);
+		
+		// COMPANY FOR TRADER_1
+		ObjUser userTrader1 = userSvc.getByEnum(EUser.U_TRADER_1);
+		ObjParty partyPrivTrader1 = userSvc.getNaturalPerson(userTrader1);
+		partySvc.createLegalPerson("Trader 1: Business 1", ELegalForm.CORP, userTrader1, partyPrivTrader1, 15000, 100000);
 	}
 
 	// -----------------------------------------------------------

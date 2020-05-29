@@ -26,7 +26,7 @@ import com.brownbag_api.util.UtilDate;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/balsheet")
+@RequestMapping("/api/fin-stmt")
 public class ObjBalanceController {
 
 	@Autowired
@@ -76,14 +76,14 @@ public class ObjBalanceController {
 		return jsonBalSheets;
 	}
 
-	@GetMapping("/all")
+	@GetMapping("/balsheet/all")
 	public List<JsonObjBalSheet> allBalSheets() {
 
 		List<ObjBalSheet> jpaBalSheets = balSheetRepo.findAll();
 		return jpaToJson(jpaBalSheets);
 	}
 
-	@GetMapping("/{id}")
+	@GetMapping("/balsheet/{id}")
 	public ResponseEntity<?> getById(@PathVariable Long id) {
 		ObjBalSheet jpaBalSheet = balSheetRepo.findById(id).orElse(null);
 
@@ -95,7 +95,7 @@ public class ObjBalanceController {
 
 	}
 	
-	@GetMapping("/party/{partyId}")
+	@GetMapping("/balsheet/party/{partyId}")
 	public ResponseEntity<?> getBalSheetByPartyId(@PathVariable Long partyId) {
 		ObjParty party = partySvc.getById(partyId);
 		ObjBalSheet jpaBalSheet = balSheetSvc.getBalSheet(party, controlSvc.getFinYear());
@@ -107,7 +107,7 @@ public class ObjBalanceController {
 		}
 	}
 	
-	@GetMapping("/prev/party/{partyId}")
+	@GetMapping("/balsheet/prev/party/{partyId}")
 	public ResponseEntity<?> getBalSheetByPartyIdPrev(@PathVariable Long partyId) {
 		ObjParty party = partySvc.getById(partyId);
 		ObjBalSheet jpaBalSheet = balSheetSvc.getBalSheet(party, controlSvc.getFinYear() - 1);

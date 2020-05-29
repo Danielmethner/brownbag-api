@@ -6,11 +6,11 @@ public enum EParty {
 	DEUTSCHE_BANK("Deutsche Bank", EUser.MGR_DEUTSCHE_BANK, EPartyType.PERSON_LEGAL, ELegalForm.LTD, true),
 	GOVERNMENT("Government", EUser.MGR_GOVERNMENT, EPartyType.ORG_GOVT, null, true);
 
-	public final String name;
-	public final EUser user;
-	public final EPartyType partyType;
-	public final ELegalForm legalForm;
-	public final boolean createMACC;
+	private final String name;
+	private final EUser user;
+	private final EPartyType partyType;
+	private final ELegalForm legalForm;
+	private final boolean createMACC;
 
 	private EParty(String name, EUser user, EPartyType partyType, ELegalForm legalForm, boolean createMACC) {
 		this.name = name;
@@ -18,6 +18,10 @@ public enum EParty {
 		this.partyType = partyType;
 		this.legalForm = legalForm;
 		this.createMACC = createMACC;
+	}
+
+	public String getNameNonNaturalPerson() {
+		return getPartyType() + ": " + getName();
 	}
 
 	public String getName() {

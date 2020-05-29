@@ -106,20 +106,4 @@ public class OrderLoanSvc extends OrderSvc {
 		return (OrderLoan) orderSvc.execAction(orderLoan, EOrderAction.VERIFY);
 	}
 
-//	@Transactional
-//	public OrderLoan execPay(OrderLoan OrderLoan) {
-//
-//		if (OrderLoan == null) {
-//			return null;
-//		}
-//
-//		if (OrderLoan.getId() == null) {
-//			OrderLoan = orderRepo.save(OrderLoan);
-//		}
-//		OrderLoan.setPosSend(posSvc.debitPos(OrderLoan));
-//		OrderLoan.setPosRcv(posSvc.crebitPos(OrderLoan));
-//
-//		return (OrderLoan) orderSvc.execAction(OrderLoan, EOrderAction.VERIFY);
-//	}
-
 }

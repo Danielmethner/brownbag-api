@@ -39,7 +39,7 @@ public class BalTrx implements Serializable {
 	public Order order;
 
 	@NotBlank
-	@Size(max = 100)
+	@Size(max = 200)
 	private String name;
 
 	@CreationTimestamp
