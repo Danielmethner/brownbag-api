@@ -24,7 +24,6 @@ import com.brownbag_api.model.jpa.OrderLoan;
 import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.PartyRepo;
-import com.brownbag_api.util.UtilDate;
 
 @Service
 public class PartySvc {
@@ -183,7 +182,7 @@ public class PartySvc {
 				orderCreateMonSvc.createMon(leSend, initialDeposit);
 
 				ObjPos maccCentralBank = partySvc.getMacc(leSend);
-				LocalDateTime matDate = UtilDate.getLastDayOfYear(controlSvc.getFinDate().plusYears(40));
+				LocalDateTime matDate = controlSvc.getLastDayOfYear(controlSvc.getFinDate().plusYears(40));
 				OrderLoan orderLoan = orderLoanSvc.createLoan(initialDeposit, natPerson.getUser(), maccCentralBank,
 						newMacc, matDate, controlSvc.getIntrRate());
 				orderLoanSvc.grantLoan(orderLoan);

@@ -1,6 +1,12 @@
 package com.brownbag_api.service;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.TemporalAdjusters;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +15,6 @@ import org.springframework.stereotype.Service;
 import com.brownbag_api.model.enums.ECtrlVar;
 import com.brownbag_api.model.jpa.CtrlVar;
 import com.brownbag_api.repo.CtrlVarRepo;
-import com.brownbag_api.util.UtilDate;
 
 @Service
 public class ControlSvc {
@@ -19,6 +24,58 @@ public class ControlSvc {
 
 	@Autowired
 	private LogSvc logSvc;
+
+	// Date Formats
+	public static SimpleDateFormat dateFormatAPI = new SimpleDateFormat("yyyyMMMddHH24mmss");
+	public static SimpleDateFormat dateFormatSQLTimeStamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	public static SimpleDateFormat dateFormatSQLDate = new SimpleDateFormat("yyyy-mm-dd");
+
+	// Central Dates
+	public static Date minDate = new GregorianCalendar(1000, 0, 1).getTime();
+	public static Date maxDate = new GregorianCalendar(3000, 11, 1).getTime();
+	private static LocalDateTime finDate = null;
+	private static boolean finDateSynced = false;
+
+	private Calendar cal() {
+		Calendar cal = new GregorianCalendar();
+		return cal;
+	}
+
+	private String dateAsSQLTimeStamp(Date date) {
+		return dateFormatSQLTimeStamp.format(date);
+	}
+
+	private Date now() {
+		return Calendar.getInstance().getTime();
+	}
+
+	private String nowAsSQLTimeStamp() {
+		return dateFormatSQLTimeStamp.format(now());
+	}
+
+	private String nowAsAPITimeStamp() {
+		return dateFormatSQLTimeStamp.format(now());
+	}
+
+
+
+	private LocalDateTime setFinDate(LocalDateTime finDate) {
+		finDate = getLastDayOfYear(finDate);
+		return finDate;
+	}
+
+
+	private boolean isFinDateSynced() {
+		return finDateSynced;
+	}
+
+	private void setFinDateSynced(boolean finDateSynced) {
+		ControlSvc.finDateSynced = finDateSynced;
+	}
+
+	public LocalDateTime getLastDayOfYear(LocalDateTime localDate) {
+		return localDate.with(TemporalAdjusters.lastDayOfYear());
+	}
 
 	public CtrlVar create(ECtrlVar eCtrlVar, LocalDateTime dateVal) {
 		if (ctrlVarRepo.findByKey(eCtrlVar.toString()) != null) {
@@ -58,7 +115,7 @@ public class ControlSvc {
 
 	public void setFinDate() {
 		LocalDateTime finDateLocal = getFinDateDB();
-		UtilDate.setFinDate(finDateLocal);
+		setFinDate(finDateLocal);
 	}
 
 	public int setFinYear(int finYear) {
@@ -67,7 +124,7 @@ public class ControlSvc {
 		finDateLocal = finDateLocal.plusYears(finYear - finDateLocal.getYear());
 		ctrlVarFinDate.setValDate(finDateLocal);
 		ctrlVarFinDate = ctrlVarRepo.save(ctrlVarFinDate);
-		UtilDate.setFinDate(finDateLocal);
+		setFinDate(finDateLocal);
 		return ctrlVarFinDate.getValDate().getYear();
 	}
 
@@ -81,21 +138,28 @@ public class ControlSvc {
 		return newFinYear;
 	}
 
+
+	
 	public LocalDateTime getFinDate() {
 
 		// ENSURE DATE IN CACHE IS IN SYNC WITH DB
-		if (UtilDate.isFinDateSynced()) {
-			return UtilDate.getFinDate();
+		if (isFinDateSynced()) {
+			return finDate;
 		} else {
+			if (finDate == null) {
+				finDate = new Date().toInstant().atZone(ZoneId.of("Asia/Manila")).toLocalDateTime();
+				finDate = getLastDayOfYear(finDate);
+				return finDate;
+			} else {
 			LocalDateTime finDateDB = getFinDateDB();
 			if (finDateDB != null) {
-				UtilDate.setFinDateSynced(true);
-				UtilDate.setFinDate(finDateDB);
+				setFinDateSynced(true);
+				setFinDate(finDateDB);
 				return finDateDB;
 			} else {
 				return null;
 			}
-
+			}
 		}
 	}
 
