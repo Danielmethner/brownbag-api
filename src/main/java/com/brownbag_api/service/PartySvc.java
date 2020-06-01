@@ -128,7 +128,7 @@ public class PartySvc {
 	public ObjParty createLegalPerson(String name, ELegalForm legalForm, ObjUser objUser, ObjParty owner, int shareQty,
 			double shareCapital) {
 
-		ObjParty party = new ObjParty(name, EPartyType.PERSON_LEGAL, legalForm, objUser, controlSvc.getFinDateDB());
+		ObjParty party = new ObjParty(name, EPartyType.PERSON_LEGAL, legalForm, objUser, controlSvc.getFinDate());
 		party = save(party);
 
 		if (party == null) {
@@ -242,5 +242,9 @@ public class PartySvc {
 
 	public ObjParty getById(Long partyId) {
 		return partyRepo.getOne(partyId);
+	}
+
+	public List<ObjParty> getLegalPersonByOwnerUser(ObjUser user) {
+		return partyRepo.findByUserAndPartyType(user, EPartyType.PERSON_LEGAL);
 	}
 }

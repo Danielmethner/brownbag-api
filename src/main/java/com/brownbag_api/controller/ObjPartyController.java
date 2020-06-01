@@ -90,6 +90,14 @@ public class ObjPartyController {
 		List<ObjParty> jpaPartyList = partyRepo.findAll();
 		return jpaToJson(jpaPartyList);
 	}
+	
+	@GetMapping("/user/legalpersonlist")
+	public List<JsonObjParty> getAllBusiness(Authentication authentication) {
+		ObjUser user = getByAuthentication(authentication);
+		List<ObjParty> jpaPartyList = partySvc.getLegalPersonByOwnerUser(user);
+		return jpaToJson(jpaPartyList);
+	}
+
 
 	@GetMapping("/priv")
 	public JsonObjParty getPriv(Authentication authentication) {

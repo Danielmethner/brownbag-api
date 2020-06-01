@@ -33,8 +33,6 @@ public class ControlSvc {
 	// Central Dates
 	public static Date minDate = new GregorianCalendar(1000, 0, 1).getTime();
 	public static Date maxDate = new GregorianCalendar(3000, 11, 1).getTime();
-	private static LocalDateTime finDate = null;
-	private static boolean finDateSynced = false;
 
 	private Calendar cal() {
 		Calendar cal = new GregorianCalendar();
@@ -55,22 +53,6 @@ public class ControlSvc {
 
 	private String nowAsAPITimeStamp() {
 		return dateFormatSQLTimeStamp.format(now());
-	}
-
-
-
-	private LocalDateTime setFinDate(LocalDateTime finDate) {
-		finDate = getLastDayOfYear(finDate);
-		return finDate;
-	}
-
-
-	private boolean isFinDateSynced() {
-		return finDateSynced;
-	}
-
-	private void setFinDateSynced(boolean finDateSynced) {
-		ControlSvc.finDateSynced = finDateSynced;
 	}
 
 	public LocalDateTime getLastDayOfYear(LocalDateTime localDate) {
@@ -108,23 +90,12 @@ public class ControlSvc {
 		return ctrlVarRepo.findByKey(eCtrlVar.toString());
 	}
 
-	public LocalDateTime getFinDateDB() {
-		LocalDateTime finDate = (LocalDateTime) getByEnum(ECtrlVar.FIN_DATE).getValDate();
-		return finDate;
-	}
-
-	public void setFinDate() {
-		LocalDateTime finDateLocal = getFinDateDB();
-		setFinDate(finDateLocal);
-	}
-
 	public int setFinYear(int finYear) {
 		CtrlVar ctrlVarFinDate = getByEnum(ECtrlVar.FIN_DATE);
 		LocalDateTime finDateLocal = ctrlVarFinDate.getValDate();
 		finDateLocal = finDateLocal.plusYears(finYear - finDateLocal.getYear());
 		ctrlVarFinDate.setValDate(finDateLocal);
 		ctrlVarFinDate = ctrlVarRepo.save(ctrlVarFinDate);
-		setFinDate(finDateLocal);
 		return ctrlVarFinDate.getValDate().getYear();
 	}
 
@@ -138,28 +109,20 @@ public class ControlSvc {
 		return newFinYear;
 	}
 
-
-	
 	public LocalDateTime getFinDate() {
 
-		// ENSURE DATE IN CACHE IS IN SYNC WITH DB
-		if (isFinDateSynced()) {
-			return finDate;
+		CtrlVar ctrlVarFinDate = getByEnum(ECtrlVar.FIN_DATE);
+		LocalDateTime finDateDB = ctrlVarFinDate.getValDate();
+		
+		if (finDateDB == null) {
+			LocalDateTime finDate = new Date().toInstant().atZone(ZoneId.of("Asia/Manila")).toLocalDateTime();
+			finDate = getLastDayOfYear(finDate);
+			ctrlVarFinDate.setValDate(finDate);
+			ctrlVarRepo.save(ctrlVarFinDate);
+			return finDateDB;
 		} else {
-			if (finDate == null) {
-				finDate = new Date().toInstant().atZone(ZoneId.of("Asia/Manila")).toLocalDateTime();
-				finDate = getLastDayOfYear(finDate);
-				return finDate;
-			} else {
-			LocalDateTime finDateDB = getFinDateDB();
-			if (finDateDB != null) {
-				setFinDateSynced(true);
-				setFinDate(finDateDB);
-				return finDateDB;
-			} else {
-				return null;
-			}
-			}
+
+			return finDateDB;
 		}
 	}
 

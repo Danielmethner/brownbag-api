@@ -49,7 +49,7 @@ public class SettingsController {
 	}
 	
 	@GetMapping("/ctrlvar/finyear")
-	public ResponseEntity<?> setFinYear() {
+	public ResponseEntity<?> getFinYear() {
 		return ResponseEntity.ok(ctrlVarSvc.getFinYear());
 	}
 		

@@ -254,7 +254,7 @@ public class InitDataLoader {
 		if (demoDataCreate == null) {
 			createCtrlVars();
 			// LOAD FIN DATE FROM DATABASE
-			controlSvc.setFinDate();
+			controlSvc.getFinDate();
 		}
 	}
 
