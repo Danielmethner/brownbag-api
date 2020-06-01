@@ -68,9 +68,9 @@ public class ObjFinStmtItem implements Serializable {
 
 	@NotNull
 	@ManyToOne(targetEntity = ObjFinStmtSection.class)
-	@JoinColumn(name = "BAL_SHEET_SECTION_ID")
+	@JoinColumn(name = "FIN_STMT_SECTION_ID")
 	@JsonBackReference
-	private ObjFinStmtSection balSheetSection;
+	private ObjFinStmtSection finStmtSection;
 
 	@NotNull
 	@Enumerated(EnumType.STRING)
@@ -88,16 +88,16 @@ public class ObjFinStmtItem implements Serializable {
 		this.itemType = itemType;
 		this.finYear = finYear;
 		this.party = party;
-		this.balSheetSection = balSheetSection;
+		this.finStmtSection = balSheetSection;
 		this.finStmtType = finStmtType;
 	}
 
-	public ObjFinStmtSection getBalSheetSection() {
-		return balSheetSection;
+	public ObjFinStmtSection getFinStmtSection() {
+		return finStmtSection;
 	}
 
-	public void setBalSheetSection(ObjFinStmtSection balSheetSection) {
-		this.balSheetSection = balSheetSection;
+	public void setBalSheetSection(ObjFinStmtSection finStmtSection) {
+		this.finStmtSection = finStmtSection;
 	}
 
 	public String getName() {

@@ -15,5 +15,5 @@ public interface FinStmtItemRepo extends JpaRepository<ObjFinStmtItem, Long> {
 
 	ObjFinStmtItem findByPartyAndFinYearAndItemType(ObjParty party, int finYear, EFinStmtItemType eBalSheetItem);
 
-	List<ObjFinStmtItem> findByBalSheetSection(ObjFinStmtSection section);
+	List<ObjFinStmtItem> findByFinStmtSection(ObjFinStmtSection section);
 }

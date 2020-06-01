@@ -4,8 +4,8 @@ public enum EFinStmtSectionType {
 	ASSETS("Assets", EFinStmtType.BAL_SHEET, "Total Assets"),
 	LIABILITIES("Liabilities", EFinStmtType.BAL_SHEET, "Total Liabilities"),
 	EQUITY("Equity", EFinStmtType.BAL_SHEET, "Total Equity"),
-	OPERATIONS("Operations", EFinStmtType.BAL_SHEET, "Gross Profit"),
-	FIN_ACTIVITIES("Financial Activities", EFinStmtType.BAL_SHEET, "Net Profit"),;
+	OPERATIONS("Operations", EFinStmtType.INCOME_STMT, "Gross Profit"),
+	FIN_ACTIVITIES("Financial Activities", EFinStmtType.INCOME_STMT, "Net Profit"),;
 
 	private final String name;
 	private final EFinStmtType finStmtType;

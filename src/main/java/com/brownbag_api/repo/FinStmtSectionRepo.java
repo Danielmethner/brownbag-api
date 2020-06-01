@@ -10,8 +10,8 @@ import com.brownbag_api.model.jpa.ObjFinStmtSection;
 @Repository
 public interface FinStmtSectionRepo extends JpaRepository<ObjFinStmtSection, Long> {
 
-	ObjFinStmtSection findByBalSheetAndSection(ObjFinStmt balSheet, EFinStmtSectionType section);
+	ObjFinStmtSection findByFinStmtAndSection(ObjFinStmt finStmt, EFinStmtSectionType section);
 	
-	ObjFinStmtSection findByBalSheetAndSectionAndFinYear(ObjFinStmt balSheet, EFinStmtSectionType section, int finYear);
+	ObjFinStmtSection findByFinStmtAndSectionAndFinYear(ObjFinStmt finStmt, EFinStmtSectionType section, int finYear);
 
 }

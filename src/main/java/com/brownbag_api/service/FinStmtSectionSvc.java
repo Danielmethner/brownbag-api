@@ -47,7 +47,7 @@ public class FinStmtSectionSvc {
 		// IF BALANCE SHEET: GET LAST YEARS BALANCE SHEET
 		if (finStmtType == EFinStmtType.BAL_SHEET) {
 
-			ObjFinStmt balSheetPrevYear = balSheetSvc.getBalSheet(balSheet.getParty(), controlSvc.getFinYear() - 1);
+			ObjFinStmt balSheetPrevYear = balSheetSvc.getFinStmt(balSheet.getParty(), controlSvc.getFinYear() - 1, finStmtType);
 			if (balSheetPrevYear != null) {
 				ObjFinStmtSection balSheetSectionPrevYear = getByBalSheetAndSection(balSheetPrevYear, eBalSheetSection);
 
@@ -74,7 +74,7 @@ public class FinStmtSectionSvc {
 	}
 
 	public ObjFinStmtSection getByBalSheetAndSection(ObjFinStmt balSheet, EFinStmtSectionType sectionType) {
-		ObjFinStmtSection section = balSheetSectionRepo.findByBalSheetAndSection(balSheet, sectionType);
+		ObjFinStmtSection section = balSheetSectionRepo.findByFinStmtAndSection(balSheet, sectionType);
 		return section;
 	}
 
@@ -89,7 +89,7 @@ public class FinStmtSectionSvc {
 
 	public ObjFinStmtSection getByBalSheetAndSectionAndFinYear(ObjFinStmt balSheet, EFinStmtSectionType sectionType,
 			int finYear) {
-		ObjFinStmtSection section = balSheetSectionRepo.findByBalSheetAndSectionAndFinYear(balSheet, sectionType,
+		ObjFinStmtSection section = balSheetSectionRepo.findByFinStmtAndSectionAndFinYear(balSheet, sectionType,
 				finYear);
 		return section;
 	}

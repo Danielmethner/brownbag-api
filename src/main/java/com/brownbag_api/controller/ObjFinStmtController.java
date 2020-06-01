@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.enums.EFinStmtSectionType;
+import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.jpa.ObjFinStmt;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.json.JsonObjFinStmt;
@@ -29,10 +30,10 @@ import com.brownbag_api.service.PartySvc;
 public class ObjFinStmtController {
 
 	@Autowired
-	private FinStmtRepo balSheetRepo;
+	private FinStmtRepo finStmtRepo;
 	
 	@Autowired
-	private FinStmtSvc balSheetSvc;
+	private FinStmtSvc finStmtSvc;
 	
 	@Autowired
 	private PartySvc partySvc;
@@ -44,21 +45,21 @@ public class ObjFinStmtController {
 	@Autowired
 	private FinStmtSectionSvc balSheetSectionSvc;
 
-	private JsonObjFinStmt jpaToJson(ObjFinStmt jpaBalSheet) {
+	private JsonObjFinStmt jpaToJson(ObjFinStmt jpaFinStmt) {
 
-		JsonObjFinStmt jsonBalSheet = new JsonObjFinStmt(jpaBalSheet);
+		JsonObjFinStmt jsonBalSheet = new JsonObjFinStmt(jpaFinStmt);
 		List<JsonObjFinStmtSection> balSheetSections = new ArrayList<JsonObjFinStmtSection>();
-		JsonObjFinStmtSection assets = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaBalSheet,
+		JsonObjFinStmtSection assets = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaFinStmt,
 				EFinStmtSectionType.ASSETS);
 		assets.setStyle("bg-success");
 		balSheetSections.add(assets);
 
-		JsonObjFinStmtSection liablities = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaBalSheet,
+		JsonObjFinStmtSection liablities = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaFinStmt,
 				EFinStmtSectionType.LIABILITIES);
 		liablities.setStyle("bg-danger");
 		balSheetSections.add(liablities);
 
-		JsonObjFinStmtSection equity = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaBalSheet,
+		JsonObjFinStmtSection equity = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaFinStmt,
 				EFinStmtSectionType.EQUITY);
 		equity.setStyle("bg-primary");
 		balSheetSections.add(equity);
@@ -78,13 +79,13 @@ public class ObjFinStmtController {
 	@GetMapping("/balsheet/all")
 	public List<JsonObjFinStmt> allBalSheets() {
 
-		List<ObjFinStmt> jpaBalSheets = balSheetRepo.findAll();
+		List<ObjFinStmt> jpaBalSheets = finStmtRepo.findAll();
 		return jpaToJson(jpaBalSheets);
 	}
 
 	@GetMapping("/balsheet/{id}")
 	public ResponseEntity<?> getById(@PathVariable Long id) {
-		ObjFinStmt jpaBalSheet = balSheetRepo.findById(id).orElse(null);
+		ObjFinStmt jpaBalSheet = finStmtRepo.findById(id).orElse(null);
 
 		if (jpaBalSheet == null) {
 			return ResponseEntity.noContent().build();
@@ -97,7 +98,8 @@ public class ObjFinStmtController {
 	@GetMapping("/type/balsheet/finyear/{finYear}/party/{partyId}")
 	public ResponseEntity<?> getBalSheetByPartyId(@PathVariable int finYear, @PathVariable Long partyId) {
 		ObjParty party = partySvc.getById(partyId);
-		ObjFinStmt jpaBalSheet = balSheetSvc.getBalSheet(party, finYear);
+		EFinStmtType finStmtType = EFinStmtType.BAL_SHEET;
+		ObjFinStmt jpaBalSheet = finStmtSvc.getFinStmt(party, finYear, finStmtType);
 		
 		if (jpaBalSheet == null) {
 			return ResponseEntity.ok("Could not find Balance Sheet for year: '" + finYear + "' and Party ID: ' "+ partyId + "'");
@@ -106,4 +108,16 @@ public class ObjFinStmtController {
 		}
 	}
 
+	@GetMapping("/type/incomestmt/finyear/{finYear}/party/{partyId}")
+	public ResponseEntity<?> getIncomeStmtByPartyId(@PathVariable int finYear, @PathVariable Long partyId) {
+		ObjParty party = partySvc.getById(partyId);
+		EFinStmtType finStmtType = EFinStmtType.INCOME_STMT;
+		ObjFinStmt jpaBalSheet = finStmtSvc.getFinStmt(party, finYear, finStmtType);
+		
+		if (jpaBalSheet == null) {
+			return ResponseEntity.ok("Could not find Income Statement for year: '" + finYear + "' and Party ID: ' "+ partyId + "'");
+		} else {
+			return ResponseEntity.ok(jpaToJson(jpaBalSheet));
+		}
+	}
 }

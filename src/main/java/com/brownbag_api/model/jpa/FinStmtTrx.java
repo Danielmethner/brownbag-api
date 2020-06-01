@@ -49,8 +49,8 @@ public class FinStmtTrx implements Serializable {
 
 	@NotNull
 	@ManyToOne(targetEntity = ObjFinStmtItem.class)
-	@JoinColumn(name = "BAL_SHEET_ITEM_ID")
-	private ObjFinStmtItem bsi;
+	@JoinColumn(name = "FIN_STMT_ITEM_ID")
+	private ObjFinStmtItem finStmtItem;
 
 	@NotNull
 	@ManyToOne(targetEntity = Booking.class)
@@ -65,11 +65,11 @@ public class FinStmtTrx implements Serializable {
 
 	}
 
-	public FinStmtTrx(@NotNull Order order, @NotNull ObjFinStmtItem bsi, Booking booking, @NotNull double qty) {
+	public FinStmtTrx(@NotNull Order order, @NotNull ObjFinStmtItem finStmtItem, Booking booking, @NotNull double qty) {
 		super();
 		this.order = order;
 		this.name = genName();
-		this.bsi = bsi;
+		this.finStmtItem = finStmtItem;
 		this.booking = booking;
 		this.qty = qty;
 	}
@@ -102,12 +102,20 @@ public class FinStmtTrx implements Serializable {
 		this.timestampCreate = timestampCreate;
 	}
 
-	public ObjFinStmtItem getBsi() {
-		return bsi;
+	public Long getId() {
+		return id;
 	}
 
-	public void setBsi(ObjFinStmtItem bsi) {
-		this.bsi = bsi;
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public ObjFinStmtItem getFinStmtItem() {
+		return finStmtItem;
+	}
+
+	public void setFinStmtItem(ObjFinStmtItem finStmtItem) {
+		this.finStmtItem = finStmtItem;
 	}
 
 	public Booking getBooking() {

@@ -56,7 +56,7 @@ public class FinStmtItemSvc {
 	}
 
 	public List<ObjFinStmtItem> getByBalSheetSection(ObjFinStmtSection section) {
-		return balSheetItemRepo.findByBalSheetSection(section);
+		return balSheetItemRepo.findByFinStmtSection(section);
 
 	}
 }

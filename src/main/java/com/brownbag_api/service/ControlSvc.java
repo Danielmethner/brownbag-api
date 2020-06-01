@@ -108,16 +108,25 @@ public class ControlSvc {
 		// calculation
 		return newFinYear;
 	}
+	
+	public LocalDateTime getCurrentDate() {
+
+		LocalDateTime finDate = new Date().toInstant().atZone(ZoneId.of("Asia/Manila")).toLocalDateTime();
+		finDate = getLastDayOfYear(finDate);
+		return finDate;
+	}
 
 	public LocalDateTime getFinDate() {
 
 		CtrlVar ctrlVarFinDate = getByEnum(ECtrlVar.FIN_DATE);
-		LocalDateTime finDateDB = ctrlVarFinDate.getValDate();
+		LocalDateTime finDateDB = null;
+		if(ctrlVarFinDate != null) {
+			finDateDB = ctrlVarFinDate.getValDate();	
+		}
+		
 		
 		if (finDateDB == null) {
-			LocalDateTime finDate = new Date().toInstant().atZone(ZoneId.of("Asia/Manila")).toLocalDateTime();
-			finDate = getLastDayOfYear(finDate);
-			ctrlVarFinDate.setValDate(finDate);
+			ctrlVarFinDate.setValDate(getCurrentDate());
 			ctrlVarRepo.save(ctrlVarFinDate);
 			return finDateDB;
 		} else {

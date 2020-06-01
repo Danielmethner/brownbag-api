@@ -33,9 +33,9 @@ public class ObjFinStmtSection implements Serializable {
 
 	@NotNull
 	@ManyToOne(targetEntity = ObjFinStmt.class)
-	@JoinColumn(name = "BAL_SHEET_ID")
+	@JoinColumn(name = "FIN_STMT_ID")
 	@JsonBackReference
-	private ObjFinStmt balSheet;
+	private ObjFinStmt finStmt;
 
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20)
@@ -52,7 +52,7 @@ public class ObjFinStmtSection implements Serializable {
 	@NotNull
 	@Column(name = "QTY", columnDefinition = "Decimal(20,2)")
 	private double qty;
-	
+
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	@Column(length = 50)
@@ -62,9 +62,10 @@ public class ObjFinStmtSection implements Serializable {
 
 	}
 
-	public ObjFinStmtSection(@NotNull ObjFinStmt balSheet, EFinStmtSectionType eBalSheetSection, double qty, @NotNull EFinStmtType finStmtType) {
+	public ObjFinStmtSection(@NotNull ObjFinStmt balSheet, EFinStmtSectionType eBalSheetSection, double qty,
+			@NotNull EFinStmtType finStmtType) {
 		super();
-		this.balSheet = balSheet;
+		this.finStmt = balSheet;
 		this.section = eBalSheetSection;
 		this.qty = qty;
 		this.finYear = balSheet.getFinYear();
@@ -85,12 +86,12 @@ public class ObjFinStmtSection implements Serializable {
 		return serialVersionUID;
 	}
 
-	public ObjFinStmt getBalSheet() {
-		return balSheet;
+	public ObjFinStmt getFinStmt() {
+		return finStmt;
 	}
 
-	public void setBalSheet(ObjFinStmt balSheet) {
-		this.balSheet = balSheet;
+	public void setFinStmt(ObjFinStmt finStmt) {
+		this.finStmt = finStmt;
 	}
 
 	public String getName() {
@@ -137,5 +138,4 @@ public class ObjFinStmtSection implements Serializable {
 		this.finStmtType = finStmtType;
 	}
 
-	
 }

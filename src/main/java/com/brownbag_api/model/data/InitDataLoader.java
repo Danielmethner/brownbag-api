@@ -243,7 +243,7 @@ public class InitDataLoader {
 
 	private void createCtrlVars() {
 
-		controlSvc.create(ECtrlVar.FIN_DATE, controlSvc.getFinDate());
+		controlSvc.create(ECtrlVar.FIN_DATE, controlSvc.getCurrentDate());
 		controlSvc.create(ECtrlVar.DEMO_DATA_CREATED, false);
 		controlSvc.create(ECtrlVar.NATP_INIT_DEPOSIT_AMT, 250000);
 		controlSvc.create(ECtrlVar.NATP_INIT_DEPOSIT_DURATION, 40);
