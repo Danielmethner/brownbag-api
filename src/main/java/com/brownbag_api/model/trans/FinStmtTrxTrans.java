@@ -11,14 +11,12 @@ public class FinStmtTrxTrans {
 	private double qty;
 	private EBookingDir bookingDir;
 	private ObjParty party;
-	private EFinStmtType finStmtType;
 
-	public FinStmtTrxTrans(EFinStmtItemType itemType, double qty, EBookingDir bookingDir, ObjParty party, EFinStmtType finStmtType) {
+	public FinStmtTrxTrans(EFinStmtItemType itemType, double qty, EBookingDir bookingDir, ObjParty party) {
 		this.itemType = itemType;
 		this.qty = qty;
 		this.bookingDir = bookingDir;
 		this.party = party;
-		this.finStmtType = finStmtType;
 	}
 
 	public EFinStmtItemType getItemType() {
@@ -52,13 +50,4 @@ public class FinStmtTrxTrans {
 	public void setParty(ObjParty party) {
 		this.party = party;
 	}
-
-	public EFinStmtType getFinStmtType() {
-		return finStmtType;
-	}
-
-	public void setFinStmtType(EFinStmtType finStmtType) {
-		this.finStmtType = finStmtType;
-	}
-
 }

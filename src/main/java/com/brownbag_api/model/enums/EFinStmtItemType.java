@@ -8,27 +8,27 @@ public enum EFinStmtItemType {
 	// ----------------------------------------------------------
 
 	// ASSETS
-	CASH("Cash", EFinStmtSectionType.ASSETS, EFinStmtType.BAL_SHEET),
-	STOCKS("Stocks", EFinStmtSectionType.ASSETS, EFinStmtType.BAL_SHEET),
-	LOANS_ASSET("Loans granted", EFinStmtSectionType.ASSETS, EFinStmtType.BAL_SHEET),
+	BAL_A_CASH("Cash", EFinStmtSectionType.ASSETS, EFinStmtType.BAL_SHEET),
+	BAL_A_STOCKS("Stocks", EFinStmtSectionType.ASSETS, EFinStmtType.BAL_SHEET),
+	BAL_A_LOANS_ASSET("Loans granted", EFinStmtSectionType.ASSETS, EFinStmtType.BAL_SHEET),
 
 	// FINANCING: 
 	// - LIABILITIES
-	LOANS_LIAB("Loans raised", EFinStmtSectionType.LIABILITIES, EFinStmtType.BAL_SHEET),
+	BAL_L_LOANS_LIAB("Loans raised", EFinStmtSectionType.LIABILITIES, EFinStmtType.BAL_SHEET),
 	// - EQUITY
-	EQUITY("Equity", EFinStmtSectionType.EQUITY, EFinStmtType.BAL_SHEET),
+	BAL_EQUITY("Equity", EFinStmtSectionType.EQUITY, EFinStmtType.BAL_SHEET),
 
 	// ----------------------------------------------------------
 	// INCOME STATEMENT
 	// ----------------------------------------------------------
 	
 	// OPERATIONS
-	REV("Revenue", EFinStmtSectionType.OPERATIONS, EFinStmtType.INCOME_STMT),
-	COGS("Cost of goods sold", EFinStmtSectionType.OPERATIONS, EFinStmtType.INCOME_STMT),
+	PL_REV("Revenue", EFinStmtSectionType.OPERATIONS, EFinStmtType.INCOME_STMT),
+	PL_COGS("Cost of goods sold", EFinStmtSectionType.OPERATIONS, EFinStmtType.INCOME_STMT),
 	
 	// FINANCIAL ACTIVITIES
-	INVEST("Investments", EFinStmtSectionType.FIN_ACTIVITIES, EFinStmtType.INCOME_STMT),
-	INTR("Interest", EFinStmtSectionType.FIN_ACTIVITIES, EFinStmtType.INCOME_STMT);
+	PL_INVEST("Investments", EFinStmtSectionType.FIN_ACTIVITIES, EFinStmtType.INCOME_STMT),
+	PL_INTR("Interest", EFinStmtSectionType.FIN_ACTIVITIES, EFinStmtType.INCOME_STMT);
 	
 	public final String name;
 	public final EFinStmtSectionType section;

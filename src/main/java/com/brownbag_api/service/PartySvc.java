@@ -70,11 +70,11 @@ public class PartySvc {
 		user = userSvc.getByEnum(eParty.getUser());
 		String partyName = eParty.getNameNonNaturalPerson();
 
-		ObjParty party = new ObjParty(partyName, eParty.getPartyType(), eParty.getLegalForm(), user,
-				controlSvc.getFinDate());
-		party = save(party);
-
 		if (eParty.getPartyType() == EPartyType.ORG_GOVT) {
+
+			ObjParty party = new ObjParty(partyName, eParty.getPartyType(), eParty.getLegalForm(), user,
+					controlSvc.getFinDate());
+			party = save(party);
 
 			if (party != null && eParty.isCreateMACC()) {
 				posSvc.createMacc(party, 0, null);
@@ -83,35 +83,13 @@ public class PartySvc {
 		}
 
 		if (eParty.getPartyType() == EPartyType.PERSON_LEGAL) {
-			ObjParty natPerson = getNaturalPerson(user);
+			ObjParty partyOwner = userSvc.getNaturalPerson(user);
+			ObjParty partyLegalPerson = createLegalPerson(partyName, eParty.getLegalForm(), user, partyOwner, 0, 100000);
 
-			if (party == null) {
-				return null;
-			}
-
-			posSvc.createMacc(party, 0, null);
-
-			// CREATE ASSET FOR OWNERSHIP
-			ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, party, 1);
-
-			switch (eParty.getLegalForm()) {
-			case LTD:
-				asset.setTotalShares(1);
-				break;
-			case CORP:
-				asset.setTotalShares(1);
-				break;
-			default:
-				asset.setTotalShares(0);
-				break;
-			}
-			asset = assetSvc.save(asset);
-			party.setAsset(asset);
-			posSvc.createPosStex(asset, natPerson, 1);
-			party = save(party);
-			return party;
+			return partyLegalPerson;
 		}
 		return null;
+
 	}
 
 	public ObjParty save(ObjParty party) {
@@ -151,9 +129,8 @@ public class PartySvc {
 				transferPrice, objUser, owner);
 		orderStexSvc.matchOrders(ipoBuyOrder, ipoSellOrder);
 
-		OrderStex ipoBuyOrder2 = orderStexSvc.getById(ipoBuyOrder.getId());
 
-		if (ipoBuyOrder2.getOrderStatus() != EOrderStatus.EXEC_FULL) {
+		if (ipoBuyOrder.getOrderStatus() != EOrderStatus.EXEC_FULL) {
 			logSvc.write("Emission of new shares failed for Party ID: '" + party.getId() + "'. Party Name: '"
 					+ party.getName() + "'");
 			return null;

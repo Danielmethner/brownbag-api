@@ -187,7 +187,7 @@ public class OrderStexSvc extends OrderSvc {
 		// BOOK POSITIONS - STEX BUY
 		ObjPosStex creditPos = posSvc.creditPosStex(orderBuy, execStex);
 
-		// IF NOT IPO
+		// IF NOT IPO, SINCE SHARES ARE NEWLY CREATED
 		if (orderSell.getOrderType() != EOrderType.STEX_IPO) {
 
 			// BOOK POSITIONS - STEX SELL
