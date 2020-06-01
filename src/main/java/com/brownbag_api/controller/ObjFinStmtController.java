@@ -45,23 +45,23 @@ public class ObjFinStmtController {
 	@Autowired
 	private FinStmtSectionSvc balSheetSectionSvc;
 
-	private JsonObjFinStmt jpaToJson(ObjFinStmt jpaFinStmt) {
+	private JsonObjFinStmt jpaToJson(ObjFinStmt jpaBalSheet) {
 
-		JsonObjFinStmt jsonBalSheet = new JsonObjFinStmt(jpaFinStmt);
+		JsonObjFinStmt jsonBalSheet = new JsonObjFinStmt(jpaBalSheet);
 		List<JsonObjFinStmtSection> balSheetSections = new ArrayList<JsonObjFinStmtSection>();
-		JsonObjFinStmtSection assets = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaFinStmt,
+		JsonObjFinStmtSection assets = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaBalSheet,
 				EFinStmtSectionType.ASSETS);
-		assets.setStyle("bg-success");
+		assets.setStyle(EFinStmtSectionType.ASSETS.getStyle());
 		balSheetSections.add(assets);
 
-		JsonObjFinStmtSection liablities = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaFinStmt,
+		JsonObjFinStmtSection liablities = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaBalSheet,
 				EFinStmtSectionType.LIABILITIES);
-		liablities.setStyle("bg-danger");
+		liablities.setStyle(EFinStmtSectionType.LIABILITIES.getStyle());
 		balSheetSections.add(liablities);
 
-		JsonObjFinStmtSection equity = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaFinStmt,
+		JsonObjFinStmtSection equity = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaBalSheet,
 				EFinStmtSectionType.EQUITY);
-		equity.setStyle("bg-primary");
+		equity.setStyle(EFinStmtSectionType.EQUITY.getStyle());
 		balSheetSections.add(equity);
 
 		jsonBalSheet.setSections(balSheetSections);
