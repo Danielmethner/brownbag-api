@@ -30,50 +30,47 @@ import com.brownbag_api.service.PartySvc;
 public class ObjFinStmtController {
 
 	@Autowired
-	private FinStmtRepo finStmtRepo;
-	
-	@Autowired
-	private FinStmtSvc finStmtSvc;
-	
-	@Autowired
-	private PartySvc partySvc;
-	
-	@Autowired
-	private AssetSvc assetSvc;
-	@Autowired
-	private ControlSvc controlSvc;
-	@Autowired
-	private FinStmtSectionSvc balSheetSectionSvc;
+	FinStmtRepo finStmtRepo;
 
-	private JsonObjFinStmt jpaToJson(ObjFinStmt jpaBalSheet) {
+	@Autowired
+	FinStmtSvc finStmtSvc;
 
-		JsonObjFinStmt jsonBalSheet = new JsonObjFinStmt(jpaBalSheet);
-		List<JsonObjFinStmtSection> balSheetSections = new ArrayList<JsonObjFinStmtSection>();
-		JsonObjFinStmtSection assets = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaBalSheet,
-				EFinStmtSectionType.ASSETS);
-		assets.setStyle(EFinStmtSectionType.ASSETS.getStyle());
-		balSheetSections.add(assets);
+	@Autowired
+	PartySvc partySvc;
 
-		JsonObjFinStmtSection liablities = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaBalSheet,
-				EFinStmtSectionType.LIABILITIES);
-		liablities.setStyle(EFinStmtSectionType.LIABILITIES.getStyle());
-		balSheetSections.add(liablities);
+	@Autowired
+	AssetSvc assetSvc;
+	@Autowired
+	ControlSvc controlSvc;
+	@Autowired
+	FinStmtSectionSvc balSheetSectionSvc;
 
-		JsonObjFinStmtSection equity = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaBalSheet,
-				EFinStmtSectionType.EQUITY);
-		equity.setStyle(EFinStmtSectionType.EQUITY.getStyle());
-		balSheetSections.add(equity);
+	private JsonObjFinStmt jpaToJson(ObjFinStmt jpaFinStmt) {
 
-		jsonBalSheet.setSections(balSheetSections);
+		JsonObjFinStmt jsonBalSheet = new JsonObjFinStmt(jpaFinStmt);
+		List<JsonObjFinStmtSection> finStmtSections = new ArrayList<JsonObjFinStmtSection>();
+
+		// GET SECTIONS
+		EFinStmtSectionType.stream().filter(eSection -> eSection.getFinStmtType().equals(jpaFinStmt.getFinStmtType()))
+				.forEach(eSection -> {
+					JsonObjFinStmtSection jsonSection = balSheetSectionSvc.getByBalSheetAndSectionJson(jpaFinStmt,
+							eSection);
+					if (jsonSection == null) {
+						return;
+					}
+					jsonSection.setStyle(eSection.getStyle());
+					finStmtSections.add(jsonSection);
+				});
+		jsonBalSheet.setSections(finStmtSections);
 		return jsonBalSheet;
 	}
 
-	private List<JsonObjFinStmt> jpaToJson(List<ObjFinStmt> jpaBalSheets) {
-		List<JsonObjFinStmt> jsonBalSheets = new ArrayList<JsonObjFinStmt>();
-		for (ObjFinStmt jpaBalSheet : jpaBalSheets) {
-			jsonBalSheets.add(jpaToJson(jpaBalSheet));
+	private List<JsonObjFinStmt> jpaToJson(List<ObjFinStmt> jpaFinStmtList) {
+		List<JsonObjFinStmt> jsonFinStmtList = new ArrayList<JsonObjFinStmt>();
+		for (ObjFinStmt jpaFinStmt : jpaFinStmtList) {
+			jsonFinStmtList.add(jpaToJson(jpaFinStmt));
 		}
-		return jsonBalSheets;
+		return jsonFinStmtList;
 	}
 
 	@GetMapping("/balsheet/all")
@@ -94,28 +91,16 @@ public class ObjFinStmtController {
 		}
 
 	}
-	
-	@GetMapping("/type/balsheet/finyear/{finYear}/party/{partyId}")
-	public ResponseEntity<?> getBalSheetByPartyId(@PathVariable int finYear, @PathVariable Long partyId) {
-		ObjParty party = partySvc.getById(partyId);
-		EFinStmtType finStmtType = EFinStmtType.BAL_SHEET;
-		ObjFinStmt jpaBalSheet = finStmtSvc.getFinStmt(party, finYear, finStmtType);
-		
-		if (jpaBalSheet == null) {
-			return ResponseEntity.ok("Could not find Balance Sheet for year: '" + finYear + "' and Party ID: ' "+ partyId + "'");
-		} else {
-			return ResponseEntity.ok(jpaToJson(jpaBalSheet));
-		}
-	}
 
-	@GetMapping("/type/incomestmt/finyear/{finYear}/party/{partyId}")
-	public ResponseEntity<?> getIncomeStmtByPartyId(@PathVariable int finYear, @PathVariable Long partyId) {
+	@GetMapping("/type/{finStmtType}/finyear/{finYear}/party/{partyId}")
+	public ResponseEntity<?> getIncomeStmtByPartyId(@PathVariable EFinStmtType finStmtType, @PathVariable int finYear,
+			@PathVariable Long partyId) {
 		ObjParty party = partySvc.getById(partyId);
-		EFinStmtType finStmtType = EFinStmtType.INCOME_STMT;
 		ObjFinStmt jpaBalSheet = finStmtSvc.getFinStmt(party, finYear, finStmtType);
-		
+
 		if (jpaBalSheet == null) {
-			return ResponseEntity.ok("Could not find Income Statement for year: '" + finYear + "' and Party ID: ' "+ partyId + "'");
+			return ResponseEntity
+					.ok("Could not find Income Statement for year: '" + finYear + "' and Party ID: ' " + partyId + "'");
 		} else {
 			return ResponseEntity.ok(jpaToJson(jpaBalSheet));
 		}

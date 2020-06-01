@@ -19,17 +19,20 @@ public class FinStmtSvc {
 	private FinStmtSectionSvc finStmtSectionSvc;
 
 	public ObjFinStmt createFinStmt(ObjParty party, int finYear, EFinStmtType finStmtType) {
-		ObjFinStmt balSheet = new ObjFinStmt(party, finYear, finStmtType);
-		balSheet = finStmtRepo.save(balSheet);
-		
-		finStmtSectionSvc.createFinStmtSection(balSheet, EFinStmtSectionType.ASSETS, finStmtType);
-		finStmtSectionSvc.createFinStmtSection(balSheet, EFinStmtSectionType.LIABILITIES, finStmtType);
-		finStmtSectionSvc.createFinStmtSection(balSheet, EFinStmtSectionType.EQUITY, finStmtType);
-		return balSheet;
+		ObjFinStmt finStmt = new ObjFinStmt(party, finYear, finStmtType);
+		finStmt = finStmtRepo.save(finStmt);
+
+		for (EFinStmtSectionType sectionType : EFinStmtSectionType.values()) {
+			if (sectionType.getFinStmtType() == finStmtType) {
+
+				finStmtSectionSvc.createFinStmtSection(finStmt, sectionType, finStmtType);
+			}
+		}
+		return finStmt;
 	}
 
 	public ObjFinStmt getFinStmt(ObjParty party, int finYear, EFinStmtType finStmtType) {
-		ObjFinStmt balSheet = finStmtRepo.findByPartyAndFinYearAndFinStmtType(party, finYear, EFinStmtType.BAL_SHEET);
+		ObjFinStmt balSheet = finStmtRepo.findByPartyAndFinYearAndFinStmtType(party, finYear, finStmtType);
 		if (balSheet == null && party.getFoundingDate().getYear() <= finYear) {
 			balSheet = createFinStmt(party, finYear, finStmtType);
 		}

@@ -18,9 +18,9 @@ public class JsonObjFinStmtSection {
 
 	private String style;
 
-	private List<ObjFinStmtItem> items;
+	private List<JsonObjFinStmtItem> items;
 
-	public JsonObjFinStmtSection(ObjFinStmtSection objBalSheetSection, List<ObjFinStmtItem> items) {
+	public JsonObjFinStmtSection(ObjFinStmtSection objBalSheetSection, List<JsonObjFinStmtItem> items) {
 		this.id = objBalSheetSection.getId();
 		this.name = objBalSheetSection.getName();
 		this.section = objBalSheetSection.getSection().getName();
@@ -72,12 +72,12 @@ public class JsonObjFinStmtSection {
 	}
 
 
-	public List<ObjFinStmtItem> getItems() {
+	public List<JsonObjFinStmtItem> getItems() {
 		return items;
 	}
 
-	public void setItems(List<ObjFinStmtItem> items) {
-		this.items = items;
+	public void setItems(List<JsonObjFinStmtItem> jsonItemList) {
+		this.items = jsonItemList;
 	}
 
 	public String getStyle() {

@@ -1,5 +1,6 @@
 package com.brownbag_api.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,7 +14,11 @@ import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.jpa.ObjFinStmt;
 import com.brownbag_api.model.jpa.ObjFinStmtItem;
 import com.brownbag_api.model.jpa.ObjFinStmtSection;
+import com.brownbag_api.model.jpa.ObjParty;
+import com.brownbag_api.model.json.JsonObjFinStmt;
+import com.brownbag_api.model.json.JsonObjFinStmtItem;
 import com.brownbag_api.model.json.JsonObjFinStmtSection;
+import com.brownbag_api.model.json.JsonObjParty;
 import com.brownbag_api.repo.FinStmtSectionRepo;
 
 @Service
@@ -77,12 +82,25 @@ public class FinStmtSectionSvc {
 		ObjFinStmtSection section = balSheetSectionRepo.findByFinStmtAndSection(balSheet, sectionType);
 		return section;
 	}
-
+	
+	private List<JsonObjFinStmtItem> jpaToJson(List<ObjFinStmtItem> jpaFinStmtItemList) {
+		List<JsonObjFinStmtItem> jsonFinStmtItemList = new ArrayList<JsonObjFinStmtItem>();
+		for (ObjFinStmtItem jpaFinStmtItem : jpaFinStmtItemList) {
+			JsonObjFinStmtItem jsonFinStmtItem = new JsonObjFinStmtItem(jpaFinStmtItem);
+			jsonFinStmtItemList.add(jsonFinStmtItem);
+		}
+		return jsonFinStmtItemList;
+	}
+	
 	public JsonObjFinStmtSection getByBalSheetAndSectionJson(ObjFinStmt balSheet, EFinStmtSectionType sectionType) {
 		ObjFinStmtSection section = getByBalSheetAndSection(balSheet, sectionType);
+		if(section == null ) { 
+			return null;
+		}
 		JsonObjFinStmtSection jsonObjBalSheetSection = new JsonObjFinStmtSection(section);
-		List<ObjFinStmtItem> items = balSheetItemSvc.getByBalSheetSection(section);
-		jsonObjBalSheetSection.setItems(items);
+		List<ObjFinStmtItem> jpaItemList = balSheetItemSvc.getByBalSheetSection(section);
+		List<JsonObjFinStmtItem> jsonItemList =  jpaToJson(jpaItemList);
+		jsonObjBalSheetSection.setItems(jsonItemList);
 
 		return jsonObjBalSheetSection;
 	}

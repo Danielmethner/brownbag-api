@@ -1,5 +1,7 @@
 package com.brownbag_api.model.enums;
 
+import java.util.stream.Stream;
+
 public enum EFinStmtSectionType {
 	ASSETS("Assets", EFinStmtType.BAL_SHEET, "Total Assets", "bg-success"),
 	LIABILITIES("Liabilities", EFinStmtType.BAL_SHEET, "Total Liabilities", "bg-danger"),
@@ -34,6 +36,10 @@ public enum EFinStmtSectionType {
 	public String getStyle() {
 		return style;
 	}
+	
+    public static Stream<EFinStmtSectionType> stream() {
+        return Stream.of(EFinStmtSectionType.values()); 
+    }
 
 	
 }

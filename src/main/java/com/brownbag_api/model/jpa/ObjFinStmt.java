@@ -68,7 +68,7 @@ public class ObjFinStmt implements Serializable {
 	public ObjFinStmt(@NotNull ObjParty party, @NotNull int finYear, @NotNull EFinStmtType finStmtType) {
 		super();
 		this.finStmtType = finStmtType;
-		this.name = "Balance Sheet for " + party.getName() + " as of Financial Year: " + finYear;
+		this.name = finStmtType.getName() + " for " + party.getName() + " as of Financial Year: " + finYear;
 		this.party = party;
 		this.finYear = finYear;
 	}
