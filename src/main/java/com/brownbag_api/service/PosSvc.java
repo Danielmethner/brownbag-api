@@ -127,7 +127,7 @@ public class PosSvc {
 				new FinStmtTrxTrans(EFinStmtItemType.BAL_A_CASH, orderPay.getQty(), EBookingDir.DEBIT, partyPayer));
 		// LIABILITIES
 		balTrxList.add(
-				new FinStmtTrxTrans(EFinStmtItemType.BAL_EQUITY, orderPay.getQty(), EBookingDir.DEBIT, partyPayer));
+				new FinStmtTrxTrans(EFinStmtItemType.BAL_E_RET_EARN, orderPay.getQty(), EBookingDir.DEBIT, partyPayer));
 
 		// BOOKING
 		return bookingSvc.createBooking(orderPay, orderPay.getPosSend(), EBookingDir.DEBIT, balTrxList,
@@ -145,7 +145,7 @@ public class PosSvc {
 		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_A_CASH, orderPay.getQty(), EBookingDir.CREDIT,
 				partyRecipient));
 		// EQUITY
-		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_EQUITY, orderPay.getQty(), EBookingDir.CREDIT,
+		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_E_RET_EARN, orderPay.getQty(), EBookingDir.CREDIT,
 				partyRecipient));
 
 		// BOOKING
@@ -165,7 +165,7 @@ public class PosSvc {
 				new FinStmtTrxTrans(EFinStmtItemType.BAL_A_CASH, orderCreateMon.getQty(), EBookingDir.CREDIT, party));
 		// EQUITY
 		balTrxList.add(
-				new FinStmtTrxTrans(EFinStmtItemType.BAL_EQUITY, orderCreateMon.getQty(), EBookingDir.CREDIT, party));
+				new FinStmtTrxTrans(EFinStmtItemType.BAL_E_RET_EARN, orderCreateMon.getQty(), EBookingDir.CREDIT, party));
 
 		// BOOKING
 		return bookingSvc.createBooking(orderCreateMon, orderCreateMon.getPosRcv(), EBookingDir.CREDIT, balTrxList,
@@ -183,7 +183,7 @@ public class PosSvc {
 		// ASSETS - LENDER
 		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_A_LOANS_ASSET, qty, EBookingDir.CREDIT, partyLender));
 		// EQUITY - LENDER
-		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_EQUITY, qty, EBookingDir.CREDIT, partyLender));
+		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_E_RET_EARN, qty, EBookingDir.CREDIT, partyLender));
 
 		// BOOKING
 		return (ObjPosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoanLender(), EBookingDir.CREDIT,
@@ -202,7 +202,7 @@ public class PosSvc {
 		// LIABILITIES - BORROWER
 		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_L_LOANS_LIAB, qty, EBookingDir.CREDIT, partyDebtor));
 		// EQUITY - BORROWER
-		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_EQUITY, qty, EBookingDir.DEBIT, partyDebtor));
+		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_E_RET_EARN, qty, EBookingDir.DEBIT, partyDebtor));
 
 		// BOOKING
 		return (ObjPosLoan) bookingSvc.createBooking(orderLoan, orderLoan.getPosLoanBorrower(), EBookingDir.DEBIT,
@@ -220,7 +220,7 @@ public class PosSvc {
 				orderBuy.getParty()));
 
 		// CREDIT EQUITY - BUYER
-		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_EQUITY, execStex.getAmtExec(), EBookingDir.CREDIT,
+		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_E_RET_EARN, execStex.getAmtExec(), EBookingDir.CREDIT,
 				orderBuy.getParty()));
 
 		// BOOKING
@@ -236,19 +236,18 @@ public class PosSvc {
 		ArrayList<FinStmtTrxTrans> balTrxList = new ArrayList<FinStmtTrxTrans>();
 		double assetDbAmt = execStex.getQtyExec() * execStex.getPosSend().getPriceAvg();
 
-		// DEBIT STOCKS - BUYER
-		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_A_STOCKS, assetDbAmt, EBookingDir.DEBIT,
-				orderSell.getParty()));
-
-		// DEBIT EQUITY
-		balTrxList.add(
-				new FinStmtTrxTrans(EFinStmtItemType.BAL_EQUITY, assetDbAmt, EBookingDir.DEBIT, orderSell.getParty()));
-
-		// DEBIT P/L FOR EQUITY AMOUNT IF NOT IPO
+		// DEBIT P/L FOR EQUITY AMOUNT IF *NOT* IPO
 		if (orderSell.getOrderType() != EOrderType.STEX_IPO) {
-			balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.PL_INVEST, assetDbAmt, EBookingDir.DEBIT,
+			// DEBIT STOCKS - BUYER
+			balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_A_STOCKS, assetDbAmt, EBookingDir.DEBIT,
 					orderSell.getParty()));
 
+			// REDUCE PROFIT
+			balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.PL_INVEST, assetDbAmt, EBookingDir.DEBIT,
+					orderSell.getParty()));
+			// DEBIT EQUITY
+			balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_E_RET_EARN, assetDbAmt, EBookingDir.DEBIT,
+					orderSell.getParty()));
 		}
 
 		// BOOKING
@@ -268,16 +267,21 @@ public class PosSvc {
 		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_A_CASH, execStex.getAmtExec(), EBookingDir.CREDIT,
 				orderSell.getParty()));
 
-		// CREDIT EQUITY
-		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_EQUITY, execStex.getAmtExec(), EBookingDir.CREDIT,
-				orderSell.getParty()));
-
 		// CREDIT P/L FOR EQUITY AMOUNT IF *NOT* IPO
-		if (orderSell.getOrderType() != EOrderType.STEX_IPO) {
+		if (orderSell.getOrderType() == EOrderType.STEX_IPO) {
+			// CREDIT PAID IN CAPITAL
+			balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_E_CAPITAL_STOCK, execStex.getAmtExec(), EBookingDir.CREDIT,
+					orderSell.getParty()));
+		} else {
+			// CREDIT PL
 			balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.PL_INVEST, execStex.getAmtExec(), EBookingDir.CREDIT,
 					orderSell.getParty()));
+
+			// CREDIT EQUITY
+			balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_E_RET_EARN, execStex.getAmtExec(), EBookingDir.CREDIT,
+					orderSell.getParty()));
 		}
-		
+
 		// BOOKING
 		return (ObjPosMacc) bookingSvc.createBooking(orderSell, maccSeller, EBookingDir.CREDIT, balTrxList,
 				execStex.getAmtExec(), execStex.getBookText());
@@ -294,7 +298,7 @@ public class PosSvc {
 				orderBuy.getParty()));
 
 		// DEBIT EQUITY
-		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_EQUITY, execStex.getAmtExec(), EBookingDir.DEBIT,
+		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_E_RET_EARN, execStex.getAmtExec(), EBookingDir.DEBIT,
 				orderBuy.getParty()));
 
 		// BOOKING

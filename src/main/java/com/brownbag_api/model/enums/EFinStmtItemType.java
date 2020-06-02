@@ -16,7 +16,8 @@ public enum EFinStmtItemType {
 	// - LIABILITIES
 	BAL_L_LOANS_LIAB("Loans raised", EFinStmtSectionType.LIABILITIES, EFinStmtType.BAL_SHEET),
 	// - EQUITY
-	BAL_EQUITY("Equity", EFinStmtSectionType.EQUITY, EFinStmtType.BAL_SHEET),
+	BAL_E_RET_EARN("Retained Earnings", EFinStmtSectionType.EQUITY, EFinStmtType.BAL_SHEET),
+	BAL_E_CAPITAL_STOCK("Paid in Capital", EFinStmtSectionType.EQUITY, EFinStmtType.BAL_SHEET),
 
 	// ----------------------------------------------------------
 	// INCOME STATEMENT

@@ -10,7 +10,9 @@ public class JsonObjParty {
 	private String name;
 	private String technicalName;
 	private EPartyType partyType;
+	private String partyTypeName;
 	private ELegalForm legalForm;
+	private String legalFormName;
 	private Long userId;
 	private String userName;
 	private Long ownerPartyId;
@@ -37,7 +39,9 @@ public class JsonObjParty {
 		String legalFormSuffix = jpaParty.getLegalForm() == null ? "" : " " + jpaParty.getLegalForm().getAbbr();
 		this.technicalName = jpaParty.getName() + legalFormSuffix;
 		this.partyType = jpaParty.getPartyType();
+		this.partyTypeName = this.partyType == null ? null: this.partyType.getName(); 
 		this.legalForm = jpaParty.getLegalForm();
+		this.legalFormName = this.legalForm == null ? null : this.legalForm.getName();
 		this.userId = jpaParty.getUser().getId();
 		this.userName = jpaParty.getUser().getName();
 		if (jpaParty.getAsset() != null) {
@@ -151,6 +155,26 @@ public class JsonObjParty {
 
 	public void setTechnicalName(String technicalName) {
 		this.technicalName = technicalName;
+	}
+
+
+	public String getPartyTypeName() {
+		return partyTypeName;
+	}
+
+
+	public void setPartyTypeName(String partyTypeName) {
+		this.partyTypeName = partyTypeName;
+	}
+
+
+	public String getLegalFormName() {
+		return legalFormName;
+	}
+
+
+	public void setLegalFormName(String legalFormName) {
+		this.legalFormName = legalFormName;
 	}
 
 	

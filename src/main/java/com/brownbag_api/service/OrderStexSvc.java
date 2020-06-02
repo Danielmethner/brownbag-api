@@ -198,6 +198,7 @@ public class OrderStexSvc extends OrderSvc {
 			posSend.lowerQtyBlocked(qtyExec);
 			posSvc.save(posSend);
 		} else {
+			// IPO
 			ObjAsset asset = orderSell.getAsset();
 			asset.raiseTotalShares(qtyExec);
 			assetSvc.save(asset);
