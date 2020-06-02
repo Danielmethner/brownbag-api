@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.jpa.Order;
+import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.model.jpa.OrderTrans;
 import com.brownbag_api.repo.OrderRepo;
 //import com.brownbag_api.repo.OrderRepo;
@@ -41,5 +42,9 @@ public class OrderSvc implements OrderSvcIntf {
 		orderTrans.setOrder(order);
 		orderTransRepo.save(orderTrans);
 		return order;
+	}
+
+	public Order getById(Long id) {
+		return orderRepo.getOne(id);
 	}
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.enums.EOrderDir;
@@ -238,8 +239,8 @@ public class OrderStexSvc extends OrderSvc {
 
 	}
 
-	public List<OrderStex> getByAssetAndDir(ObjAsset asset, EOrderDir orderDir) {
-		return orderStexRepo.findByAssetAndOrderDir(asset, orderDir);
+	public List<OrderStex> getByAssetAndDirAndStatusList(ObjAsset asset, EOrderDir orderDir, List<EOrderStatus> orderStatusList ) {
+		return orderStexRepo.findByAssetAndOrderDirAndOrderStatusIn(asset, orderDir, orderStatusList);
 
 	}
 
@@ -252,7 +253,8 @@ public class OrderStexSvc extends OrderSvc {
 	}
 	
 	public OrderStex getById(Long orderId) {
-		return orderStexRepo.getOne(orderId);
+		return orderStexRepo.findById(orderId).orElse(null);
+//		return orderStexRepo.getOne(orderId);
 	}
 
 	public OrderStex discardOrder(OrderStex orderStex) {

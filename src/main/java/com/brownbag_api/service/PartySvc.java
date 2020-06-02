@@ -53,6 +53,9 @@ public class PartySvc {
 	private OrderStexSvc orderStexSvc;
 
 	@Autowired
+	private OrderSvc orderSvc;
+
+	@Autowired
 	private AssetRepo assetRepo;
 
 	@Autowired
@@ -84,7 +87,8 @@ public class PartySvc {
 
 		if (eParty.getPartyType() == EPartyType.PERSON_LEGAL) {
 			ObjParty partyOwner = userSvc.getNaturalPerson(user);
-			ObjParty partyLegalPerson = createLegalPerson(partyName, eParty.getLegalForm(), user, partyOwner, 0, 100000);
+			ObjParty partyLegalPerson = createLegalPerson(partyName, eParty.getLegalForm(), user, partyOwner, 0,
+					100000);
 
 			return partyLegalPerson;
 		}
@@ -102,7 +106,6 @@ public class PartySvc {
 
 	}
 
-	@Transactional
 	public ObjParty createLegalPerson(String name, ELegalForm legalForm, ObjUser objUser, ObjParty owner, int shareQty,
 			double shareCapital) {
 
@@ -116,8 +119,7 @@ public class PartySvc {
 		shareQty = shareQty == 0 ? 1 : shareQty;
 
 		ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, party, 1);
-		asset.setTotalShares(1);
-
+		
 		asset = assetSvc.save(asset);
 		party.setAsset(asset);
 		party = save(party);
@@ -127,12 +129,17 @@ public class PartySvc {
 		OrderStex ipoSellOrder = issueShares(party, shareQty, transferPrice);
 		OrderStex ipoBuyOrder = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, asset, shareQty,
 				transferPrice, objUser, owner);
+		
 		orderStexSvc.matchOrders(ipoBuyOrder, ipoSellOrder);
-
-
-		if (ipoBuyOrder.getOrderStatus() != EOrderStatus.EXEC_FULL) {
-			logSvc.write("Emission of new shares failed for Party ID: '" + party.getId() + "'. Party Name: '"
-					+ party.getName() + "'");
+		
+		ipoBuyOrder = orderStexSvc.getById(ipoBuyOrder.getId());
+		
+		EOrderStatus newOrderStatus = ipoBuyOrder.getOrderStatus();
+		
+		if (newOrderStatus != EOrderStatus.EXEC_FULL) {
+			logSvc.write("PartySvc().createLegalPerson: Emission of new shares failed for Party ID: '" + party.getId()
+					+ "'. Party Name: '" + party.getName() + "'. Order Buy ID: '" + ipoBuyOrder.getId()
+					+ "' Order Sell ID: '" + ipoSellOrder.getId() + "'");
 			return null;
 		}
 		return party;

@@ -1,6 +1,8 @@
 package com.brownbag_api.model.data;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +12,13 @@ import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.ECtrlVar;
 import com.brownbag_api.model.enums.ELegalForm;
 import com.brownbag_api.model.enums.EOrderDir;
+import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.enums.EParty;
 import com.brownbag_api.model.enums.ERole;
 import com.brownbag_api.model.enums.EUser;
 import com.brownbag_api.model.jpa.CtrlVar;
+import com.brownbag_api.model.jpa.Log;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjAssetLoan;
 import com.brownbag_api.model.jpa.ObjParty;
@@ -24,6 +28,7 @@ import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.repo.RoleRepo;
 import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.ControlSvc;
+import com.brownbag_api.service.LogSvc;
 import com.brownbag_api.service.OrderCreateMonSvc;
 import com.brownbag_api.service.OrderStexSvc;
 import com.brownbag_api.service.PartySvc;
@@ -52,6 +57,8 @@ public class InitDataLoader {
 
 	@Autowired
 	private PosSvc posSvc;
+	@Autowired
+	private LogSvc logSvc;
 
 	@Autowired
 	OrderCreateMonSvc orderCreateMonSvc;
@@ -184,7 +191,7 @@ public class InitDataLoader {
 
 		// GO PUBLIC: Convert ownership into 10,000 shares
 		deutscheBank = partySvc.goPublic(deutscheBank, 10000);
-		
+
 		// raise capital by offering 5,000 shares
 		if (deutscheBank != null) {
 			partySvc.issueShares(deutscheBank, 5000, 15);
@@ -203,11 +210,15 @@ public class InitDataLoader {
 		// MANAGERS
 		createUser(EUser.U_TRADER_1, roles);
 		createUser(EUser.U_TRADER_2, roles);
-		
+
 		// COMPANY FOR TRADER_1
 		ObjUser userTrader1 = userSvc.getByEnum(EUser.U_TRADER_1);
 		ObjParty partyPrivTrader1 = userSvc.getNaturalPerson(userTrader1);
-		partySvc.createLegalPerson("Trader 1: Business 1", ELegalForm.CORP, userTrader1, partyPrivTrader1, 15000, 100000);
+		ObjParty business1 = partySvc.createLegalPerson("Trader 1: Business 1", ELegalForm.CORP, userTrader1,
+				partyPrivTrader1, 15000, 100000);
+		ObjAsset business1Asset = business1.getAsset();
+		OrderStex orderSell = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, business1Asset, 3000, 10,
+				userTrader1, partyPrivTrader1);
 	}
 
 	// -----------------------------------------------------------
@@ -226,15 +237,22 @@ public class InitDataLoader {
 				userTrader1, partyTrader1);
 
 		if (orderBuy != null) {
-			OrderStex orderSell = orderStexSvc.getByAssetAndDir(deutscheBank, EOrderDir.SELL).get(0);
+			List<EOrderStatus> orderStatusList = new ArrayList<EOrderStatus>();
+			orderStatusList.add(EOrderStatus.EXEC_PART);
+			orderStatusList.add(EOrderStatus.PLACED);
+			OrderStex orderSell = orderStexSvc
+					.getByAssetAndDirAndStatusList(deutscheBank, EOrderDir.SELL, orderStatusList).get(0);
 			orderStexSvc.matchOrders(orderBuy, orderSell);
 		}
 
-//		ObjUser userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
-//		ObjParty partyTrader2 = userSvc.getNaturalPerson(userTrader2);
-//		OrderStex orderBuy2 = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 50, 100.00,
-//				userTrader2, partyTrader2);
+		OrderStex orderSellDeutsche = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, deutscheBank, 500, 20,
+				userTrader1, partyTrader1);
 
+		ObjUser userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
+		ObjParty partyTrader2 = userSvc.getNaturalPerson(userTrader2);
+		OrderStex orderBuyDeutsche = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 500, 20.00,
+				userTrader2, partyTrader2);
+		orderStexSvc.matchOrders(orderBuyDeutsche, orderSellDeutsche);
 	}
 
 	private void createOrders() {
@@ -247,6 +265,7 @@ public class InitDataLoader {
 		controlSvc.create(ECtrlVar.DEMO_DATA_CREATED, false);
 		controlSvc.create(ECtrlVar.NATP_INIT_DEPOSIT_AMT, 250000);
 		controlSvc.create(ECtrlVar.NATP_INIT_DEPOSIT_DURATION, 40);
+		controlSvc.create(ECtrlVar.NATP_INIT_DEPOSIT_INTR_RATE, 2);
 	}
 
 	private void setCtrlVars() {
@@ -272,6 +291,10 @@ public class InitDataLoader {
 		createUsers();
 		createOrders();
 		controlSvc.setVal(ECtrlVar.DEMO_DATA_CREATED, true);
+		List<Log> logList = logSvc.getAll();
+		if(logList.size() > 0) {
+			System.err.println("There are logs in the database!");
+		}
 		System.err.println("Demo Data Loaded Succesfully");
 	}
 

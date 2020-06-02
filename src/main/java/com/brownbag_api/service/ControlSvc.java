@@ -34,71 +34,6 @@ public class ControlSvc {
 	public static Date minDate = new GregorianCalendar(1000, 0, 1).getTime();
 	public static Date maxDate = new GregorianCalendar(3000, 11, 1).getTime();
 
-	private Calendar cal() {
-		Calendar cal = new GregorianCalendar();
-		return cal;
-	}
-
-	private String dateAsSQLTimeStamp(Date date) {
-		return dateFormatSQLTimeStamp.format(date);
-	}
-
-	private Date now() {
-		return Calendar.getInstance().getTime();
-	}
-
-	private String nowAsSQLTimeStamp() {
-		return dateFormatSQLTimeStamp.format(now());
-	}
-
-	private String nowAsAPITimeStamp() {
-		return dateFormatSQLTimeStamp.format(now());
-	}
-
-	public LocalDateTime getLastDayOfYear(LocalDateTime localDate) {
-		return localDate.with(TemporalAdjusters.lastDayOfYear());
-	}
-
-	public CtrlVar create(ECtrlVar eCtrlVar, LocalDateTime dateVal) {
-		if (ctrlVarRepo.findByKey(eCtrlVar.toString()) != null) {
-			return null;
-		}
-		CtrlVar ctrlVar = new CtrlVar(eCtrlVar.getDataType(), eCtrlVar.getName(), eCtrlVar.toString(), null, dateVal, 0,
-				false);
-		return ctrlVarRepo.save(ctrlVar);
-	}
-
-	public CtrlVar create(ECtrlVar eCtrlVar, boolean valBool) {
-		if (ctrlVarRepo.findByKey(eCtrlVar.toString()) != null) {
-			return null;
-		}
-		CtrlVar ctrlVar = new CtrlVar(eCtrlVar.getDataType(), eCtrlVar.getName(), eCtrlVar.toString(), null, null, 0,
-				valBool);
-		return ctrlVarRepo.save(ctrlVar);
-	}
-
-	public CtrlVar create(ECtrlVar eCtrlVar, double valDbl) {
-		if (ctrlVarRepo.findByKey(eCtrlVar.toString()) != null) {
-			return null;
-		}
-		CtrlVar ctrlVar = new CtrlVar(eCtrlVar.getDataType(), eCtrlVar.getName(), eCtrlVar.toString(), null, null,
-				valDbl, false);
-		return ctrlVarRepo.save(ctrlVar);
-	}
-
-	public CtrlVar getByEnum(ECtrlVar eCtrlVar) {
-		return ctrlVarRepo.findByKey(eCtrlVar.toString());
-	}
-
-	public int setFinYear(int finYear) {
-		CtrlVar ctrlVarFinDate = getByEnum(ECtrlVar.FIN_DATE);
-		LocalDateTime finDateLocal = ctrlVarFinDate.getValDate();
-		finDateLocal = finDateLocal.plusYears(finYear - finDateLocal.getYear());
-		ctrlVarFinDate.setValDate(finDateLocal);
-		ctrlVarFinDate = ctrlVarRepo.save(ctrlVarFinDate);
-		return ctrlVarFinDate.getValDate().getYear();
-	}
-
 	// --------------------------------------------------------------
 	// YEAR END PROCESSING
 	// --------------------------------------------------------------
@@ -108,7 +43,19 @@ public class ControlSvc {
 		// calculation
 		return newFinYear;
 	}
-	
+
+	public double getIntrRate() {
+		CtrlVar ctrlVarBaseIntrRate = getByEnum(ECtrlVar.NATP_INIT_DEPOSIT_INTR_RATE);
+		if (ctrlVarBaseIntrRate != null) {
+			return ctrlVarBaseIntrRate.getValDouble();
+		} else {
+			return 0;
+		}
+	}
+
+	// --------------------------------------------------------------
+	// DATE OPERATIONS
+	// --------------------------------------------------------------
 	public LocalDateTime getCurrentDate() {
 
 		LocalDateTime finDate = new Date().toInstant().atZone(ZoneId.of("Asia/Manila")).toLocalDateTime();
@@ -120,11 +67,10 @@ public class ControlSvc {
 
 		CtrlVar ctrlVarFinDate = getByEnum(ECtrlVar.FIN_DATE);
 		LocalDateTime finDateDB = null;
-		if(ctrlVarFinDate != null) {
-			finDateDB = ctrlVarFinDate.getValDate();	
+		if (ctrlVarFinDate != null) {
+			finDateDB = ctrlVarFinDate.getValDate();
 		}
-		
-		
+
 		if (finDateDB == null) {
 			ctrlVarFinDate.setValDate(getCurrentDate());
 			ctrlVarRepo.save(ctrlVarFinDate);
@@ -139,10 +85,54 @@ public class ControlSvc {
 		return getFinDate().getYear();
 	}
 
-	public double getIntrRate() {
-		return 1.25;
+	public LocalDateTime getLastDayOfYear(LocalDateTime localDate) {
+		return localDate.with(TemporalAdjusters.lastDayOfYear());
 	}
 
+	public int setFinYear(int finYear) {
+		CtrlVar ctrlVarFinDate = getByEnum(ECtrlVar.FIN_DATE);
+		LocalDateTime finDateLocal = ctrlVarFinDate.getValDate();
+		finDateLocal = finDateLocal.plusYears(finYear - finDateLocal.getYear());
+		ctrlVarFinDate.setValDate(finDateLocal);
+		ctrlVarFinDate = ctrlVarRepo.save(ctrlVarFinDate);
+		return ctrlVarFinDate.getValDate().getYear();
+	}
+
+	// --------------------------------------------------------------
+	// CONTROL VARIABLES
+	// --------------------------------------------------------------
+	// CREATE DATE
+	public CtrlVar create(ECtrlVar eCtrlVar, LocalDateTime dateVal) {
+		if (ctrlVarRepo.findByKey(eCtrlVar.toString()) != null) {
+			return null;
+		}
+		CtrlVar ctrlVar = new CtrlVar(eCtrlVar.getDataType(), eCtrlVar.getName(), eCtrlVar.toString(), null, dateVal, 0,
+				false);
+		return ctrlVarRepo.save(ctrlVar);
+	}
+
+	// CREATE BOOLEAN
+	public CtrlVar create(ECtrlVar eCtrlVar, boolean valBool) {
+		if (ctrlVarRepo.findByKey(eCtrlVar.toString()) != null) {
+			return null;
+		}
+		CtrlVar ctrlVar = new CtrlVar(eCtrlVar.getDataType(), eCtrlVar.getName(), eCtrlVar.toString(), null, null, 0,
+				valBool);
+		return ctrlVarRepo.save(ctrlVar);
+	}
+
+	// CREATE DOUBLE
+	public CtrlVar create(ECtrlVar eCtrlVar, double valDbl) {
+		if (ctrlVarRepo.findByKey(eCtrlVar.toString()) != null) {
+			return null;
+		}
+		CtrlVar ctrlVar = new CtrlVar(eCtrlVar.getDataType(), eCtrlVar.getName(), eCtrlVar.toString(), null, null,
+				valDbl, false);
+		return ctrlVarRepo.save(ctrlVar);
+	}
+
+
+	// GET BOOLEAN
 	public CtrlVar setVal(ECtrlVar eCtrlVar, boolean valBool) {
 		CtrlVar ctrlVar = ctrlVarRepo.findByKey(eCtrlVar.toString());
 		if (ctrlVar == null) {
@@ -151,7 +141,41 @@ public class ControlSvc {
 		ctrlVar.setValBool(valBool);
 		return ctrlVarRepo.save(ctrlVar);
 	}
+	
+	// GET DATE
+	public CtrlVar setVal(ECtrlVar eCtrlVar, LocalDateTime valDate) {
+		CtrlVar ctrlVar = ctrlVarRepo.findByKey(eCtrlVar.toString());
+		if (ctrlVar == null) {
+			logSvc.write("Control Variable with key: '" + eCtrlVar.toString() + "' could not be found.");
+		}
+		ctrlVar.setValDate(valDate);
+		return ctrlVarRepo.save(ctrlVar);
+	}
+	
+	// GET DOUBLE
+	public CtrlVar setVal(ECtrlVar eCtrlVar, double valDouble) {
+		CtrlVar ctrlVar = ctrlVarRepo.findByKey(eCtrlVar.toString());
+		if (ctrlVar == null) {
+			logSvc.write("Control Variable with key: '" + eCtrlVar.toString() + "' could not be found.");
+		}
+		ctrlVar.setValDouble(valDouble);
+		return ctrlVarRepo.save(ctrlVar);
+	}
 
+	// GET STRING
+	public CtrlVar setVal(ECtrlVar eCtrlVar, String valString) {
+		CtrlVar ctrlVar = ctrlVarRepo.findByKey(eCtrlVar.toString());
+		if (ctrlVar == null) {
+			logSvc.write("Control Variable with key: '" + eCtrlVar.toString() + "' could not be found.");
+		}
+		ctrlVar.setValString(valString);
+		return ctrlVarRepo.save(ctrlVar);
+	}
+
+	public CtrlVar getByEnum(ECtrlVar eCtrlVar) {
+		return ctrlVarRepo.findByKey(eCtrlVar.toString());
+	}
+	
 	public List<CtrlVar> getAll() {
 		return ctrlVarRepo.findAll();
 	}

@@ -1,6 +1,7 @@
 package com.brownbag_api.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class BookingSvc {
 
 	@Autowired
 	private LogSvc logSvc;
-	
+
 	@Autowired
 	private ControlSvc controlSvc;
 
@@ -54,7 +55,7 @@ public class BookingSvc {
 		bookQty = eBookingDir == EBookingDir.CREDIT ? bookQty : -bookQty;
 
 		double posQty = pos.getQty();
-		//TODO: Fix fixYear
+		// TODO: Fix fixYear
 		int finYear = controlSvc.getFinYear();
 
 		double balTrxAssets = 0;
@@ -68,23 +69,25 @@ public class BookingSvc {
 		finStmtSvc.getFinStmt(pos.getParty(), finYear, EFinStmtType.BAL_SHEET);
 		finStmtSvc.getFinStmt(pos.getParty(), finYear, EFinStmtType.INCOME_STMT);
 
-		
 		// GENERATE FINANCIAL STATEMENT BOOKINGS
 		for (FinStmtTrxTrans finStmtTrxTransient : finStmtTrxTransientList) {
 
-			double finStmtTrxQty = finStmtTrxTransient.getBookingDir() == EBookingDir.CREDIT ? finStmtTrxTransient.getQty()
+			double finStmtTrxQty = finStmtTrxTransient.getBookingDir() == EBookingDir.CREDIT
+					? finStmtTrxTransient.getQty()
 					: (-1) * finStmtTrxTransient.getQty();
 
+			// ENSURE DEBIT = CREDIT
 			balTrxAssets = finStmtTrxTransient.getItemType().getSection() == EFinStmtSectionType.ASSETS
 					? balTrxAssets + finStmtTrxQty
 					: balTrxAssets;
-			balTrxLiabEquity = finStmtTrxTransient.getItemType().getSection() != EFinStmtSectionType.ASSETS
-					? balTrxLiabEquity + finStmtTrxQty
-					: balTrxLiabEquity;
+
+			balTrxLiabEquity = Arrays.asList(EFinStmtSectionType.LIABILITIES, EFinStmtSectionType.EQUITY)
+					.contains(finStmtTrxTransient.getItemType().getSection()) ? balTrxLiabEquity + finStmtTrxQty
+							: balTrxLiabEquity;
 
 			// UPDATE BALANCE SHEET ITEM
-			ObjFinStmtItem finStmtItem = finStmtItemSvc.getByPartyAndFinYearAndItemType(finStmtTrxTransient.getParty(), finYear,
-					finStmtTrxTransient.getItemType());
+			ObjFinStmtItem finStmtItem = finStmtItemSvc.getByPartyAndFinYearAndItemType(finStmtTrxTransient.getParty(),
+					finYear, finStmtTrxTransient.getItemType());
 			finStmtItem.setQty(finStmtItem.getQty() + finStmtTrxQty);
 			finStmtItemSvc.save(finStmtItem);
 

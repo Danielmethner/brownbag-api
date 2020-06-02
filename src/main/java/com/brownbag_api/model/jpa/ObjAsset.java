@@ -165,7 +165,6 @@ public class ObjAsset implements Serializable {
 
 	public void raiseTotalShares(@NotNull int amount) {
 		this.totalShares = this.totalShares + amount;
-
 	}
 
 	

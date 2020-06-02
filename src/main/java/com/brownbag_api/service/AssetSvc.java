@@ -52,14 +52,14 @@ public class AssetSvc {
 	}
 
 	public ObjAsset createAssetStex(String name, String isin, EAssetGrp assetGrp, ObjParty issuer, double nomVal) {
-		ObjAsset asset = new ObjAsset(name, isin, assetGrp, 1, issuer, nomVal);
+		ObjAsset asset = new ObjAsset(name, isin, assetGrp, 0, issuer, nomVal);
 		return save(asset);
 	}
 
 	public void split(ObjAsset asset, int splitFactor) {
 
 		if (asset.getTotalShares() > 1) {
-			logSvc.write("Assets can currently only be split when total number of shares equals 1");
+			logSvc.write("Assets can currently only be split when total number of shares equals 1. Currently: " + asset.getTotalShares() + " Asset: " + asset.getName());
 			return;
 		}
 		asset.setTotalShares(asset.getTotalShares() * splitFactor);
