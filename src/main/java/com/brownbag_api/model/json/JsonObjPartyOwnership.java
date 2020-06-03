@@ -2,6 +2,7 @@ package com.brownbag_api.model.json;
 
 import com.brownbag_api.model.enums.ELegalForm;
 import com.brownbag_api.model.enums.EPartyType;
+import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPosStex;
 
@@ -20,7 +21,7 @@ public class JsonObjPartyOwnership {
 		this.partyId = objPosStex.getParty().getId();
 		this.partyName = objPosStex.getParty().getName();
 		this.qty = (int) objPosStex.getQty();
-		this.ownershipPerc = Math.round((this.qty / objPosStex.getAsset().getTotalShares()) * 100d) / 100d;
+		this.ownershipPerc = Math.round((objPosStex.getQty() / objPosStex.getAsset().getTotalShares()) * 100d) / 100d;
 	}
 
 	public Long getId() {
