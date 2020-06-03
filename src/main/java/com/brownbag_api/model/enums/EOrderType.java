@@ -1,7 +1,7 @@
 package com.brownbag_api.model.enums;
 
 public enum EOrderType {
-	CREATE_MONEY("Create Money"), PAY("Payment"), STEX("STEX"), LOAN("Loan"), STEX_IPO("STEX IPO");
+	CREATE_MONEY("Create Money"), PAY("Payment"), STEX("STEX"), LOAN("Loan"), INTR("Interest Payment"), STEX_IPO("STEX IPO");
 
 	public final String name;
 

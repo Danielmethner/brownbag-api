@@ -167,7 +167,7 @@ public class PartySvc {
 				ObjParty leSend = newMacc.getAsset().getIssuer();
 				orderCreateMonSvc.createMon(leSend, initialDeposit);
 
-				ObjPos maccCentralBank = partySvc.getMacc(leSend);
+				ObjPosMacc maccCentralBank = partySvc.getMacc(leSend);
 				LocalDateTime matDate = controlSvc.getLastDayOfYear(controlSvc.getFinDate().plusYears(40));
 				OrderLoan orderLoan = orderLoanSvc.createLoan(initialDeposit, natPerson.getUser(), maccCentralBank,
 						newMacc, matDate, controlSvc.getIntrRate());

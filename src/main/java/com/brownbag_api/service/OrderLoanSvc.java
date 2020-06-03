@@ -16,6 +16,7 @@ import com.brownbag_api.model.jpa.ObjAssetLoan;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosLoan;
+import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderLoan;
 import com.brownbag_api.model.jpa.OrderPay;
@@ -34,6 +35,9 @@ public class OrderLoanSvc extends OrderSvc {
 
 	@Autowired
 	private PosSvc posSvc;
+	
+	@Autowired
+	private PosLoanSvc posLoanSvc;
 
 	@Autowired
 	private LogSvc logSvc;
@@ -42,7 +46,7 @@ public class OrderLoanSvc extends OrderSvc {
 	 * Does not persist order!
 	 *
 	 */
-	public OrderLoan createLoan(double qty, @NotNull ObjUser user, ObjPos maccGrant, ObjPos maccRcv, LocalDateTime  matDate,
+	public OrderLoan createLoan(double qty, @NotNull ObjUser user, ObjPosMacc maccGrant, ObjPosMacc maccRcv, LocalDateTime  matDate,
 			double intrRate) {
 
 		String bookText = "Loan from: '" + maccGrant.getParty().getName() + "' to: '" + maccRcv.getParty().getName()
@@ -90,16 +94,16 @@ public class OrderLoanSvc extends OrderSvc {
 				(@NotNull int) orderLoan.getQty(), partyLender, orderLoan.getMatDate(), orderLoan.getIntrRate());
 
 		// CREATE LOAN POSITION - LENDER
-		ObjPosLoan posLoanLender = posSvc.createPosLoan(0, assetLoan, partyLender, orderLoan.getMaccLender(),
+		ObjPosLoan posLoanLender = posLoanSvc.createPosLoan(0, assetLoan, partyLender, orderLoan.getMaccLender(),
 				orderLoan.getMaccDebtor());
 		orderLoan.setPosLoanLender(posLoanLender);
-		posLoanLender = posSvc.creditPos(orderLoan);
+		posLoanLender = posLoanSvc.creditPosLoan(orderLoan);
 
 		// CREATE LOAN POSITION - BORROWER
-		ObjPosLoan posLoanBorrower = posSvc.createPosLoan(0, assetLoan, partyBorrower, orderLoan.getMaccLender(),
+		ObjPosLoan posLoanBorrower = posLoanSvc.createPosLoan(0, assetLoan, partyBorrower, orderLoan.getMaccLender(),
 				orderLoan.getMaccDebtor());
 		orderLoan.setPosLoanBorrower(posLoanBorrower);
-		posLoanBorrower = posSvc.debitPos(orderLoan);
+		posLoanBorrower = posLoanSvc.debitPosLoan(orderLoan);
 		
 		return (OrderLoan) orderSvc.execAction(orderLoan, EOrderAction.VERIFY);
 	}

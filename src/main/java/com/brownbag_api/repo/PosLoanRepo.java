@@ -13,4 +13,6 @@ public interface PosLoanRepo extends JpaRepository<ObjPosLoan, Long> {
 
 	List<ObjPosLoan> findByParty(ObjParty party);
 
+	List<ObjPosLoan> findByQtyGreaterThan(double d);
+
 }

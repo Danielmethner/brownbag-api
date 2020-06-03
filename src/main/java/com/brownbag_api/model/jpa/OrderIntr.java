@@ -14,18 +14,18 @@ import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
 
 @Entity
-@Table(name = "order_loan")
-public class OrderLoan extends Order implements Serializable {
+@Table(name = "order_intr")
+public class OrderIntr extends Order implements Serializable {
 
 	private static final long serialVersionUID = 4643589803146964779L;
 
 	@NotNull
-	@OneToOne(targetEntity = ObjPos.class)
+	@OneToOne(targetEntity = ObjPosMacc.class)
 	@JoinColumn(name = "POS_LENDER_ID")
 	private ObjPosMacc maccLender;
 
 	@NotNull
-	@OneToOne(targetEntity = ObjPos.class)
+	@OneToOne(targetEntity = ObjPosMacc.class)
 	@JoinColumn(name = "POS_DEBTOR_ID")
 	private ObjPosMacc maccDebtor;
 
@@ -37,50 +37,27 @@ public class OrderLoan extends Order implements Serializable {
 	@JoinColumn(name = "POS_LOAN_BORROWER_ID")
 	private ObjPosLoan posLoanBorrower;
 
-	@Column(name = "MAT_DATE")
-	private LocalDateTime  matDate;
-
-	@NotNull
-	@Column(name = "INTR_RATE")
-	private double intrRate;
-
-	public OrderLoan() {
+	public OrderIntr() {
 	}
-	
-	
 
-	public OrderLoan(@NotNull double qty, @NotNull ObjAsset asset, EOrderType orderType, EOrderStatus orderStatus,
+	public OrderIntr(@NotNull double qty, @NotNull ObjAsset asset, EOrderType orderType, EOrderStatus orderStatus,
 			@NotNull ObjUser user, String advText, @NotNull ObjPosMacc maccLender, @NotNull ObjPosMacc maccDebtor,
-			ObjPosLoan posLoanLender, ObjPosLoan posLoanBorrower, LocalDateTime  matDate, @NotNull double intrRate) {
-		super(qty, asset, orderType, orderStatus, user, advText);
+			ObjPosLoan posLoanLender, ObjPosLoan posLoanBorrower) {
+		super(qty, asset, EOrderType.INTR, EOrderStatus.NEW, user, advText);
 		this.maccLender = maccLender;
 		this.maccDebtor = maccDebtor;
 		this.posLoanLender = posLoanLender;
 		this.posLoanBorrower = posLoanBorrower;
-		this.matDate = matDate;
-		this.intrRate = intrRate;
 	}
 
-
+	public OrderIntr(ObjPosLoan posLoan,  @NotNull ObjUser user, String advText, double amount) {
+		super(amount, posLoan.getAsset(), EOrderType.INTR, EOrderStatus.NEW, user, advText);
+		this.maccLender = posLoan.getMaccLender();
+		this.maccDebtor = posLoan.getMaccDebtor();
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
-	}
-
-	public LocalDateTime  getMatDate() {
-		return matDate;
-	}
-
-	public void setMatDate(LocalDateTime  matDate) {
-		this.matDate = matDate;
-	}
-
-	public double getIntrRate() {
-		return intrRate;
-	}
-
-	public void setIntrRate(double intrRate) {
-		this.intrRate = intrRate;
 	}
 
 	public ObjPosMacc getMaccLender() {

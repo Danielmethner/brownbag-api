@@ -28,6 +28,7 @@ import com.brownbag_api.security.svc.UserDetailsImpl;
 import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.BookingSvc;
 import com.brownbag_api.service.PartySvc;
+import com.brownbag_api.service.PosLoanSvc;
 import com.brownbag_api.service.PosSvc;
 import com.brownbag_api.service.UserSvc;
 
@@ -41,6 +42,9 @@ public class ObjPosController {
 
 	@Autowired
 	private PosSvc posSvc;
+	
+	@Autowired
+	private PosLoanSvc posLosnSvc;
 
 	@Autowired
 	private AssetSvc assetSvc;
@@ -163,7 +167,7 @@ public class ObjPosController {
 		if (partyId == null)
 			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
 		ObjParty jpaParty = partySvc.getById(partyId);
-		List<ObjPosLoan> jpaPosList = posSvc.getFinancingByParty(jpaParty);
+		List<ObjPosLoan> jpaPosList = posLosnSvc.getFinancingByParty(jpaParty);
 		List<JsonObjPosLoan> jsonPosList = jpaToJsonPosLoan(jpaPosList);
 		return ResponseEntity.ok(jsonPosList);
 	}

@@ -12,12 +12,13 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Entity
-@Table(name = "OBJ_POS")
+@Table(name = "OBJ_POS", uniqueConstraints = { @UniqueConstraint(columnNames = { "ASSET_ID", "PARTY_ID" }) })
 @Inheritance(strategy = InheritanceType.JOINED)
 public class ObjPos implements Serializable {
 

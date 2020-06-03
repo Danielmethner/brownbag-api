@@ -84,6 +84,7 @@ public class InitDataLoader {
 		createRole(ERole.ROLE_BROKER);
 		createRole(ERole.ROLE_MGR);
 		createRole(ERole.ROLE_ORG);
+		createRole(ERole.ROLE_GLOBAL_ADMIN);
 	}
 
 	public void createParamData() {
@@ -120,8 +121,13 @@ public class InitDataLoader {
 	// USERS
 	// -----------------------------------------------------------
 	private void createOrgUsers() {
-		// ECB
 		Set<String> roles = new HashSet<>();
+		// TECHNICAL USER
+		roles = new HashSet<>();
+		roles.add(EUser.U_EOP.getRole().getName());
+		createUser(EUser.U_EOP, roles);
+		// ECB
+		
 		roles.add(EUser.MGR_ECB.getRole().getName());
 		createUser(EUser.MGR_ECB, roles);
 		// ECB

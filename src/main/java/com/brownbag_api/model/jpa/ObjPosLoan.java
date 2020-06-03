@@ -17,18 +17,18 @@ public class ObjPosLoan extends ObjPos implements Serializable {
 	@NotNull
 	@OneToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "MACC_LENDER_ID")
-	private ObjPos maccLender;
+	private @NotNull ObjPosMacc maccLender;
 
 	@NotNull
 	@OneToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "MACC_DEBTOR_ID")
-	private ObjPos maccDebtor;
+	private ObjPosMacc maccDebtor;
 
 	public ObjPosLoan() {
 	}
 
-	public ObjPosLoan(@NotNull double qty, @NotNull ObjAsset asset, @NotNull ObjParty owner, @NotNull ObjPos maccGrant,
-			@NotNull ObjPos maccRcv) {
+	public ObjPosLoan(@NotNull double qty, @NotNull ObjAsset asset, @NotNull ObjParty owner, @NotNull ObjPosMacc maccGrant,
+			@NotNull ObjPosMacc maccRcv) {
 		super(qty, 0, asset, owner, 1);
 		this.maccLender = maccGrant;
 		this.maccDebtor = maccRcv;
@@ -37,19 +37,19 @@ public class ObjPosLoan extends ObjPos implements Serializable {
 		return (ObjAssetLoan) this.getAsset();
 	}
 
-	public ObjPos getMaccLender() {
+	public @NotNull ObjPosMacc getMaccLender() {
 		return maccLender;
 	}
 
-	public void setMaccLender(ObjPos maccLender) {
+	public void setMaccLender(ObjPosMacc maccLender) {
 		this.maccLender = maccLender;
 	}
 
-	public ObjPos getMaccDebtor() {
+	public ObjPosMacc getMaccDebtor() {
 		return maccDebtor;
 	}
 
-	public void setMaccDebtor(ObjPos maccDebtor) {
+	public void setMaccDebtor(ObjPosMacc maccDebtor) {
 		this.maccDebtor = maccDebtor;
 	}
 

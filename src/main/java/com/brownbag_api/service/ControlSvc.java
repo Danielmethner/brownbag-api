@@ -24,6 +24,9 @@ public class ControlSvc {
 
 	@Autowired
 	private LogSvc logSvc;
+	
+	@Autowired
+	private OrderIntrSvc orderIntrSvc;
 
 	// Date Formats
 	public static SimpleDateFormat dateFormatAPI = new SimpleDateFormat("yyyyMMMddHH24mmss");
@@ -38,9 +41,16 @@ public class ControlSvc {
 	// YEAR END PROCESSING
 	// --------------------------------------------------------------
 	public int switchFinYear() {
-		int newFinYear = setFinYear(getFinYear() + 1);
+		
+		LocalDateTime currentFinDate = getFinDate();
 		// TODO: Loan redemptions, Interest Payments, Revenue generation, cost
 		// calculation
+		
+		// TRANSFER LOAN INTEREST
+		orderIntrSvc.chargeInterestAll(currentFinDate);
+		
+		// SWITCH YEAR
+		int newFinYear = setFinYear(getFinYear() + 1);
 		return newFinYear;
 	}
 
