@@ -18,8 +18,10 @@ import com.brownbag_api.model.enums.ELegalForm;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
+import com.brownbag_api.model.jpa.ObjPosStex;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.json.JsonObjParty;
+import com.brownbag_api.model.json.JsonObjPartyOwnership;
 import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.payload.response.MsgResponse;
@@ -38,7 +40,7 @@ public class ObjPartyController {
 
 	@Autowired
 	AssetSvc assetSvc;
-	
+
 	@Autowired
 	ControlSvc ctrlVarSvc;
 
@@ -59,7 +61,7 @@ public class ObjPartyController {
 
 	@Autowired
 	UserSvc userSvc;
-	
+
 	@Autowired
 	LogSvc logSvc;
 
@@ -68,8 +70,10 @@ public class ObjPartyController {
 	 */
 	private ObjUser getByAuthentication(Authentication authentication) {
 		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-		ObjUser objUser = userRepo.findById(userDetailsImpl.getId())
-				.orElseThrow(() -> new RuntimeException("ERROR API: User not found. USER.ID: " + userDetailsImpl.getId()));
+		ObjUser objUser = userRepo.findById(userDetailsImpl.getId()).orElseGet(() -> {
+			logSvc.write("Could not find user: " + userDetailsImpl.getName());
+			return null;
+		});
 		return objUser;
 	}
 
@@ -90,14 +94,13 @@ public class ObjPartyController {
 		List<ObjParty> jpaPartyList = partyRepo.findAll();
 		return jpaToJson(jpaPartyList);
 	}
-	
+
 	@GetMapping("/user/legalpersonlist")
 	public List<JsonObjParty> getAllBusiness(Authentication authentication) {
 		ObjUser user = getByAuthentication(authentication);
 		List<ObjParty> jpaPartyList = partySvc.getLegalPersonByOwnerUser(user);
 		return jpaToJson(jpaPartyList);
 	}
-
 
 	@GetMapping("/priv")
 	public JsonObjParty getPriv(Authentication authentication) {
@@ -117,6 +120,28 @@ public class ObjPartyController {
 			return null;
 		JsonObjParty jsonParty = new JsonObjParty(jpaParty);
 		return ResponseEntity.ok(jsonParty);
+	}
+
+	@GetMapping("/{partyId}/ownership")
+	public ResponseEntity<?> getOwnershipListByPartyId(@PathVariable Long partyId) {
+		if (partyId == null)
+			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
+		ObjParty jpaParty = partySvc.getById(partyId);
+
+		if (jpaParty == null)
+			return null;
+		// TODO: get ownership
+		List<ObjPosStex> ownershipPosList = partySvc.getOwnershipList(jpaParty);
+		List<JsonObjPartyOwnership> ownershipList = new ArrayList<JsonObjPartyOwnership>();
+
+		for (ObjPosStex objPosStex : ownershipPosList) {
+			if (objPosStex.getQty() > 0) {
+				JsonObjPartyOwnership jsonOwnership = new JsonObjPartyOwnership(objPosStex);
+				ownershipList.add(jsonOwnership);
+
+			}
+		}
+		return ResponseEntity.ok(ownershipList);
 	}
 
 	@GetMapping("/{partyId}/asset/{assetId}/qty/avbl")
@@ -139,13 +164,15 @@ public class ObjPartyController {
 		ObjUser objUser = userSvc.getByAuthentication(authentication);
 		ObjParty objParty = userSvc.getNaturalPerson(objUser);
 		int shareQty = jsonObjParty.getAssetShareQty();
-		ObjParty jpaParty = partySvc.createLegalPerson(partyName, legalForm, objUser, objParty, shareQty, jsonObjParty.getShareCapital());
-		
-		if(jpaParty == null) {
+		ObjParty jpaParty = partySvc.createLegalPerson(partyName, legalForm, objUser, objParty, shareQty,
+				jsonObjParty.getShareCapital());
+
+		if (jpaParty == null) {
 			logSvc.write("Party could not be created.");
-			return ResponseEntity.ok("Party with Name: '" + jsonObjParty.getName() + "' could not be created. Please check logs for more details!");
+			return ResponseEntity.ok("Party with Name: '" + jsonObjParty.getName()
+					+ "' could not be created. Please check logs for more details!");
 		}
-		if(jpaParty.getLegalForm() == ELegalForm.CORP) {
+		if (jpaParty.getLegalForm() == ELegalForm.CORP) {
 			ObjAsset asset = assetSvc.getByIssuer(jpaParty);
 			assetSvc.split(asset, jsonObjParty.getAssetShareQty());
 		}

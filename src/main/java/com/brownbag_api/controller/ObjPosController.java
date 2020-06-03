@@ -75,23 +75,29 @@ public class ObjPosController {
 	 */
 	private List<JsonObjPos> jpaToJson(List<ObjPos> jpaPosList, boolean addPriceData) {
 		List<JsonObjPos> jsonPosList = new ArrayList<JsonObjPos>();
+		
 		for (ObjPos jpaPos : jpaPosList) {
-			JsonObjPos jsonPos = new JsonObjPos(jpaPos);
+			// FILTER ZERO POSITIONS
+			if (jpaPos.getQty() > 0) {
+				JsonObjPos jsonPos = new JsonObjPos(jpaPos);
 
-			// DELIVER PRICE DATA
-			if (addPriceData == true) {
-				double lastPrice = assetSvc.getLastPrice(jpaPos.getAsset());
-				jsonPos.setPriceLast(lastPrice);
-				if ((jsonPos.getPriceLast() - jsonPos.getPriceAvg()) != 0) {
-					double profitLoss = (jsonPos.getPriceLast() - jsonPos.getPriceAvg()) / jsonPos.getPriceAvg() * 100 ;
-					jsonPos.setProfitLoss(profitLoss);
+				// DELIVER PRICE DATA
+				if (addPriceData == true) {
+					double lastPrice = assetSvc.getLastPrice(jpaPos.getAsset());
+					jsonPos.setPriceLast(lastPrice);
+					if ((jsonPos.getPriceLast() - jsonPos.getPriceAvg()) != 0) {
+						double profitLoss = (jsonPos.getPriceLast() - jsonPos.getPriceAvg()) / jsonPos.getPriceAvg()
+								* 100;
+						jsonPos.setProfitLoss(profitLoss);
 
+					}
 				}
+				jsonPosList.add(jsonPos);
 			}
-			jsonPosList.add(jsonPos);
 		}
 		return jsonPosList;
 	}
+
 	/*
 	 * CONVERT JPA TO JSON - BOOKING
 	 */
@@ -103,7 +109,7 @@ public class ObjPosController {
 		}
 		return jsonBookingList;
 	}
-	
+
 	/*
 	 * CONVERT JPA TO JSON - OBJ_POS_LOAN
 	 */
@@ -151,7 +157,7 @@ public class ObjPosController {
 		List<JsonObjPos> jsonPosList = jpaToJson(jpaPosList, true);
 		return ResponseEntity.ok(jsonPosList);
 	}
-	
+
 	@GetMapping("/financing/party/{partyId}")
 	public ResponseEntity<?> getFinancingByPartyId(@PathVariable Long partyId) {
 		if (partyId == null)
@@ -161,7 +167,6 @@ public class ObjPosController {
 		List<JsonObjPosLoan> jsonPosList = jpaToJsonPosLoan(jpaPosList);
 		return ResponseEntity.ok(jsonPosList);
 	}
-
 
 	@GetMapping("/bookings/party/{partyId}/pos/{posId}")
 	public ResponseEntity<?> getByPartyId(@PathVariable Long partyId, @PathVariable Long posId) {

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.model.enums.ECtrlVar;
 import com.brownbag_api.model.enums.ELegalForm;
@@ -19,6 +20,7 @@ import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosMacc;
+import com.brownbag_api.model.jpa.ObjPosStex;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderLoan;
 import com.brownbag_api.model.jpa.OrderStex;
@@ -230,5 +232,10 @@ public class PartySvc {
 
 	public List<ObjParty> getLegalPersonByOwnerUser(ObjUser user) {
 		return partyRepo.findByUserAndPartyType(user, EPartyType.PERSON_LEGAL);
+	}
+
+	public List<ObjPosStex> getOwnershipList(ObjParty jpaParty) {
+		List<ObjPosStex> objPosList = posSvc.getByAsset(jpaParty.getAsset());
+		return objPosList;
 	}
 }
