@@ -73,7 +73,7 @@ public class PosLoanSvc extends PosSvc {
 
 		ArrayList<FinStmtTrxTrans> balTrxList = new ArrayList<FinStmtTrxTrans>();
 		// ASSETS - LENDER
-		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_A_LOANS_ASSET, qty, EBookingDir.CREDIT, partyLender));
+		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_A_LOANS, qty, EBookingDir.CREDIT, partyLender));
 		// EQUITY - LENDER
 		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_E_RET_EARN, qty, EBookingDir.CREDIT, partyLender));
 
@@ -92,7 +92,7 @@ public class PosLoanSvc extends PosSvc {
 		ArrayList<FinStmtTrxTrans> balTrxList = new ArrayList<FinStmtTrxTrans>();
 
 		// LIABILITIES - BORROWER
-		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_L_LOANS_LIAB, qty, EBookingDir.CREDIT, partyDebtor));
+		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_L_LOANS, qty, EBookingDir.CREDIT, partyDebtor));
 		// EQUITY - BORROWER
 		balTrxList.add(new FinStmtTrxTrans(EFinStmtItemType.BAL_E_RET_EARN, qty, EBookingDir.DEBIT, partyDebtor));
 

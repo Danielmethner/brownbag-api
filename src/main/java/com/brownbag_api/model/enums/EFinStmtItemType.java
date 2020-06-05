@@ -10,11 +10,12 @@ public enum EFinStmtItemType {
 	// ASSETS
 	BAL_A_CASH("Cash", EFinStmtSectionType.ASSETS, EFinStmtType.BAL_SHEET),
 	BAL_A_STOCKS("Stocks", EFinStmtSectionType.ASSETS, EFinStmtType.BAL_SHEET),
-	BAL_A_LOANS_ASSET("Loans granted", EFinStmtSectionType.ASSETS, EFinStmtType.BAL_SHEET),
+	BAL_A_LOANS("Loans granted", EFinStmtSectionType.ASSETS, EFinStmtType.BAL_SHEET),
 
 	// FINANCING: 
 	// - LIABILITIES
-	BAL_L_LOANS_LIAB("Loans raised", EFinStmtSectionType.LIABILITIES, EFinStmtType.BAL_SHEET),
+	BAL_L_LOANS("Loans raised", EFinStmtSectionType.LIABILITIES, EFinStmtType.BAL_SHEET),
+	BAL_L_BONDS("Bonds issued", EFinStmtSectionType.LIABILITIES, EFinStmtType.BAL_SHEET),
 	// - EQUITY
 	BAL_E_RET_EARN("Retained Earnings", EFinStmtSectionType.EQUITY, EFinStmtType.BAL_SHEET),
 	BAL_E_CAPITAL_STOCK("Paid in Capital", EFinStmtSectionType.EQUITY, EFinStmtType.BAL_SHEET),

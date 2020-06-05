@@ -3,6 +3,7 @@ package com.brownbag_api.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +52,7 @@ public class OrderStexSvc extends OrderSvc {
 
 	public OrderStex placeOrder(OrderStex orderStex) {
 		if (orderStex.getId() == null) {
-			logSvc.write("OrderStexSvc.placeOrder: Order must be persisted before placed.");
+			logSvc.write("OrderStexSvc.placeOrder: Order must be persisted before being placed.");
 			orderSvc.execAction(orderStex, EOrderAction.DISCARD);
 			return null;
 		}
@@ -93,8 +94,8 @@ public class OrderStexSvc extends OrderSvc {
 				// check if asset amount is sufficient
 				ObjPosStex posStex = (ObjPosStex) posSvc.getByAssetAndParty(asset, party);
 				if (posStex == null) {
-					logSvc.write(
-							"No Position with Asset: '" + asset.getName() + " exists for Party: '" + party.getName());
+					logSvc.write("OrderStexSvc.placeNewOrder: No Position with Asset: '" + asset.getName()
+							+ " exists for Party: '" + party.getName());
 					orderSvc.execAction(orderStex, EOrderAction.DISCARD);
 					return null;
 				}
@@ -116,7 +117,7 @@ public class OrderStexSvc extends OrderSvc {
 	}
 
 	public void matchOrders(OrderStex orderBuy, OrderStex orderSell) {
-		
+
 		// ENSURE BUY ORDER IS NOT A SELL ORDER
 		if (orderBuy.getOrderDir() == EOrderDir.SELL) {
 			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: BUY Order has Direction 'SELL'.");
@@ -128,38 +129,48 @@ public class OrderStexSvc extends OrderSvc {
 			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: SELL Order has Direction 'BUY'.");
 			return;
 		}
-		
+
 		// ENSURE BUY ORDER IS NOT FULLY EXECUTED
 		if (orderBuy.getOrderStatus() == EOrderStatus.EXEC_FULL) {
 			logSvc.write(
 					"OrderStexSvc.matchOrders: Cannot match orders: BUY Order is already in Status 'Fully Executed'.");
 			return;
 		}
-		
+
 		// ENSURE SELL ORDER IS NOT FULLY EXECUTED
 		if (orderSell.getOrderStatus() == EOrderStatus.EXEC_FULL) {
 			logSvc.write(
 					"OrderStexSvc.matchOrders: Cannot match orders: SELL Order is already in Status 'Fully Executed'.");
 			return;
 		}
-		
+
 		// ENSURE PRICE LIMITS ARE COMPATIBLE
 		if (orderBuy.getPriceLimit() < orderSell.getPriceLimit()) {
 			logSvc.write("OrderStexSvc.matchOrders: Cannot match orders: Buy order Price: '" + orderBuy.getPriceLimit()
 					+ " is lower than Sell order Price: '" + orderSell.getPriceLimit() + "'");
 			return;
 		}
-		
+
 		// GET TRADING PARTIES
 		ObjParty partySeller = orderSell.getParty();
 		ObjParty partyBuyer = orderBuy.getParty();
-		
+
+		// ENSURE BUYER AND SELLER ARE NOT IDENTICAL
+		if (partySeller.getId() == partyBuyer.getId()) {
+			String msg = "OrderStexSvc.matchOrders: Buyer and seller must not be identical. Sell Order ID: "
+					+ orderSell.getId() + "Buy Order ID: " + orderBuy.getId();
+			logSvc.write(msg);
+			return;
+		}
+
 		// GET STEX POSITIONS
-		ObjPosStex posSend = (ObjPosStex) posSvc.getByAssetAndParty(orderSell.getAsset(), partySeller); // Instanciates if not exists
+		ObjPosStex posSend = (ObjPosStex) posSvc.getByAssetAndParty(orderSell.getAsset(), partySeller); // Instanciates
+																										// if not exists
 		if (posSend == null)
 			posSend = posSvc.createPosStex(orderSell.getAsset(), partySeller);
 
-		ObjPosStex posRcv = (ObjPosStex) posSvc.getByAssetAndParty(orderBuy.getAsset(), partyBuyer); // Instanciates if not exists
+		ObjPosStex posRcv = (ObjPosStex) posSvc.getByAssetAndParty(orderBuy.getAsset(), partyBuyer); // Instanciates if
+																										// not exists
 		if (posRcv == null)
 			posRcv = posSvc.createPosStex(orderBuy.getAsset(), partyBuyer);
 
@@ -169,8 +180,6 @@ public class OrderStexSvc extends OrderSvc {
 
 		// BOOK TEXT
 		String book_text = "Buyer: " + partyBuyer.getName() + " Seller: " + partySeller.getName() + " Qty: " + qtyExec;
-
-
 
 		// CALCULATE EXECUTION PRICE
 		double execPrice = (orderBuy.getPriceLimit() + orderSell.getPriceLimit()) / 2;
@@ -222,13 +231,18 @@ public class OrderStexSvc extends OrderSvc {
 			if (orderBuy.getQty() == orderBuy.getQtyExec()) {
 				orderSvc.execAction(orderBuy, EOrderAction.EXECUTE_FULL);
 			} else {
-				orderSvc.execAction(orderBuy, EOrderAction.EXECUTE_PART);
+				if (orderBuy.getOrderStatus() != EOrderStatus.EXEC_PART) {
+					orderSvc.execAction(orderBuy, EOrderAction.EXECUTE_PART);
+				}
+
 			}
 
 			if (orderSell.getQty() == orderSell.getQtyExec()) {
 				orderSvc.execAction(orderSell, EOrderAction.EXECUTE_FULL);
 			} else {
-				orderSvc.execAction(orderSell, EOrderAction.EXECUTE_PART);
+				if (orderSell.getOrderStatus() != EOrderStatus.EXEC_PART) {
+					orderSvc.execAction(orderSell, EOrderAction.EXECUTE_PART);
+				}
 			}
 		}
 
@@ -240,7 +254,8 @@ public class OrderStexSvc extends OrderSvc {
 
 	}
 
-	public List<OrderStex> getByAssetAndDirAndStatusList(ObjAsset asset, EOrderDir orderDir, List<EOrderStatus> orderStatusList ) {
+	public List<OrderStex> getByAssetAndDirAndStatusList(ObjAsset asset, EOrderDir orderDir,
+			List<EOrderStatus> orderStatusList) {
 		return orderStexRepo.findByAssetAndOrderDirAndOrderStatusIn(asset, orderDir, orderStatusList);
 
 	}
@@ -248,23 +263,24 @@ public class OrderStexSvc extends OrderSvc {
 	public List<OrderStex> getByParty(ObjParty party) {
 		return orderStexRepo.findByParty(party);
 	}
-	
+
 	public List<OrderStex> getByAssetAndStatusList(ObjAsset asset, List<EOrderStatus> orderStatusList) {
 		return orderStexRepo.findByAssetAndOrderStatusIn(asset, orderStatusList);
 	}
-	
+
 	public OrderStex getById(Long orderId) {
 		return orderStexRepo.findById(orderId).orElse(null);
 //		return orderStexRepo.getOne(orderId);
 	}
 
 	public OrderStex discardOrder(OrderStex orderStex) {
-		if(!orderStex.getOrderStatus().discardeable) {
-			logSvc.write("OrderStexSvc.discardOrder(): OrderStatus of Order with ID: " + orderStex.getId() + " does not allow it to be discarded.");
+		if (!orderStex.getOrderStatus().discardeable) {
+			logSvc.write("OrderStexSvc.discardOrder(): OrderStatus of Order with ID: " + orderStex.getId()
+					+ " does not allow it to be discarded.");
 			return null;
 		}
-		
-		if(orderStex.getOrderDir() == EOrderDir.BUY) {
+
+		if (orderStex.getOrderDir() == EOrderDir.BUY) {
 			ObjPos objPos = partySvc.getMacc(orderStex.getParty());
 			objPos.lowerQtyBlocked(orderStex.getQtyOpn() * orderStex.getPriceLimit());
 			posSvc.save(objPos);

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderStatus;
+import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
@@ -144,16 +145,16 @@ public class OrderStexController {
 		OrderStex orderStex = orderStexSvc.getById(orderId);
 		if (orderStex == null) {
 			logSvc.write("Order with ID: " + orderId + " could not be found!");
-			return ResponseEntity.ok("Order with ID: " + orderId + " could not be found!");
+			return ResponseEntity.ok("ERROR API: Order with ID: " + orderId + " could not be found!");
 		}
 		if (orderStex.getOrderStatus() == EOrderStatus.DISC) {
-			String msg = "Order with ID: " + orderId + " has already been discarded!";
+			String msg = "ERROR API: Order with ID: " + orderId + " has already been discarded!";
 			logSvc.write(msg);
 			return ResponseEntity.ok(msg);
 		}
 		orderStex = orderStexSvc.discardOrder(orderStex);
 		if (orderStex == null) {
-			String msg = "Order with ID: " + orderId + " could not be discarded! Check log for more details";
+			String msg = "ERROR API: Order with ID: " + orderId + " could not be discarded! Check log for more details";
 			logSvc.write(msg);
 			return ResponseEntity.ok(msg);
 		}
@@ -171,6 +172,13 @@ public class OrderStexController {
 		orderStexSvc.matchOrders(orderStexBuy, orderStexSell);
 		orderStexBuy = orderStexSvc.getById(orderBuyId);
 		orderStexSell = orderStexSvc.getById(orderSellId);
+		
+		if (orderStexBuy.getParty().getId() == orderStexSell.getParty().getId() ) {
+			String msg = "ERROR_API: Buyer and seller must not be identical";
+			logSvc.write(msg);
+			return ResponseEntity.ok(msg);
+		}
+
 		if (qtyExecBuyPre == orderStexBuy.getQtyExec()) {
 			String msg = "ERROR_API: Buy Order execution Qty was not successfully updated.";
 			logSvc.write(msg);
@@ -198,10 +206,14 @@ public class OrderStexController {
 			if (assetPos == null) {
 				return ResponseEntity.ok("ERROR API: The user has no position with this asset!");
 			}
-			double avblShares = posSvc.getQtyAvbl(assetPos);
-			if (avblShares < jsonOrderStex.getQty()) {
-				return ResponseEntity.ok("ERROR API: The user does not own enough shares! Available Shares: "
-						+ avblShares + " Order Amount: " + jsonOrderStex.getQty());
+
+			if (jsonOrderStex.getOrderType() != EOrderType.STEX_IPO) {
+				double avblShares = posSvc.getQtyAvbl(assetPos);
+				if (avblShares < jsonOrderStex.getQty()) {
+					return ResponseEntity.ok("ERROR API: The user does not own enough shares! Available Shares: "
+							+ avblShares + " Order Amount: " + jsonOrderStex.getQty());
+				}
+
 			}
 
 		}
