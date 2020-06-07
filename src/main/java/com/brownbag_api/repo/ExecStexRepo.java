@@ -8,7 +8,6 @@ import com.brownbag_api.model.jpa.ObjAsset;
 
 @Repository
 public interface ExecStexRepo extends JpaRepository<ExecStex, Long> {
-	
 
 	ExecStex findFirstByAssetOrderByTimestampCreateDesc(ObjAsset asset);
 }

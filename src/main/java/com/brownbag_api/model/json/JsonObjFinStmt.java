@@ -74,7 +74,5 @@ public class JsonObjFinStmt {
 	public void setSections(List<JsonObjFinStmtSection> sections) {
 		this.sections = sections;
 	}
-	
-	
 
 }

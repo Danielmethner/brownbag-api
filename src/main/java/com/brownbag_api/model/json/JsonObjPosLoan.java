@@ -14,7 +14,7 @@ public class JsonObjPosLoan {
 	private Long lenderId;
 	private String lenderName;
 	private double intrRate;
-	private LocalDateTime  matDate;
+	private LocalDateTime matDate;
 
 	public JsonObjPosLoan(ObjPosLoan jpaPos) {
 		super();
@@ -52,6 +52,7 @@ public class JsonObjPosLoan {
 	public void setQtyBlocked(double qtyBlocked) {
 		this.qtyBlocked = qtyBlocked;
 	}
+
 	public double getIntrRate() {
 		return intrRate;
 	}
@@ -92,11 +93,11 @@ public class JsonObjPosLoan {
 		this.lenderName = lenderName;
 	}
 
-	public LocalDateTime  getMatDate() {
+	public LocalDateTime getMatDate() {
 		return matDate;
 	}
 
-	public void setMatDate(LocalDateTime  matDate) {
+	public void setMatDate(LocalDateTime matDate) {
 		this.matDate = matDate;
 	}
 

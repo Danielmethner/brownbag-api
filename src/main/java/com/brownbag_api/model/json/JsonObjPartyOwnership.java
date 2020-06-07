@@ -1,9 +1,5 @@
 package com.brownbag_api.model.json;
 
-import com.brownbag_api.model.enums.ELegalForm;
-import com.brownbag_api.model.enums.EPartyType;
-import com.brownbag_api.model.jpa.ObjAsset;
-import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPosStex;
 
 public class JsonObjPartyOwnership {

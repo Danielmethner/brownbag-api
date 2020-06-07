@@ -42,7 +42,7 @@ public class ObjPosController {
 
 	@Autowired
 	private PosSvc posSvc;
-	
+
 	@Autowired
 	private PosLoanSvc posLosnSvc;
 
@@ -79,7 +79,7 @@ public class ObjPosController {
 	 */
 	private List<JsonObjPos> jpaToJson(List<ObjPos> jpaPosList, boolean addPriceData) {
 		List<JsonObjPos> jsonPosList = new ArrayList<JsonObjPos>();
-		
+
 		for (ObjPos jpaPos : jpaPosList) {
 			// FILTER ZERO POSITIONS
 			if (jpaPos.getQty() > 0) {
@@ -154,8 +154,9 @@ public class ObjPosController {
 
 	@GetMapping("/party/{partyId}")
 	public ResponseEntity<?> getByPartyId(@PathVariable Long partyId) {
-		if (partyId == null)
+		if (partyId == null) {
 			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
+		}
 		ObjParty jpaParty = partySvc.getById(partyId);
 		List<ObjPos> jpaPosList = posSvc.getByParty(jpaParty);
 		List<JsonObjPos> jsonPosList = jpaToJson(jpaPosList, true);
@@ -164,8 +165,9 @@ public class ObjPosController {
 
 	@GetMapping("/financing/party/{partyId}")
 	public ResponseEntity<?> getFinancingByPartyId(@PathVariable Long partyId) {
-		if (partyId == null)
+		if (partyId == null) {
 			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
+		}
 		ObjParty jpaParty = partySvc.getById(partyId);
 		List<ObjPosLoan> jpaPosList = posLosnSvc.getFinancingByParty(jpaParty);
 		List<JsonObjPosLoan> jsonPosList = jpaToJsonPosLoan(jpaPosList);
@@ -174,10 +176,12 @@ public class ObjPosController {
 
 	@GetMapping("/bookings/party/{partyId}/pos/{posId}")
 	public ResponseEntity<?> getByPartyId(@PathVariable Long partyId, @PathVariable Long posId) {
-		if (partyId == null)
+		if (partyId == null) {
 			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
-		if (posId == null)
+		}
+		if (posId == null) {
 			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Position ID specified!"));
+		}
 		ObjPos jpaPos = posSvc.getById(posId);
 		List<Booking> jpaBookingList = bookingSvc.getByPos(jpaPos);
 		return ResponseEntity.ok(jpaToJsonBooking(jpaBookingList));

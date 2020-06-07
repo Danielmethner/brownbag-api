@@ -14,7 +14,7 @@ public class JsonBooking {
 	private double posBalOld;
 	private double posBalNew;
 	private double qty;
-	
+
 	public JsonBooking() {
 	}
 

@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -24,7 +23,7 @@ public class ControlSvc {
 
 	@Autowired
 	private LogSvc logSvc;
-	
+
 	@Autowired
 	private OrderIntrSvc orderIntrSvc;
 
@@ -41,14 +40,14 @@ public class ControlSvc {
 	// YEAR END PROCESSING
 	// --------------------------------------------------------------
 	public int switchFinYear() {
-		
+
 		LocalDateTime currentFinDate = getFinDate();
 		// TODO: Loan redemptions, Interest Payments, Revenue generation, cost
 		// calculation
-		
+
 		// TRANSFER LOAN INTEREST
 		orderIntrSvc.chargeInterestAll(currentFinDate);
-		
+
 		// SWITCH YEAR
 		int newFinYear = setFinYear(getFinYear() + 1);
 		return newFinYear;
@@ -141,7 +140,6 @@ public class ControlSvc {
 		return ctrlVarRepo.save(ctrlVar);
 	}
 
-
 	// GET BOOLEAN
 	public CtrlVar setVal(ECtrlVar eCtrlVar, boolean valBool) {
 		CtrlVar ctrlVar = ctrlVarRepo.findByKey(eCtrlVar.toString());
@@ -151,7 +149,7 @@ public class ControlSvc {
 		ctrlVar.setValBool(valBool);
 		return ctrlVarRepo.save(ctrlVar);
 	}
-	
+
 	// GET DATE
 	public CtrlVar setVal(ECtrlVar eCtrlVar, LocalDateTime valDate) {
 		CtrlVar ctrlVar = ctrlVarRepo.findByKey(eCtrlVar.toString());
@@ -161,7 +159,7 @@ public class ControlSvc {
 		ctrlVar.setValDate(valDate);
 		return ctrlVarRepo.save(ctrlVar);
 	}
-	
+
 	// GET DOUBLE
 	public CtrlVar setVal(ECtrlVar eCtrlVar, double valDouble) {
 		CtrlVar ctrlVar = ctrlVarRepo.findByKey(eCtrlVar.toString());
@@ -185,7 +183,7 @@ public class ControlSvc {
 	public CtrlVar getByEnum(ECtrlVar eCtrlVar) {
 		return ctrlVarRepo.findByKey(eCtrlVar.toString());
 	}
-	
+
 	public List<CtrlVar> getAll() {
 		return ctrlVarRepo.findAll();
 	}

@@ -108,12 +108,14 @@ public class OrderStexController {
 	@GetMapping("/party/{partyId}")
 	public ResponseEntity<?> getByParty(Authentication authentication, @PathVariable Long partyId) {
 
-		if (partyId == null)
+		if (partyId == null) {
 			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
+		}
 
 		ObjParty party = partySvc.getById(partyId);
-		if (party == null)
+		if (party == null) {
 			return ResponseEntity.ok("ERROR API: Party with ID: " + partyId + " could not be found!");
+		}
 
 		List<OrderStex> jpaOrderStexList = orderStexSvc.getByParty(party);
 
@@ -129,8 +131,9 @@ public class OrderStexController {
 		}
 
 		ObjAsset asset = assetSvc.getById(assetId);
-		if (asset == null)
+		if (asset == null) {
 			return ResponseEntity.ok("ERROR API: Party with ID: " + assetId + " could not be found!");
+		}
 
 		List<EOrderStatus> orderStatusList = new ArrayList<EOrderStatus>();
 		orderStatusList.add(EOrderStatus.PLACED);
@@ -203,10 +206,11 @@ public class OrderStexController {
 
 		ObjAsset asset = null;
 		if (jsonOrderStex.getIntrRate() > 0) {
-			asset = assetSvc.createAssetBond(party, user, jsonOrderStex.getQty(), jsonOrderStex.getMatDate() );
+			asset = assetSvc.createAssetBond(party, user, jsonOrderStex.getQty(), jsonOrderStex.getMatDate());
 		} else {
-			if (assetId == null)
+			if (assetId == null) {
 				return ResponseEntity.ok("ERROR API: Asset not found!");
+			}
 			asset = assetSvc.getById(assetId);
 		}
 
@@ -230,11 +234,12 @@ public class OrderStexController {
 		OrderStex orderStex = orderStexSvc.placeNewOrder(jsonOrderStex.getOrderDir(), jsonOrderStex.getOrderType(),
 				asset, (int) jsonOrderStex.getQty(), jsonOrderStex.getPriceLimit(), user, party);
 
-		if (orderStex == null)
+		if (orderStex == null) {
 			return ResponseEntity.ok("ERROR API: Direction: " + jsonOrderStex.getOrderDir() + " Order Type: "
 					+ jsonOrderStex.getOrderType() + " Asset: " + asset.getName() + " Quantity: "
 					+ (int) jsonOrderStex.getQty() + " Price Limit: " + jsonOrderStex.getPriceLimit() + " User: "
 					+ user.getName() + " Party: " + party.getName() + ". Please Check logs for more details.");
+		}
 
 		orderStexSvc.placeOrder(orderStex);
 		return ResponseEntity.ok("Order has been placed successfully!");

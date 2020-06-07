@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.jpa.Order;
-import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.model.jpa.OrderTrans;
 import com.brownbag_api.repo.OrderRepo;
 //import com.brownbag_api.repo.OrderRepo;
@@ -29,7 +28,7 @@ public class OrderSvc implements OrderSvcIntf {
 			logSvc.write("Old WFC Status and New WFC Status are identical! Order cannot proceed");
 			return null;
 		}
-		if(orderAction == EOrderAction.DISCARD && !order.getOrderStatus().discardeable) {
+		if (orderAction == EOrderAction.DISCARD && !order.getOrderStatus().discardeable) {
 			logSvc.write("Order Status does not allow the order to be discarded!");
 			return null;
 		}

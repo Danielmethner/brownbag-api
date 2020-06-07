@@ -3,28 +3,8 @@ package com.brownbag_api.model.json;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import org.hibernate.annotations.CreationTimestamp;
-
 import com.brownbag_api.model.enums.EFinStmtItemType;
-import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.jpa.ObjFinStmtItem;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 public class JsonObjFinStmtItem implements Serializable {
 
@@ -46,7 +26,6 @@ public class JsonObjFinStmtItem implements Serializable {
 	public JsonObjFinStmtItem() {
 	}
 
-	
 	public JsonObjFinStmtItem(ObjFinStmtItem jpaFinStmtItem) {
 		this.id = jpaFinStmtItem.getId();
 		this.itemTypeName = jpaFinStmtItem.getName();
@@ -56,7 +35,6 @@ public class JsonObjFinStmtItem implements Serializable {
 		this.qty = jpaFinStmtItem.getQty();
 		this.timestampCreate = jpaFinStmtItem.getTimestampCreate();
 	}
-
 
 	public Long getId() {
 		return id;

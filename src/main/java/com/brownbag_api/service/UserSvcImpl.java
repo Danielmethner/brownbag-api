@@ -59,7 +59,7 @@ public class UserSvcImpl implements UserSvc {
 				() -> new RuntimeException("ERROR API: User not found. USER.ID: " + userDetailsImpl.getId()));
 		return objUser;
 	}
-	
+
 	@Override
 	public boolean hasRole(ObjUser user, ERole eRole) {
 		for (ObjRole role : user.getRoles()) {

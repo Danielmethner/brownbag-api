@@ -14,7 +14,6 @@ import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
-import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosLoan;
 import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjUser;
@@ -34,9 +33,6 @@ public class OrderLoanSvc extends OrderSvc {
 	private OrderPaySvc orderPaySvc;
 
 	@Autowired
-	private PosSvc posSvc;
-	
-	@Autowired
 	private PosLoanSvc posLoanSvc;
 
 	@Autowired
@@ -46,8 +42,8 @@ public class OrderLoanSvc extends OrderSvc {
 	 * Does not persist order!
 	 *
 	 */
-	public OrderLoan createLoan(double qty, @NotNull ObjUser user, ObjPosMacc maccGrant, ObjPosMacc maccRcv, LocalDateTime  matDate,
-			double intrRate) {
+	public OrderLoan createLoan(double qty, @NotNull ObjUser user, ObjPosMacc maccGrant, ObjPosMacc maccRcv,
+			LocalDateTime matDate, double intrRate) {
 
 		String bookText = "Loan from: '" + maccGrant.getParty().getName() + "' to: '" + maccRcv.getParty().getName()
 				+ "'. Intr Rate: " + intrRate;
@@ -104,7 +100,7 @@ public class OrderLoanSvc extends OrderSvc {
 				orderLoan.getMaccDebtor());
 		orderLoan.setPosLoanBorrower(posLoanBorrower);
 		posLoanBorrower = posLoanSvc.debitPosLoan(orderLoan);
-		
+
 		return (OrderLoan) orderSvc.execAction(orderLoan, EOrderAction.VERIFY);
 	}
 

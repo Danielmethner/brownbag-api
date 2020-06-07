@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.brownbag_api.model.jpa.Order;
 import com.brownbag_api.model.json.JsonOrder;
 import com.brownbag_api.repo.OrderRepo;
-import com.brownbag_api.repo.OrderStexRepo;
 import com.brownbag_api.repo.UserRepo;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -22,9 +21,6 @@ public class OrderController {
 
 	@Autowired
 	private OrderRepo orderRepo;
-
-	@Autowired
-	private OrderStexRepo orderStexRepo;
 
 	@Autowired
 	UserRepo userRepo;

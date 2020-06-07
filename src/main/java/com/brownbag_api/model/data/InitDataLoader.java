@@ -221,8 +221,8 @@ public class InitDataLoader {
 		ObjParty business1 = partySvc.createLegalPerson("Trader 1: Business 1", ELegalForm.CORP, userTrader1,
 				partyPrivTrader1, 15000, 100000);
 		ObjAsset business1Asset = business1.getAsset();
-		OrderStex orderSell = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, business1Asset, 3000, 10,
-				userTrader1, partyPrivTrader1);
+		orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, business1Asset, 3000, 10, userTrader1,
+				partyPrivTrader1);
 	}
 
 	// -----------------------------------------------------------

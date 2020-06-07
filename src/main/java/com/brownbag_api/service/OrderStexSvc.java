@@ -3,9 +3,7 @@ package com.brownbag_api.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.enums.EOrderDir;
@@ -166,13 +164,15 @@ public class OrderStexSvc extends OrderSvc {
 		// GET STEX POSITIONS
 		ObjPosStex posSend = (ObjPosStex) posSvc.getByAssetAndParty(orderSell.getAsset(), partySeller); // Instanciates
 																										// if not exists
-		if (posSend == null)
+		if (posSend == null) {
 			posSend = posSvc.createPosStex(orderSell.getAsset(), partySeller);
+		}
 
 		ObjPosStex posRcv = (ObjPosStex) posSvc.getByAssetAndParty(orderBuy.getAsset(), partyBuyer); // Instanciates if
 																										// not exists
-		if (posRcv == null)
+		if (posRcv == null) {
 			posRcv = posSvc.createPosStex(orderBuy.getAsset(), partyBuyer);
+		}
 
 		// DETERMINE EXECUTION QTY
 		int qtyExec = (int) (orderBuy.getQtyOpn() < orderSell.getQtyOpn() ? orderBuy.getQtyOpn()
@@ -268,6 +268,7 @@ public class OrderStexSvc extends OrderSvc {
 		return orderStexRepo.findByAssetAndOrderStatusIn(asset, orderStatusList);
 	}
 
+	@Override
 	public OrderStex getById(Long orderId) {
 		return orderStexRepo.findById(orderId).orElse(null);
 //		return orderStexRepo.getOne(orderId);

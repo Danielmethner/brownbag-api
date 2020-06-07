@@ -73,8 +73,7 @@ public class ExecStex implements Serializable {
 	}
 
 	public ExecStex(@NotNull ObjPosStex posSend, @NotNull ObjPosStex posRcv, @NotNull OrderStex orderSell,
-			@NotNull OrderStex orderBuy, String bookText, @NotNull int qtyExec,
-			@NotNull double price) {
+			@NotNull OrderStex orderBuy, String bookText, @NotNull int qtyExec, @NotNull double price) {
 		super();
 		this.posSend = posSend;
 		this.posRcv = posRcv;

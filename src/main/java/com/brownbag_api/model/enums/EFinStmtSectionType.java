@@ -36,10 +36,9 @@ public enum EFinStmtSectionType {
 	public String getStyle() {
 		return style;
 	}
-	
-    public static Stream<EFinStmtSectionType> stream() {
-        return Stream.of(EFinStmtSectionType.values()); 
-    }
 
-	
+	public static Stream<EFinStmtSectionType> stream() {
+		return Stream.of(EFinStmtSectionType.values());
+	}
+
 }

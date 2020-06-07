@@ -3,59 +3,30 @@ package com.brownbag_api.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.validation.constraints.NotNull;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EBookingDir;
 import com.brownbag_api.model.enums.EFinStmtItemType;
-import com.brownbag_api.model.enums.EFinStmtType;
-import com.brownbag_api.model.enums.EOrderType;
-import com.brownbag_api.model.jpa.ExecStex;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
-import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosLoan;
 import com.brownbag_api.model.jpa.ObjPosMacc;
-import com.brownbag_api.model.jpa.ObjPosStex;
-import com.brownbag_api.model.jpa.OrderCreateMon;
 import com.brownbag_api.model.jpa.OrderIntr;
 import com.brownbag_api.model.jpa.OrderLoan;
-import com.brownbag_api.model.jpa.OrderPay;
-import com.brownbag_api.model.jpa.OrderStex;
 import com.brownbag_api.model.trans.FinStmtTrxTrans;
-import com.brownbag_api.repo.AssetRepo;
-import com.brownbag_api.repo.PartyRepo;
 import com.brownbag_api.repo.PosLoanRepo;
-import com.brownbag_api.repo.PosMaccRepo;
 import com.brownbag_api.repo.PosRepo;
-import com.brownbag_api.repo.PosStexRepo;
 
 @Service
 public class PosLoanSvc extends PosSvc {
 
 	@Autowired
-	private AssetRepo assetRepo;
-	@Autowired
 	private PosRepo posRepo;
-	@Autowired
-	private PosMaccRepo posMaccRepo;
-	@Autowired
-	private PosStexRepo posStexRepo;
 	@Autowired
 	private PosLoanRepo posLoanRepo;
 	@Autowired
 	private BookingSvc bookingSvc;
-	@Autowired
-	private OrderCreateMonSvc orderCreateMonSvc;
-	@Autowired
-	private OrderLoanSvc orderLoanSvc;
-	@Autowired
-	private PartyRepo partyRepo;
-	@Autowired
-	private PartySvc partySvc;
 
 	public ObjPosLoan createPosLoan(double qty, ObjAsset assetLoan, ObjParty partyLender, ObjPosMacc maccLender,
 			ObjPosMacc maccDebtor) {
@@ -105,7 +76,7 @@ public class PosLoanSvc extends PosSvc {
 	}
 
 	public List<ObjPosLoan> getAllWithBal() {
-		return posLoanRepo.findByQtyGreaterThan((double) 0);
+		return posLoanRepo.findByQtyGreaterThan(0);
 	}
 
 	// -----------------------------------------------------------------
@@ -131,8 +102,8 @@ public class PosLoanSvc extends PosSvc {
 	}
 
 	public ObjPosMacc creditPosMacc(OrderIntr orderIntr) {
-		
-		ObjPosMacc objPosMacc = (ObjPosMacc) orderIntr.getMaccLender();
+
+		orderIntr.getMaccLender();
 		ObjParty partyBenef = orderIntr.getMaccLender().getParty();
 		ArrayList<FinStmtTrxTrans> balTrxList = new ArrayList<FinStmtTrxTrans>();
 		double qty = orderIntr.getQty();

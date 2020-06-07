@@ -76,7 +76,6 @@ public class JsonCtrlVar {
 		this.valString = valString;
 	}
 
-
 	public double getValDouble() {
 		return valDouble;
 	}
@@ -109,11 +108,11 @@ public class JsonCtrlVar {
 		this.timestampModified = timestampModified;
 	}
 
-	public LocalDateTime  getValDate() {
+	public LocalDateTime getValDate() {
 		return valDate;
 	}
 
-	public void setValDate(LocalDateTime  valDate) {
+	public void setValDate(LocalDateTime valDate) {
 		this.valDate = valDate;
 	}
 

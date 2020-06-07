@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 
 import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.model.enums.ECtrlVar;
@@ -18,13 +16,11 @@ import com.brownbag_api.model.enums.EParty;
 import com.brownbag_api.model.enums.EPartyType;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
-import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjPosStex;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderLoan;
 import com.brownbag_api.model.jpa.OrderStex;
-import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.PartyRepo;
 
 @Service
@@ -53,12 +49,6 @@ public class PartySvc {
 
 	@Autowired
 	private OrderStexSvc orderStexSvc;
-
-	@Autowired
-	private OrderSvc orderSvc;
-
-	@Autowired
-	private AssetRepo assetRepo;
 
 	@Autowired
 	private OrderCreateMonSvc orderCreateMonSvc;
@@ -120,8 +110,9 @@ public class PartySvc {
 		posSvc.createMacc(party, 0, null);
 		shareQty = shareQty == 0 ? 1 : shareQty;
 
-		ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, 0, party, 1, 0, null);
-		
+		ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, 0, party, 1, 0,
+				null);
+
 		asset = assetSvc.save(asset);
 		party.setAsset(asset);
 		party = save(party);
@@ -131,13 +122,13 @@ public class PartySvc {
 		OrderStex ipoSellOrder = issueShares(party, shareQty, transferPrice);
 		OrderStex ipoBuyOrder = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, asset, shareQty,
 				transferPrice, objUser, owner);
-		
+
 		orderStexSvc.matchOrders(ipoBuyOrder, ipoSellOrder);
-		
+
 		ipoBuyOrder = orderStexSvc.getById(ipoBuyOrder.getId());
-		
+
 		EOrderStatus newOrderStatus = ipoBuyOrder.getOrderStatus();
-		
+
 		if (newOrderStatus != EOrderStatus.EXEC_FULL) {
 			logSvc.write("PartySvc().createLegalPerson: Emission of new shares failed for Party ID: '" + party.getId()
 					+ "'. Party Name: '" + party.getName() + "'. Order Buy ID: '" + ipoBuyOrder.getId()

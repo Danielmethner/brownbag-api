@@ -18,7 +18,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -64,9 +63,9 @@ public class ObjAsset implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "TIMESTAMP", updatable = false)
 	private Date timestampCreate;
-	
+
 	@Column(name = "MAT_DATE")
-	private LocalDateTime  matDate;
+	private LocalDateTime matDate;
 
 	@Column(name = "INTR_RATE")
 	private double intrRate;
@@ -76,9 +75,10 @@ public class ObjAsset implements Serializable {
 
 	public ObjAsset() {
 	}
-	
+
 	public ObjAsset(@NotBlank @Size(max = 150) String name, @Size(max = 12) String isin, EAssetGrp assetGrp,
-			@NotNull int totalShares, @NotNull ObjParty issuer, @NotNull double nomVal, LocalDateTime matDate, @NotNull double intrRate) {
+			@NotNull int totalShares, @NotNull ObjParty issuer, @NotNull double nomVal, LocalDateTime matDate,
+			@NotNull double intrRate) {
 		super();
 		this.name = name;
 		this.isin = isin;
@@ -89,6 +89,7 @@ public class ObjAsset implements Serializable {
 		this.matDate = matDate;
 		this.intrRate = intrRate;
 	}
+
 	public ObjAsset(Long id) {
 		this.id = id;
 	}
@@ -189,5 +190,4 @@ public class ObjAsset implements Serializable {
 		this.intrRate = intrRate;
 	}
 
-	
 }

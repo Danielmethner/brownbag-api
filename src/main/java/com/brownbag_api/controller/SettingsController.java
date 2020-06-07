@@ -25,7 +25,7 @@ public class SettingsController {
 
 	@Autowired
 	private LogSvc logSvc;
-	
+
 	@Autowired
 	private ControlSvc ctrlVarSvc;
 
@@ -38,7 +38,7 @@ public class SettingsController {
 	public ResponseEntity<?> getRecentEntries() {
 		return ResponseEntity.ok(logSvc.getRecentEntries());
 	}
-	
+
 	private List<JsonCtrlVar> jpaToJson(List<CtrlVar> jpaObjList) {
 		List<JsonCtrlVar> jsonObjList = new ArrayList<JsonCtrlVar>();
 		for (CtrlVar jpaObj : jpaObjList) {
@@ -47,24 +47,24 @@ public class SettingsController {
 		}
 		return jsonObjList;
 	}
-	
+
 	@GetMapping("/ctrlvar/finyear")
 	public ResponseEntity<?> getFinYear() {
 		return ResponseEntity.ok(ctrlVarSvc.getFinYear());
 	}
-		
+
 	@GetMapping("/ctrlvar/finyear/switch")
 	public ResponseEntity<?> incrFinYear() {
 		Integer finYearRtn = ctrlVarSvc.switchFinYear();
 		return ResponseEntity.ok(finYearRtn);
 	}
-	
+
 	@GetMapping("/ctrlvar")
 	public ResponseEntity<?> getCtrlVars() {
-		
+
 		return ResponseEntity.ok(jpaToJson(ctrlVarSvc.getAll()));
 	}
-	
+
 	@GetMapping("/ctrlvar/{eCtrlVar}")
 	public ResponseEntity<?> getCtrlVars(@PathVariable ECtrlVar eCtrlVar) {
 		CtrlVar controlVar = ctrlVarSvc.getByEnum(eCtrlVar);

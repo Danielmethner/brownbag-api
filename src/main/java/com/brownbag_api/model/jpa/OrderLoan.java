@@ -38,7 +38,7 @@ public class OrderLoan extends Order implements Serializable {
 	private ObjPosLoan posLoanBorrower;
 
 	@Column(name = "MAT_DATE")
-	private LocalDateTime  matDate;
+	private LocalDateTime matDate;
 
 	@NotNull
 	@Column(name = "INTR_RATE")
@@ -46,12 +46,10 @@ public class OrderLoan extends Order implements Serializable {
 
 	public OrderLoan() {
 	}
-	
-	
 
 	public OrderLoan(@NotNull double qty, @NotNull ObjAsset asset, EOrderType orderType, EOrderStatus orderStatus,
 			@NotNull ObjUser user, String advText, @NotNull ObjPosMacc maccLender, @NotNull ObjPosMacc maccDebtor,
-			ObjPosLoan posLoanLender, ObjPosLoan posLoanBorrower, LocalDateTime  matDate, @NotNull double intrRate) {
+			ObjPosLoan posLoanLender, ObjPosLoan posLoanBorrower, LocalDateTime matDate, @NotNull double intrRate) {
 		super(qty, asset, orderType, orderStatus, user, advText);
 		this.maccLender = maccLender;
 		this.maccDebtor = maccDebtor;
@@ -61,17 +59,15 @@ public class OrderLoan extends Order implements Serializable {
 		this.intrRate = intrRate;
 	}
 
-
-
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
 
-	public LocalDateTime  getMatDate() {
+	public LocalDateTime getMatDate() {
 		return matDate;
 	}
 
-	public void setMatDate(LocalDateTime  matDate) {
+	public void setMatDate(LocalDateTime matDate) {
 		this.matDate = matDate;
 	}
 

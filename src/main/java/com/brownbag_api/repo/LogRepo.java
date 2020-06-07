@@ -9,7 +9,7 @@ import com.brownbag_api.model.jpa.Log;
 
 @Repository
 public interface LogRepo extends JpaRepository<Log, Long> {
-	
+
 	List<Log> findFirst20ByOrderByTimestampCreateDesc();
-	
+
 }

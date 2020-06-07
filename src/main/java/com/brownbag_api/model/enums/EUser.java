@@ -3,7 +3,8 @@ package com.brownbag_api.model.enums;
 public enum EUser {
 	MGR_ECB("European Central Bank", ERole.ROLE_ORG), MGR_DEUTSCHE_BANK("Deutsche Bank", ERole.ROLE_MGR),
 	MGR_GOVERNMENT("Government", ERole.ROLE_ORG), MGR_BROKER("Broker", ERole.ROLE_BROKER),
-	U_TRADER_1("Trader 1", ERole.ROLE_MGR), U_TRADER_2("Trader 2", ERole.ROLE_MGR), U_EOP("End of Year processor", ERole.ROLE_GLOBAL_ADMIN);
+	U_TRADER_1("Trader 1", ERole.ROLE_MGR), U_TRADER_2("Trader 2", ERole.ROLE_MGR),
+	U_EOP("End of Year processor", ERole.ROLE_GLOBAL_ADMIN);
 
 	public final String name;
 	public final ERole role;

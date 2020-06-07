@@ -12,7 +12,7 @@ public enum EFinStmtItemType {
 	BAL_A_STOCKS("Stocks", EFinStmtSectionType.ASSETS, EFinStmtType.BAL_SHEET),
 	BAL_A_LOANS("Loans granted", EFinStmtSectionType.ASSETS, EFinStmtType.BAL_SHEET),
 
-	// FINANCING: 
+	// FINANCING:
 	// - LIABILITIES
 	BAL_L_LOANS("Loans raised", EFinStmtSectionType.LIABILITIES, EFinStmtType.BAL_SHEET),
 	BAL_L_BONDS("Bonds issued", EFinStmtSectionType.LIABILITIES, EFinStmtType.BAL_SHEET),
@@ -23,15 +23,15 @@ public enum EFinStmtItemType {
 	// ----------------------------------------------------------
 	// INCOME STATEMENT
 	// ----------------------------------------------------------
-	
+
 	// OPERATIONS
 	PL_REV("Revenue", EFinStmtSectionType.OPERATIONS, EFinStmtType.INCOME_STMT),
 	PL_COGS("Cost of goods sold", EFinStmtSectionType.OPERATIONS, EFinStmtType.INCOME_STMT),
-	
+
 	// FINANCIAL ACTIVITIES
 	PL_INVEST("Investments", EFinStmtSectionType.FIN_ACTIVITIES, EFinStmtType.INCOME_STMT),
 	PL_INTR("Interest", EFinStmtSectionType.FIN_ACTIVITIES, EFinStmtType.INCOME_STMT);
-	
+
 	public final String name;
 	public final EFinStmtSectionType section;
 	private final EFinStmtType finStmtType;

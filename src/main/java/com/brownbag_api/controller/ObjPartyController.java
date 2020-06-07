@@ -112,24 +112,28 @@ public class ObjPartyController {
 
 	@GetMapping("/{partyId}")
 	public ResponseEntity<?> getById(@PathVariable Long partyId) {
-		if (partyId == null)
+		if (partyId == null) {
 			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
+		}
 		ObjParty jpaParty = partySvc.getById(partyId);
 
-		if (jpaParty == null)
+		if (jpaParty == null) {
 			return null;
+		}
 		JsonObjParty jsonParty = new JsonObjParty(jpaParty);
 		return ResponseEntity.ok(jsonParty);
 	}
 
 	@GetMapping("/{partyId}/ownership")
 	public ResponseEntity<?> getOwnershipListByPartyId(@PathVariable Long partyId) {
-		if (partyId == null)
+		if (partyId == null) {
 			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
+		}
 		ObjParty jpaParty = partySvc.getById(partyId);
 
-		if (jpaParty == null)
+		if (jpaParty == null) {
 			return null;
+		}
 		// TODO: get ownership
 		List<ObjPosStex> ownershipPosList = partySvc.getOwnershipList(jpaParty);
 		List<JsonObjPartyOwnership> ownershipList = new ArrayList<JsonObjPartyOwnership>();
@@ -146,13 +150,15 @@ public class ObjPartyController {
 
 	@GetMapping("/{partyId}/asset/{assetId}/qty/avbl")
 	public ResponseEntity<?> getAvblQty(@PathVariable Long partyId, @PathVariable Long assetId) {
-		if (partyId == null)
+		if (partyId == null) {
 			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
+		}
 		ObjParty jpaParty = partySvc.getById(partyId);
 		ObjAsset jpaAsset = assetSvc.getById(assetId);
 		ObjPos objPos = posSvc.getByAssetAndParty(jpaAsset, jpaParty);
-		if (objPos == null)
+		if (objPos == null) {
 			return ResponseEntity.ok(0);
+		}
 		double avblQty = posSvc.getQtyAvbl(objPos);
 		return ResponseEntity.ok(avblQty);
 	}

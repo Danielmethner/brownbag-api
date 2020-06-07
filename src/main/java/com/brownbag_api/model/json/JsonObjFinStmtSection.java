@@ -2,7 +2,6 @@ package com.brownbag_api.model.json;
 
 import java.util.List;
 
-import com.brownbag_api.model.jpa.ObjFinStmtItem;
 import com.brownbag_api.model.jpa.ObjFinStmtSection;
 
 public class JsonObjFinStmtSection {
@@ -53,8 +52,6 @@ public class JsonObjFinStmtSection {
 		this.name = name;
 	}
 
-	
-	
 	public String getSection() {
 		return section;
 	}
@@ -70,7 +67,6 @@ public class JsonObjFinStmtSection {
 	public void setTotalQty(double totalQty) {
 		this.totalQty = totalQty;
 	}
-
 
 	public List<JsonObjFinStmtItem> getItems() {
 		return items;

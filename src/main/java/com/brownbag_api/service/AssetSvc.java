@@ -46,13 +46,14 @@ public class AssetSvc {
 
 	public ObjAsset createAssetLoan(String advText, EAssetGrp loan, @NotNull int totalShares, ObjParty partyLender,
 			LocalDateTime matDate, double intrRate) {
-		ObjAsset assetLoan = createAssetStex(advText, null, EAssetGrp.LOAN, totalShares, partyLender, 1, intrRate, matDate);
+		ObjAsset assetLoan = createAssetStex(advText, null, EAssetGrp.LOAN, totalShares, partyLender, 1, intrRate,
+				matDate);
 		return assetRepo.save(assetLoan);
 	}
 
 	public ObjAsset createAssetStex(String name, String isin, EAssetGrp assetGrp, @NotNull int totalShares,
 			ObjParty issuer, double nomVal, @NotNull double intrRate, LocalDateTime matDate) {
-		
+
 		ObjAsset asset = new ObjAsset(name, isin, assetGrp, totalShares, issuer, nomVal, matDate, intrRate);
 		return save(asset);
 	}

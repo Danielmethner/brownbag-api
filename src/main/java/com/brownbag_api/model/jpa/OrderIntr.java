@@ -1,9 +1,7 @@
 package com.brownbag_api.model.jpa;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
@@ -50,7 +48,7 @@ public class OrderIntr extends Order implements Serializable {
 		this.posLoanBorrower = posLoanBorrower;
 	}
 
-	public OrderIntr(ObjPosLoan posLoan,  @NotNull ObjUser user, String advText, double amount) {
+	public OrderIntr(ObjPosLoan posLoan, @NotNull ObjUser user, String advText, double amount) {
 		super(amount, posLoan.getAsset(), EOrderType.INTR, EOrderStatus.NEW, user, advText);
 		this.maccLender = posLoan.getMaccLender();
 		this.maccDebtor = posLoan.getMaccDebtor();

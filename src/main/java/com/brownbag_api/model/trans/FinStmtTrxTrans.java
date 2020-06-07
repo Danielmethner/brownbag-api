@@ -2,7 +2,6 @@ package com.brownbag_api.model.trans;
 
 import com.brownbag_api.model.enums.EBookingDir;
 import com.brownbag_api.model.enums.EFinStmtItemType;
-import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.jpa.ObjParty;
 
 public class FinStmtTrxTrans {
