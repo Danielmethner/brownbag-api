@@ -1,6 +1,7 @@
 package com.brownbag_api.model.jpa;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -63,12 +64,21 @@ public class ObjAsset implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "TIMESTAMP", updatable = false)
 	private Date timestampCreate;
+	
+	@Column(name = "MAT_DATE")
+	private LocalDateTime  matDate;
+
+	@Column(name = "INTR_RATE")
+	private double intrRate;
 
 	@NotNull
 	private double nomVal;
 
+	public ObjAsset() {
+	}
+	
 	public ObjAsset(@NotBlank @Size(max = 150) String name, @Size(max = 12) String isin, EAssetGrp assetGrp,
-			@NotNull int totalShares, @NotNull ObjParty issuer, @NotNull double nomVal) {
+			@NotNull int totalShares, @NotNull ObjParty issuer, @NotNull double nomVal, LocalDateTime matDate, @NotNull double intrRate) {
 		super();
 		this.name = name;
 		this.isin = isin;
@@ -76,11 +86,9 @@ public class ObjAsset implements Serializable {
 		this.totalShares = totalShares;
 		this.issuer = issuer;
 		this.nomVal = nomVal;
+		this.matDate = matDate;
+		this.intrRate = intrRate;
 	}
-
-	public ObjAsset() {
-	}
-
 	public ObjAsset(Long id) {
 		this.id = id;
 	}
@@ -165,4 +173,21 @@ public class ObjAsset implements Serializable {
 		this.totalShares = this.totalShares + amount;
 	}
 
+	public LocalDateTime getMatDate() {
+		return matDate;
+	}
+
+	public void setMatDate(LocalDateTime matDate) {
+		this.matDate = matDate;
+	}
+
+	public double getIntrRate() {
+		return intrRate;
+	}
+
+	public void setIntrRate(double intrRate) {
+		this.intrRate = intrRate;
+	}
+
+	
 }

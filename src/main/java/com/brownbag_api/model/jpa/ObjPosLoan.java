@@ -33,9 +33,6 @@ public class ObjPosLoan extends ObjPos implements Serializable {
 		this.maccLender = maccGrant;
 		this.maccDebtor = maccRcv;
 	}
-	public ObjAssetLoan getAssetLoan() {
-		return (ObjAssetLoan) this.getAsset();
-	}
 
 	public @NotNull ObjPosMacc getMaccLender() {
 		return maccLender;

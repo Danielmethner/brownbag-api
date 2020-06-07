@@ -25,8 +25,8 @@ public class JsonObjPosLoan {
 		this.qtyBlocked = jpaPos.getQtyBlocked();
 		this.lenderId = jpaPos.getParty().getId();
 		this.lenderName = jpaPos.getMaccLender().getParty().getName();
-		this.intrRate = jpaPos.getAssetLoan().getIntrRate();
-		this.matDate = jpaPos.getAssetLoan().getMatDate();
+		this.intrRate = jpaPos.getAsset().getIntrRate();
+		this.matDate = jpaPos.getAsset().getMatDate();
 	}
 
 	public Long getId() {

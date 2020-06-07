@@ -172,8 +172,8 @@ public class OrderStexController {
 		orderStexSvc.matchOrders(orderStexBuy, orderStexSell);
 		orderStexBuy = orderStexSvc.getById(orderBuyId);
 		orderStexSell = orderStexSvc.getById(orderSellId);
-		
-		if (orderStexBuy.getParty().getId() == orderStexSell.getParty().getId() ) {
+
+		if (orderStexBuy.getParty().getId() == orderStexSell.getParty().getId()) {
 			String msg = "ERROR_API: Buyer and seller must not be identical";
 			logSvc.write(msg);
 			return ResponseEntity.ok(msg);
@@ -192,14 +192,23 @@ public class OrderStexController {
 		return ResponseEntity.ok("Orders were successfully executed!");
 	}
 
+	// ----------------------------------------------------------------------
+	// PLACE NEW ORDER
+	// ----------------------------------------------------------------------
 	@PostMapping(value = "/place", consumes = "application/json")
 	public ResponseEntity<?> placeOrder(@RequestBody JsonOrderStex jsonOrderStex, Authentication authentication) {
 		ObjUser user = getByAuthentication(authentication);
 		ObjParty party = partySvc.getById(jsonOrderStex.getPartyId());
-		if (jsonOrderStex.getAssetId() == null)
-			return ResponseEntity.ok("ERROR API: No Asset selected!");
+		Long assetId = jsonOrderStex.getAssetId();
 
-		ObjAsset asset = assetSvc.getById(jsonOrderStex.getAssetId());
+		ObjAsset asset = null;
+		if (jsonOrderStex.getIntrRate() > 0) {
+			asset = assetSvc.createAssetBond(party, user, jsonOrderStex.getQty(), jsonOrderStex.getMatDate() );
+		} else {
+			if (assetId == null)
+				return ResponseEntity.ok("ERROR API: Asset not found!");
+			asset = assetSvc.getById(assetId);
+		}
 
 		if (jsonOrderStex.getOrderDir() == EOrderDir.SELL) {
 			ObjPos assetPos = posSvc.getByAssetAndParty(asset, party);

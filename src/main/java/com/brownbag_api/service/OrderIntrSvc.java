@@ -14,7 +14,6 @@ import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.enums.EUser;
-import com.brownbag_api.model.jpa.ObjAssetLoan;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosLoan;
@@ -54,7 +53,7 @@ public class OrderIntrSvc extends OrderSvc {
 
 	public OrderIntr generateIntrPay(ObjPosLoan posLoan, LocalDateTime currentFinDate) {
 		
-		double intrRate = posLoan.getAssetLoan().getIntrRate();
+		double intrRate = posLoan.getAsset().getIntrRate();
 		double amount = posLoan.getQty() * (intrRate / 100);
 		amount = Math.round(amount * 100d) / 100d; 
 		String advText = "Interest Payment. Loan Position: '" + posLoan.getId() + "' Fin Date: '"

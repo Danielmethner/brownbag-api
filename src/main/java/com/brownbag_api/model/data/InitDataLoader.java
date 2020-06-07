@@ -20,7 +20,6 @@ import com.brownbag_api.model.enums.EUser;
 import com.brownbag_api.model.jpa.CtrlVar;
 import com.brownbag_api.model.jpa.Log;
 import com.brownbag_api.model.jpa.ObjAsset;
-import com.brownbag_api.model.jpa.ObjAssetLoan;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjRole;
 import com.brownbag_api.model.jpa.ObjUser;
@@ -103,7 +102,7 @@ public class InitDataLoader {
 		ObjAsset asset = assetSvc.getByEnum(eAsset);
 		if (asset == null) {
 			ObjParty issuer = partySvc.getByEnum(eAsset.getParty());
-			return assetSvc.createAssetStex(eAsset.getName(), null, eAsset.getAssetGrp(), issuer, 1);
+			return assetSvc.createAssetStex(eAsset.getName(), null, eAsset.getAssetGrp(), 0, issuer, 1, 0, null);
 		} else {
 			return asset;
 		}
@@ -127,7 +126,7 @@ public class InitDataLoader {
 		roles.add(EUser.U_EOP.getRole().getName());
 		createUser(EUser.U_EOP, roles);
 		// ECB
-		
+
 		roles.add(EUser.MGR_ECB.getRole().getName());
 		createUser(EUser.MGR_ECB, roles);
 		// ECB
@@ -155,10 +154,9 @@ public class InitDataLoader {
 
 		if (assetSvc.getByEnum(EAsset.LOAN_GENERIC) == null) {
 			ObjAsset assetLoanVanilla = new ObjAsset(EAsset.LOAN_GENERIC.getName(), null,
-					EAsset.LOAN_GENERIC.getAssetGrp(), 0, ecb, 1);
+					EAsset.LOAN_GENERIC.getAssetGrp(), 0, ecb, 1, null, 0);
 
-			ObjAssetLoan assetLoan = new ObjAssetLoan(assetLoanVanilla, 0);
-			assetSvc.save(assetLoan);
+			assetSvc.save(assetLoanVanilla);
 		}
 
 	}
@@ -256,8 +254,8 @@ public class InitDataLoader {
 
 		ObjUser userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
 		ObjParty partyTrader2 = userSvc.getNaturalPerson(userTrader2);
-		OrderStex orderBuyDeutsche = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 500, 20.00,
-				userTrader2, partyTrader2);
+		OrderStex orderBuyDeutsche = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, deutscheBank, 500,
+				20.00, userTrader2, partyTrader2);
 		orderStexSvc.matchOrders(orderBuyDeutsche, orderSellDeutsche);
 	}
 
@@ -298,7 +296,7 @@ public class InitDataLoader {
 		createOrders();
 		controlSvc.setVal(ECtrlVar.DEMO_DATA_CREATED, true);
 		List<Log> logList = logSvc.getAll();
-		if(logList.size() > 0) {
+		if (logList.size() > 0) {
 			System.err.println("There are logs in the database!");
 		}
 		System.err.println("Demo Data Loaded Succesfully");

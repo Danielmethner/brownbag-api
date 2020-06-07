@@ -12,7 +12,7 @@ import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
-import com.brownbag_api.model.jpa.ObjAssetLoan;
+import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosLoan;
@@ -59,7 +59,7 @@ public class OrderLoanSvc extends OrderSvc {
 					+ ": 'MACC From' and 'MACC to' must not be identical. " + bookText);
 			return null;
 		}
-		ObjAssetLoan assetLoan = (ObjAssetLoan) assetSvc.getByEnum(EAsset.LOAN_GENERIC);
+		ObjAsset assetLoan = assetSvc.getByEnum(EAsset.LOAN_GENERIC);
 		OrderLoan orderLoan = new OrderLoan(qty, assetLoan, EOrderType.LOAN, EOrderStatus.NEW, user, bookText,
 				maccGrant, maccRcv, null, null, matDate, intrRate);
 
@@ -90,7 +90,7 @@ public class OrderLoanSvc extends OrderSvc {
 		orderPay = orderPaySvc.execPay(orderPay);
 
 		// CREATE LOAN ASSET
-		ObjAssetLoan assetLoan = assetSvc.createAssetLoan(orderLoan.getAdvText(), EAssetGrp.LOAN,
+		ObjAsset assetLoan = assetSvc.createAssetLoan(orderLoan.getAdvText(), EAssetGrp.LOAN,
 				(@NotNull int) orderLoan.getQty(), partyLender, orderLoan.getMatDate(), orderLoan.getIntrRate());
 
 		// CREATE LOAN POSITION - LENDER

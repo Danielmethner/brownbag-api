@@ -120,7 +120,7 @@ public class PartySvc {
 		posSvc.createMacc(party, 0, null);
 		shareQty = shareQty == 0 ? 1 : shareQty;
 
-		ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, party, 1);
+		ObjAsset asset = assetSvc.createAssetStex(party.getName() + " Shares", null, EAssetGrp.STOCK, 0, party, 1, 0, null);
 		
 		asset = assetSvc.save(asset);
 		party.setAsset(asset);

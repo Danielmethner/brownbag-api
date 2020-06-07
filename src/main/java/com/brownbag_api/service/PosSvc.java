@@ -15,7 +15,6 @@ import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.jpa.ExecStex;
 import com.brownbag_api.model.jpa.ObjAsset;
-import com.brownbag_api.model.jpa.ObjAssetLoan;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosLoan;

@@ -1,5 +1,7 @@
 package com.brownbag_api.model.json;
 
+import java.time.LocalDateTime;
+
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
@@ -12,10 +14,14 @@ public class JsonOrderStex extends JsonOrder {
 	private EOrderDir orderDir;
 
 	private Long partyId;
-	
+
 	private String partyName;
 
 	private double qtyExec;
+
+	private double intrRate;
+	
+	private LocalDateTime matDate;
 
 	public JsonOrderStex(OrderStex orderStex) {
 		super(orderStex);
@@ -27,12 +33,14 @@ public class JsonOrderStex extends JsonOrder {
 	}
 
 	public JsonOrderStex(double qty, EOrderType orderType, EOrderStatus orderStatus, Long assetId, Long userId,
-			double priceLimit, EOrderDir orderDir, String partyName, double qtyExec) {
+			double priceLimit, EOrderDir orderDir, String partyName, double qtyExec, double intrRate, LocalDateTime matDate) {
 		super(qty, orderType, orderStatus, assetId, userId);
 		this.priceLimit = priceLimit;
 		this.orderDir = orderDir;
 		this.partyName = partyName;
 		this.qtyExec = qtyExec;
+		this.setIntrRate(intrRate);
+		this.setMatDate(matDate);
 	}
 
 	public double getPriceLimit() {
@@ -75,5 +83,20 @@ public class JsonOrderStex extends JsonOrder {
 		this.partyId = partyId;
 	}
 
-	
+	public double getIntrRate() {
+		return intrRate;
+	}
+
+	public void setIntrRate(double intrRate) {
+		this.intrRate = intrRate;
+	}
+
+	public LocalDateTime getMatDate() {
+		return matDate;
+	}
+
+	public void setMatDate(LocalDateTime matDate) {
+		this.matDate = matDate;
+	}
+
 }

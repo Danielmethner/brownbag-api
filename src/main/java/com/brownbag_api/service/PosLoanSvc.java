@@ -15,7 +15,6 @@ import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.jpa.ExecStex;
 import com.brownbag_api.model.jpa.ObjAsset;
-import com.brownbag_api.model.jpa.ObjAssetLoan;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosLoan;
@@ -58,7 +57,7 @@ public class PosLoanSvc extends PosSvc {
 	@Autowired
 	private PartySvc partySvc;
 
-	public ObjPosLoan createPosLoan(double qty, ObjAssetLoan assetLoan, ObjParty partyLender, ObjPosMacc maccLender,
+	public ObjPosLoan createPosLoan(double qty, ObjAsset assetLoan, ObjParty partyLender, ObjPosMacc maccLender,
 			ObjPosMacc maccDebtor) {
 		ObjPosLoan posLoan = new ObjPosLoan(qty, assetLoan, partyLender, maccLender, maccDebtor);
 		return posRepo.save(posLoan);
