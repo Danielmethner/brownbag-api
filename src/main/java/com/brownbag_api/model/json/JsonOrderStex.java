@@ -22,7 +22,8 @@ public class JsonOrderStex extends JsonOrder {
 	private double intrRate;
 
 	private LocalDateTime matDate;
-
+	private double nomVal;
+	
 	public JsonOrderStex(OrderStex orderStex) {
 		super(orderStex);
 		this.priceLimit = orderStex.getPriceLimit();
@@ -34,7 +35,7 @@ public class JsonOrderStex extends JsonOrder {
 
 	public JsonOrderStex(double qty, EOrderType orderType, EOrderStatus orderStatus, Long assetId, Long userId,
 			double priceLimit, EOrderDir orderDir, String partyName, double qtyExec, double intrRate,
-			LocalDateTime matDate) {
+			LocalDateTime matDate, double nomVal) {
 		super(qty, orderType, orderStatus, assetId, userId);
 		this.priceLimit = priceLimit;
 		this.orderDir = orderDir;
@@ -42,6 +43,7 @@ public class JsonOrderStex extends JsonOrder {
 		this.qtyExec = qtyExec;
 		this.setIntrRate(intrRate);
 		this.setMatDate(matDate);
+		this.setNomVal(nomVal);
 	}
 
 	public double getPriceLimit() {
@@ -98,6 +100,14 @@ public class JsonOrderStex extends JsonOrder {
 
 	public void setMatDate(LocalDateTime matDate) {
 		this.matDate = matDate;
+	}
+
+	public double getNomVal() {
+		return nomVal;
+	}
+
+	public void setNomVal(double nomVal) {
+		this.nomVal = nomVal;
 	}
 
 }

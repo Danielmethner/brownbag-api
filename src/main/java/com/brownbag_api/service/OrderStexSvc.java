@@ -61,6 +61,7 @@ public class OrderStexSvc extends OrderSvc {
 	public OrderStex placeNewOrder(EOrderDir orderDir, EOrderType orderType, ObjAsset asset, int qty, double price,
 			ObjUser user, ObjParty party) {
 
+		
 		OrderStex orderStex = new OrderStex(orderDir, qty, asset, orderType, EOrderStatus.NEW, user, price, party, 0);
 		orderStex = orderRepo.save(orderStex);
 

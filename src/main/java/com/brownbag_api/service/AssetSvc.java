@@ -1,8 +1,11 @@
 package com.brownbag_api.service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,8 +91,20 @@ public class AssetSvc {
 
 	}
 
-	public ObjAsset createAssetBond(ObjParty party, ObjUser user, double qty, LocalDateTime matDate) {
-		// TODO Auto-generated method stub
-		return null;
+	public ObjAsset createAssetBond(ObjParty party, ObjUser user, int qty, LocalDateTime matDate,
+			@NotNull double nomVal, @NotNull double intrRate, @NotBlank @Size(max = 150) String name,
+			@Size(max = 12) String isin) {
+
+		System.err.println(party.getName());
+		// Custom format
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+		 
+		// Format LocalDateTime
+		String formattedMatDate = matDate.format(formatter);
+		name = name == null ? party.getName() + ": " + intrRate + "% - " + formattedMatDate : name;
+		isin = isin == null ? "XS" + party.getId() : isin;
+
+		ObjAsset asset = new ObjAsset(name, isin, EAssetGrp.BOND, qty, party, nomVal, matDate, intrRate);
+		return save(asset);
 	}
 }

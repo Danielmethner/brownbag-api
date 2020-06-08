@@ -204,9 +204,24 @@ public class OrderStexController {
 		ObjParty party = partySvc.getById(jsonOrderStex.getPartyId());
 		Long assetId = jsonOrderStex.getAssetId();
 
+		if (party.getId() == null) {
+			return ResponseEntity.ok("ERROR API: Party could not be found. Party ID: " + jsonOrderStex.getId());
+		}
+
 		ObjAsset asset = null;
-		if (jsonOrderStex.getIntrRate() > 0) {
-			asset = assetSvc.createAssetBond(party, user, jsonOrderStex.getQty(), jsonOrderStex.getMatDate());
+
+		// BOND IPO (INTR RATE > 0)
+		if ((assetId == null) && (jsonOrderStex.getOrderType() == EOrderType.STEX_IPO)
+				&& (jsonOrderStex.getIntrRate() > 0)) {
+			System.err.println(jsonOrderStex.getMatDate());
+			// TODO: Check for duplicates
+			asset = assetSvc.createAssetBond(party, user, (int) jsonOrderStex.getQty(), jsonOrderStex.getMatDate(),
+					jsonOrderStex.getNomVal(), jsonOrderStex.getIntrRate(), null, null);
+			
+			if (asset.getId() == null) {
+				return ResponseEntity.ok("ERROR API: Asset for Bond issuance could not be created");
+			}
+			
 		} else {
 			if (assetId == null) {
 				return ResponseEntity.ok("ERROR API: Asset not found!");
@@ -214,19 +229,19 @@ public class OrderStexController {
 			asset = assetSvc.getById(assetId);
 		}
 
-		if (jsonOrderStex.getOrderDir() == EOrderDir.SELL) {
+		if ((jsonOrderStex.getOrderDir() == EOrderDir.SELL) && (jsonOrderStex.getOrderType() != EOrderType.STEX_IPO)) {
+
+			// ENSURE PARTY HAS SUFFICIENT ASSETS TO SELL
 			ObjPos assetPos = posSvc.getByAssetAndParty(asset, party);
+
 			if (assetPos == null) {
 				return ResponseEntity.ok("ERROR API: The user has no position with this asset!");
 			}
 
-			if (jsonOrderStex.getOrderType() != EOrderType.STEX_IPO) {
-				double avblShares = posSvc.getQtyAvbl(assetPos);
-				if (avblShares < jsonOrderStex.getQty()) {
-					return ResponseEntity.ok("ERROR API: The user does not own enough shares! Available Shares: "
-							+ avblShares + " Order Amount: " + jsonOrderStex.getQty());
-				}
-
+			double avblShares = posSvc.getQtyAvbl(assetPos);
+			if (avblShares < jsonOrderStex.getQty()) {
+				return ResponseEntity.ok("ERROR API: The user does not own enough shares! Available Shares: "
+						+ avblShares + " Order Amount: " + jsonOrderStex.getQty());
 			}
 
 		}
