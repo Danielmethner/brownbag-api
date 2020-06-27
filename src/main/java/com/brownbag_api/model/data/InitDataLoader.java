@@ -218,11 +218,23 @@ public class InitDataLoader {
 		// COMPANY FOR TRADER_1
 		ObjUser userTrader1 = userSvc.getByEnum(EUser.U_TRADER_1);
 		ObjParty partyPrivTrader1 = userSvc.getNaturalPerson(userTrader1);
+		
+		// CORPORATION
 		ObjParty business1 = partySvc.createLegalPerson("Trader 1: Business 1", ELegalForm.CORP, userTrader1,
 				partyPrivTrader1, 15000, 100000);
 		ObjAsset business1Asset = business1.getAsset();
-		orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, business1Asset, 3000, 10, userTrader1,
+		OrderStex orderSell = orderStexSvc.placeNewOrder(EOrderDir.SELL, EOrderType.STEX, business1Asset, 3000, 10, userTrader1,
 				partyPrivTrader1);
+		
+		ObjUser userTrader2 = userSvc.getByEnum(EUser.U_TRADER_2);
+		ObjParty partyTrader2 = userSvc.getNaturalPerson(userTrader2);
+		OrderStex orderBuy = orderStexSvc.placeNewOrder(EOrderDir.BUY, EOrderType.STEX, business1Asset, 2500,
+				20.00, userTrader2, partyTrader2);
+		orderStexSvc.matchOrders(orderBuy, orderSell);
+		
+		// LLC
+		ObjParty business2 = partySvc.createLegalPersonLLC("Trader 1: Business 2", ELegalForm.LTD, userTrader1,
+				partyPrivTrader1, 50000);
 	}
 
 	// -----------------------------------------------------------

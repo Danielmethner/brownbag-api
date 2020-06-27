@@ -44,7 +44,16 @@ public class AssetSvc {
 	}
 
 	public ObjAsset save(ObjAsset asset) {
-		return assetRepo.save(asset);
+		ObjAsset assetSaved = null;
+		try {
+			assetSaved = assetRepo.save(asset);
+		} catch (Exception e) {
+			logSvc.write(e.getMessage());
+			logSvc.write(e.getCause().getMessage());
+			logSvc.write(e.getCause().getCause().getMessage());			
+			e.printStackTrace();
+		}
+		return assetSaved;
 	}
 
 	public ObjAsset createAssetLoan(String advText, EAssetGrp loan, @NotNull int totalShares, ObjParty partyLender,

@@ -98,6 +98,11 @@ public class PartySvc {
 
 	}
 
+	public ObjParty createLegalPersonLLC(String name, ELegalForm legalForm, ObjUser objUser, ObjParty owner,
+			double shareCapital) {
+		return createLegalPerson(name, legalForm, objUser, owner, 0, shareCapital);
+	}
+
 	public ObjParty createLegalPerson(String name, ELegalForm legalForm, ObjUser objUser, ObjParty owner, int shareQty,
 			double shareCapital) {
 

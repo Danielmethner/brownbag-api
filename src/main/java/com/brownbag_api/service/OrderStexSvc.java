@@ -61,7 +61,6 @@ public class OrderStexSvc extends OrderSvc {
 	public OrderStex placeNewOrder(EOrderDir orderDir, EOrderType orderType, ObjAsset asset, int qty, double price,
 			ObjUser user, ObjParty party) {
 
-		
 		OrderStex orderStex = new OrderStex(orderDir, qty, asset, orderType, EOrderStatus.NEW, user, price, party, 0);
 		orderStex = orderRepo.save(orderStex);
 
@@ -288,8 +287,15 @@ public class OrderStexSvc extends OrderSvc {
 			posSvc.save(objPos);
 		} else {
 			ObjPos objPos = posSvc.getByAssetAndParty(orderStex.getAsset(), orderStex.getParty());
-			objPos.lowerQtyBlocked(orderStex.getQtyOpn());
-			posSvc.save(objPos);
+//			System.out.println("Pos: " + objPos.getName());
+//			System.out.println("Order ID: " + orderStex.getId());
+//			System.out.println("Order Asset: " + orderStex.getAsset().getName());
+//			System.out.println("Order ID: " + orderStex.getQtyOpn());
+			if (objPos != null) {
+
+				objPos.lowerQtyBlocked(orderStex.getQtyOpn());
+				posSvc.save(objPos);
+			}
 		}
 		orderStex = (OrderStex) execAction(orderStex, EOrderAction.DISCARD);
 		return orderStex;

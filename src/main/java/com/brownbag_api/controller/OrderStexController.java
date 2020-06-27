@@ -218,8 +218,8 @@ public class OrderStexController {
 			asset = assetSvc.createAssetBond(party, user, (int) jsonOrderStex.getQty(), jsonOrderStex.getMatDate(),
 					jsonOrderStex.getNomVal(), jsonOrderStex.getIntrRate(), null, null);
 			
-			if (asset.getId() == null) {
-				return ResponseEntity.ok("ERROR API: Asset for Bond issuance could not be created");
+			if (asset == null) {
+				return ResponseEntity.ok("ERROR API: Asset for Bond issuance could not be created. Check logs for more details");
 			}
 			
 		} else {
