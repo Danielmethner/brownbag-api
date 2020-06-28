@@ -163,6 +163,17 @@ public class ObjPartyController {
 		return ResponseEntity.ok(avblQty);
 	}
 
+	@GetMapping("/cred-facility/party/{partyId}")
+	public ResponseEntity<?> getCredFclty(@PathVariable Long partyId) {
+		if (partyId == null) {
+			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
+		}
+		double credFclty = 0;
+		ObjParty jpaParty = partySvc.getById(partyId);
+		credFclty = partySvc.getCredFclty(jpaParty);
+		return ResponseEntity.ok(credFclty);
+	}
+
 	@PostMapping(value = "/legalperson/create", consumes = "application/json")
 	public ResponseEntity<?> createLegalPerson(@RequestBody JsonObjParty jsonObjParty, Authentication authentication) {
 		String partyName = jsonObjParty.getName();
@@ -184,4 +195,5 @@ public class ObjPartyController {
 		}
 		return ResponseEntity.ok("New Party created: " + jpaParty.getId());
 	}
+
 }

@@ -14,6 +14,7 @@ import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.jpa.ObjFinStmt;
 import com.brownbag_api.model.jpa.ObjFinStmtItem;
 import com.brownbag_api.model.jpa.ObjFinStmtSection;
+import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.json.JsonObjFinStmtItem;
 import com.brownbag_api.model.json.JsonObjFinStmtSection;
 import com.brownbag_api.repo.FinStmtSectionRepo;
@@ -52,7 +53,7 @@ public class FinStmtSectionSvc {
 			ObjFinStmt balSheetPrevYear = balSheetSvc.getFinStmt(balSheet.getParty(), controlSvc.getFinYear() - 1,
 					finStmtType);
 			if (balSheetPrevYear != null) {
-				ObjFinStmtSection balSheetSectionPrevYear = getByBalSheetAndSection(balSheetPrevYear, eBalSheetSection);
+				ObjFinStmtSection balSheetSectionPrevYear = getByBalSheetAndSectionType(balSheetPrevYear, eBalSheetSection);
 
 				if (balSheetSectionPrevYear != null) {
 					qty = balSheetSectionPrevYear.getQty();
@@ -60,7 +61,7 @@ public class FinStmtSectionSvc {
 			}
 		}
 
-		ObjFinStmtSection balSheetSection = new ObjFinStmtSection(balSheet, eBalSheetSection, qty, finStmtType);
+		ObjFinStmtSection balSheetSection = new ObjFinStmtSection(balSheet, eBalSheetSection, qty, finStmtType, balSheet.getParty());
 		ObjFinStmtSection balSheetSectionDb = balSheetSectionRepo.save(balSheetSection);
 		List<EFinStmtItemType> items = getItemsBySection(eBalSheetSection);
 		items.forEach(eBalSheetItem -> {
@@ -76,8 +77,19 @@ public class FinStmtSectionSvc {
 
 	}
 
-	public ObjFinStmtSection getByBalSheetAndSection(ObjFinStmt balSheet, EFinStmtSectionType sectionType) {
+	public ObjFinStmtSection getByBalSheetAndSectionType(ObjFinStmt balSheet, EFinStmtSectionType sectionType) {
 		ObjFinStmtSection section = balSheetSectionRepo.findByFinStmtAndSection(balSheet, sectionType);
+		return section;
+	}
+	
+	public ObjFinStmtSection getCurrentByPartyIdAndSectionType(ObjParty objParty, EFinStmtSectionType sectionType) {
+		int finYear = controlSvc.getFinYear();
+		ObjFinStmtSection section = getByPartyIdAndSectionTypeAndFinYear(objParty, sectionType, finYear);
+		return section;
+	}
+	
+	public ObjFinStmtSection getByPartyIdAndSectionTypeAndFinYear(ObjParty objParty, EFinStmtSectionType sectionType, int finYear) {
+		ObjFinStmtSection section = balSheetSectionRepo.findByPartyAndSectionAndFinYear(objParty, sectionType, finYear);
 		return section;
 	}
 
@@ -91,7 +103,7 @@ public class FinStmtSectionSvc {
 	}
 
 	public JsonObjFinStmtSection getByBalSheetAndSectionJson(ObjFinStmt balSheet, EFinStmtSectionType sectionType) {
-		ObjFinStmtSection section = getByBalSheetAndSection(balSheet, sectionType);
+		ObjFinStmtSection section = getByBalSheetAndSectionType(balSheet, sectionType);
 		if (section == null) {
 			return null;
 		}

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.enums.EAssetGrp;
 import com.brownbag_api.model.enums.ECtrlVar;
+import com.brownbag_api.model.enums.EFinStmtSectionType;
+import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.enums.ELegalForm;
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderStatus;
@@ -15,6 +17,8 @@ import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.enums.EParty;
 import com.brownbag_api.model.enums.EPartyType;
 import com.brownbag_api.model.jpa.ObjAsset;
+import com.brownbag_api.model.jpa.ObjFinStmt;
+import com.brownbag_api.model.jpa.ObjFinStmtSection;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjPosStex;
@@ -54,6 +58,9 @@ public class PartySvc {
 	private OrderCreateMonSvc orderCreateMonSvc;
 	@Autowired
 	private OrderLoanSvc orderLoanSvc;
+
+	@Autowired
+	private FinStmtSectionSvc finStmtSectionSvc;
 
 	/**
 	 *
@@ -233,5 +240,12 @@ public class PartySvc {
 	public List<ObjPosStex> getOwnershipList(ObjParty jpaParty) {
 		List<ObjPosStex> objPosList = posSvc.getByAsset(jpaParty.getAsset());
 		return objPosList;
+	}
+
+	public double getCredFclty(ObjParty objParty) {
+		double credFclty = 0;
+		ObjFinStmtSection currentBalSheetSectionEquity = finStmtSectionSvc.getCurrentByPartyIdAndSectionType(objParty, EFinStmtSectionType.EQUITY);
+		credFclty = currentBalSheetSectionEquity.getQty();
+		return credFclty;
 	}
 }

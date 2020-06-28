@@ -17,4 +17,6 @@ public interface AssetRepo extends JpaRepository<ObjAsset, Long> {
 
 	List<ObjAsset> findAllByAssetGrp(EAssetGrp eAssetGrp);
 
+	List<ObjAsset> findAllByAssetGrpIn(List<EAssetGrp> orderStatusList);
+
 }

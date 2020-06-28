@@ -34,9 +34,14 @@ public class ObjFinStmtSection implements Serializable {
 	@NotNull
 	@ManyToOne(targetEntity = ObjFinStmt.class)
 	@JoinColumn(name = "FIN_STMT_ID")
-	@JsonBackReference
 	private ObjFinStmt finStmt;
 
+	@NotNull
+	@ManyToOne(targetEntity = ObjParty.class)
+	@JoinColumn(name = "PARTY_ID")
+	private ObjParty party;
+
+	
 	@Enumerated(EnumType.STRING)
 	@Column(length = 20)
 	private EFinStmtSectionType section;
@@ -63,7 +68,7 @@ public class ObjFinStmtSection implements Serializable {
 	}
 
 	public ObjFinStmtSection(@NotNull ObjFinStmt balSheet, EFinStmtSectionType eBalSheetSection, double qty,
-			@NotNull EFinStmtType finStmtType) {
+			@NotNull EFinStmtType finStmtType, ObjParty party) {
 		super();
 		this.finStmt = balSheet;
 		this.section = eBalSheetSection;
@@ -72,6 +77,7 @@ public class ObjFinStmtSection implements Serializable {
 		this.name = balSheet.getParty().getName() + ": " + eBalSheetSection.getName() + ": " + "Year: "
 				+ balSheet.getFinYear();
 		this.finStmtType = finStmtType;
+		this.party = party;
 	}
 
 	public Long getId() {
@@ -138,4 +144,13 @@ public class ObjFinStmtSection implements Serializable {
 		this.finStmtType = finStmtType;
 	}
 
+	public ObjParty getParty() {
+		return party;
+	}
+
+	public void setParty(ObjParty party) {
+		this.party = party;
+	}
+
+	
 }
