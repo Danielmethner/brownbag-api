@@ -78,16 +78,15 @@ public class OrderLoanSvc extends OrderSvc {
 
 		ObjParty partyLender = orderLoan.getMaccLender().getParty();
 		ObjParty partyBorrower = orderLoan.getMaccDebtor().getParty();
+		// CREATE LOAN ASSET
+		ObjAsset assetLoan = assetSvc.createAssetLoan(orderLoan.getId() + ": " + orderLoan.getAdvText(), EAssetGrp.LOAN,
+				(@NotNull int) orderLoan.getQty(), partyLender, orderLoan.getMatDate(), orderLoan.getIntrRate());
 
 		// TRANSFER CASH
 		OrderPay orderPay = orderPaySvc.createPay(orderLoan.getQty(), orderLoan.getUser(),
 				orderLoan.getMaccLender().getAsset(), "Payout for: " + orderLoan.getAdvText(),
 				orderLoan.getMaccLender(), orderLoan.getMaccDebtor());
 		orderPay = orderPaySvc.execPay(orderPay);
-
-		// CREATE LOAN ASSET
-		ObjAsset assetLoan = assetSvc.createAssetLoan(orderLoan.getAdvText(), EAssetGrp.LOAN,
-				(@NotNull int) orderLoan.getQty(), partyLender, orderLoan.getMatDate(), orderLoan.getIntrRate());
 
 		// CREATE LOAN POSITION - LENDER
 		ObjPosLoan posLoanLender = posLoanSvc.createPosLoan(0, assetLoan, partyLender, orderLoan.getMaccLender(),

@@ -17,20 +17,25 @@ import org.springframework.web.bind.annotation.RestController;
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
+import com.brownbag_api.model.enums.EParty;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
+import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjUser;
-import com.brownbag_api.model.jpa.OrderStex;
-import com.brownbag_api.model.json.JsonOrderStex;
-import com.brownbag_api.repo.OrderStexRepo;
+import com.brownbag_api.model.jpa.OrderLoan;
+import com.brownbag_api.model.jpa.OrderLoan;
+import com.brownbag_api.model.json.JsonOrderLoan;
+import com.brownbag_api.model.json.JsonOrderLoan;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.payload.response.MsgResponse;
 import com.brownbag_api.security.svc.UserDetailsImpl;
 import com.brownbag_api.service.AssetSvc;
+import com.brownbag_api.service.ControlSvc;
 import com.brownbag_api.service.LogSvc;
-import com.brownbag_api.service.OrderStexSvc;
+import com.brownbag_api.service.OrderLoanSvc;
+import com.brownbag_api.service.OrderLoanSvc;
 import com.brownbag_api.service.OrderSvc;
 import com.brownbag_api.service.PartySvc;
 import com.brownbag_api.service.PosSvc;
@@ -51,9 +56,10 @@ public class OrderLoanController {
 	OrderSvc orderSvc;
 
 	@Autowired
-	OrderStexRepo orderStexRepo;
+	ControlSvc controlSvc;
+
 	@Autowired
-	OrderStexSvc orderStexSvc;
+	OrderLoanSvc orderLoanSvc;
 
 	@Autowired
 	UserRepo userRepo;
@@ -73,14 +79,14 @@ public class OrderLoanController {
 	/*
 	 * CONVERT JPA TO JSON
 	 */
-	private List<JsonOrderStex> jpaToJson(List<OrderStex> jpaOrderStexList) {
-		List<JsonOrderStex> jsonOrderStexList = new ArrayList<JsonOrderStex>();
-		for (OrderStex jpaOrderStex : jpaOrderStexList) {
-			JsonOrderStex jsonOrderStex = new JsonOrderStex(jpaOrderStex);
-			jsonOrderStexList.add(jsonOrderStex);
-		}
-		return jsonOrderStexList;
-	}
+//	private List<JsonOrderLoan> jpaToJson(List<OrderLoan> jpaOrderLoanList) {
+//		List<JsonOrderLoan> jsonOrderLoanList = new ArrayList<JsonOrderLoan>();
+//		for (OrderLoan jpaOrderLoan : jpaOrderLoanList) {
+//			JsonOrderLoan jsonOrderLoan = new JsonOrderLoan(jpaOrderLoan);
+//			jsonOrderLoanList.add(jsonOrderLoan);
+//		}
+//		return jsonOrderLoanList;
+//	}
 
 	/*
 	 * GET OBJ_USER BY AUTH OBJ
@@ -92,171 +98,41 @@ public class OrderLoanController {
 		return objUser;
 	}
 
-	@GetMapping("/all")
-	public List<JsonOrderStex> getAllStex() {
-		List<OrderStex> jpaOrderStexList = orderStexRepo.findAll();
-		return jpaToJson(jpaOrderStexList);
-	}
-
-	@GetMapping("/user")
-	public List<JsonOrderStex> getByUser(Authentication authentication) {
-		ObjUser user = getByAuthentication(authentication);
-		List<OrderStex> jpaOrderStexList = orderStexRepo.findByUser(user);
-		return jpaToJson(jpaOrderStexList);
-	}
-
-	@GetMapping("/party/{partyId}")
-	public ResponseEntity<?> getByParty(Authentication authentication, @PathVariable Long partyId) {
-
-		if (partyId == null) {
-			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Party ID specified!"));
-		}
-
-		ObjParty party = partySvc.getById(partyId);
-		if (party == null) {
-			return ResponseEntity.ok("ERROR API: Party with ID: " + partyId + " could not be found!");
-		}
-
-		List<OrderStex> jpaOrderStexList = orderStexSvc.getByParty(party);
-
-		return ResponseEntity.ok(jpaToJson(jpaOrderStexList));
-	}
-
-	@GetMapping("/placed/asset/{assetId}")
-	public ResponseEntity<?> getPlacedByAsset(Authentication authentication, @PathVariable Long assetId) {
-
-		if (assetId == null) {
-			logSvc.write("ERROR API: No Asset ID specified!");
-			return ResponseEntity.badRequest().body(new MsgResponse("ERROR API: No Asset ID specified!"));
-		}
-
-		ObjAsset asset = assetSvc.getById(assetId);
-		if (asset == null) {
-			return ResponseEntity.ok("ERROR API: Party with ID: " + assetId + " could not be found!");
-		}
-
-		List<EOrderStatus> orderStatusList = new ArrayList<EOrderStatus>();
-		orderStatusList.add(EOrderStatus.PLACED);
-		orderStatusList.add(EOrderStatus.EXEC_PART);
-		List<OrderStex> jpaOrderStexList = orderStexSvc.getByAssetAndStatusList(asset, orderStatusList);
-
-		return ResponseEntity.ok(jpaToJson(jpaOrderStexList));
-	}
-
-	@GetMapping("/{orderId}/disc")
-	public ResponseEntity<?> discard(Authentication authentication, @PathVariable Long orderId) {
-		OrderStex orderStex = orderStexSvc.getById(orderId);
-		if (orderStex == null) {
-			logSvc.write("Order with ID: " + orderId + " could not be found!");
-			return ResponseEntity.ok("ERROR API: Order with ID: " + orderId + " could not be found!");
-		}
-		if (orderStex.getOrderStatus() == EOrderStatus.DISC) {
-			String msg = "ERROR API: Order with ID: " + orderId + " has already been discarded!";
-			logSvc.write(msg);
-			return ResponseEntity.ok(msg);
-		}
-		orderStex = orderStexSvc.discardOrder(orderStex);
-		if (orderStex == null) {
-			String msg = "ERROR API: Order with ID: " + orderId + " could not be discarded! Check log for more details";
-			logSvc.write(msg);
-			return ResponseEntity.ok(msg);
-		}
-		JsonOrderStex jsonOrderStex = new JsonOrderStex(orderStex);
-		return ResponseEntity.ok(jsonOrderStex);
-	}
-
-	@GetMapping("/match/buy/{orderBuyId}/sell/{orderSellId}")
-	public ResponseEntity<?> match(Authentication authentication, @PathVariable Long orderBuyId,
-			@PathVariable Long orderSellId) {
-		OrderStex orderStexBuy = orderStexSvc.getById(orderBuyId);
-		double qtyExecBuyPre = orderStexBuy.getQtyExec();
-		OrderStex orderStexSell = orderStexSvc.getById(orderSellId);
-		double qtyExecSellPre = orderStexSell.getQtyExec();
-		orderStexSvc.matchOrders(orderStexBuy, orderStexSell);
-		orderStexBuy = orderStexSvc.getById(orderBuyId);
-		orderStexSell = orderStexSvc.getById(orderSellId);
-
-		if (orderStexBuy.getParty().getId() == orderStexSell.getParty().getId()) {
-			String msg = "ERROR_API: Buyer and seller must not be identical";
-			logSvc.write(msg);
-			return ResponseEntity.ok(msg);
-		}
-
-		if (qtyExecBuyPre == orderStexBuy.getQtyExec()) {
-			String msg = "ERROR_API: Buy Order execution Qty was not successfully updated.";
-			logSvc.write(msg);
-			return ResponseEntity.ok(msg);
-		}
-		if (qtyExecSellPre == orderStexSell.getQtyExec()) {
-			String msg = "ERROR_API: Sell Order execution Qty was not successfully updated.";
-			logSvc.write(msg);
-			return ResponseEntity.ok(msg);
-		}
-		return ResponseEntity.ok("Orders were successfully executed!");
-	}
-
 	// ----------------------------------------------------------------------
 	// PLACE NEW ORDER
 	// ----------------------------------------------------------------------
 	@PostMapping(value = "/place", consumes = "application/json")
-	public ResponseEntity<?> placeOrder(@RequestBody JsonOrderStex jsonOrderStex, Authentication authentication) {
+	public ResponseEntity<?> placeOrder(@RequestBody JsonOrderLoan jsonOrderLoan, Authentication authentication) {
 		ObjUser user = getByAuthentication(authentication);
-		ObjParty party = partySvc.getById(jsonOrderStex.getPartyId());
-		Long assetId = jsonOrderStex.getAssetId();
+		ObjParty partyDebtor = partySvc.getById(jsonOrderLoan.getPartyId());
 
-		if (party.getId() == null) {
-			return ResponseEntity.ok("ERROR API: Party could not be found. Party ID: " + jsonOrderStex.getId());
+		if (partyDebtor.getId() == null) {
+			return ResponseEntity.ok("ERROR API: Party could not be found. Party ID: " + jsonOrderLoan.getId());
 		}
 
-		ObjAsset asset = null;
-
-		// BOND IPO (INTR RATE > 0)
-		if ((assetId == null) && (jsonOrderStex.getOrderType() == EOrderType.STEX_IPO)
-				&& (jsonOrderStex.getIntrRate() > 0)) {
-			System.err.println(jsonOrderStex.getMatDate());
-			// TODO: Check for duplicates
-			asset = assetSvc.createAssetBond(party, user, (int) jsonOrderStex.getQty(), jsonOrderStex.getMatDate(),
-					jsonOrderStex.getNomVal(), jsonOrderStex.getIntrRate(), null, null);
-			
-			if (asset == null) {
-				return ResponseEntity.ok("ERROR API: Asset for Bond issuance could not be created. Check logs for more details");
-			}
-			
-		} else {
-			if (assetId == null) {
-				return ResponseEntity.ok("ERROR API: Asset not found!");
-			}
-			asset = assetSvc.getById(assetId);
+		ObjPosMacc maccGrant = jsonOrderLoan.getMaccLender();
+		if (maccGrant == null) {
+			ObjParty partyLender = partySvc.getByEnum(EParty.ECB);
+			maccGrant = (ObjPosMacc) posSvc.getByParty(partyLender).get(0);
 		}
 
-		if ((jsonOrderStex.getOrderDir() == EOrderDir.SELL) && (jsonOrderStex.getOrderType() != EOrderType.STEX_IPO)) {
+		ObjPosMacc maccRcv = jsonOrderLoan.getMaccDebtor();
 
-			// ENSURE PARTY HAS SUFFICIENT ASSETS TO SELL
-			ObjPos assetPos = posSvc.getByAssetAndParty(asset, party);
-
-			if (assetPos == null) {
-				return ResponseEntity.ok("ERROR API: The user has no position with this asset!");
-			}
-
-			double avblShares = posSvc.getQtyAvbl(assetPos);
-			if (avblShares < jsonOrderStex.getQty()) {
-				return ResponseEntity.ok("ERROR API: The user does not own enough shares! Available Shares: "
-						+ avblShares + " Order Amount: " + jsonOrderStex.getQty());
-			}
-
+		if (maccRcv == null) {
+			maccRcv = (ObjPosMacc) posSvc.getByParty(partyDebtor).get(0);
 		}
 
-		OrderStex orderStex = orderStexSvc.placeNewOrder(jsonOrderStex.getOrderDir(), jsonOrderStex.getOrderType(),
-				asset, (int) jsonOrderStex.getQty(), jsonOrderStex.getPriceLimit(), user, party);
+		double intrRate = jsonOrderLoan.getIntrRate() > 0 ?  jsonOrderLoan.getIntrRate() : controlSvc.getIntrRate();
+		OrderLoan orderLoan = orderLoanSvc.createLoan(jsonOrderLoan.getQty(), user, maccGrant, maccRcv,
+				jsonOrderLoan.getMatDate(), intrRate);
 
-		if (orderStex == null) {
-			return ResponseEntity.ok("ERROR API: Direction: " + jsonOrderStex.getOrderDir() + " Order Type: "
-					+ jsonOrderStex.getOrderType() + " Asset: " + asset.getName() + " Quantity: "
-					+ (int) jsonOrderStex.getQty() + " Price Limit: " + jsonOrderStex.getPriceLimit() + " User: "
-					+ user.getName() + " Party: " + party.getName() + ". Please Check logs for more details.");
+		if (orderLoan == null) {
+			return ResponseEntity.ok("ERROR API: Order Creation failed. Order Type: " + jsonOrderLoan.getOrderType()
+					+ " Amount: " + (int) jsonOrderLoan.getQty() + " User: " + user.getName() + " Party: "
+					+ partyDebtor.getName() + ". Please Check logs for more details.");
 		}
 
-		orderStexSvc.placeOrder(orderStex);
+		orderLoanSvc.grantLoan(orderLoan);
 		return ResponseEntity.ok("Order has been placed successfully!");
 	}
 

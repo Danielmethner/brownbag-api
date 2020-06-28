@@ -102,7 +102,7 @@ public class InitDataLoader {
 		ObjAsset asset = assetSvc.getByEnum(eAsset);
 		if (asset == null) {
 			ObjParty issuer = partySvc.getByEnum(eAsset.getParty());
-			return assetSvc.createAssetStex(eAsset.getName(), null, eAsset.getAssetGrp(), 0, issuer, 1, 0, null);
+			return assetSvc.createAsset(eAsset.getName(), null, eAsset.getAssetGrp(), 0, issuer, 1, 0, null);
 		} else {
 			return asset;
 		}
