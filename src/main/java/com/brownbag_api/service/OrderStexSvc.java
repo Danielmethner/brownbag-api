@@ -287,10 +287,6 @@ public class OrderStexSvc extends OrderSvc {
 			posSvc.save(objPos);
 		} else {
 			ObjPos objPos = posSvc.getByAssetAndParty(orderStex.getAsset(), orderStex.getParty());
-//			System.out.println("Pos: " + objPos.getName());
-//			System.out.println("Order ID: " + orderStex.getId());
-//			System.out.println("Order Asset: " + orderStex.getAsset().getName());
-//			System.out.println("Order ID: " + orderStex.getQtyOpn());
 			if (objPos != null) {
 
 				objPos.lowerQtyBlocked(orderStex.getQtyOpn());

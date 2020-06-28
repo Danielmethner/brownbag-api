@@ -40,6 +40,7 @@ public class ObjFinStmt implements Serializable {
 
 	@NotBlank
 	@Size(max = 100)
+	@Column(name = "name", unique = true)
 	private String name;
 
 	@NotNull

@@ -245,7 +245,14 @@ public class PartySvc {
 	public double getCredFclty(ObjParty objParty) {
 		double credFclty = 0;
 		ObjFinStmtSection currentBalSheetSectionEquity = finStmtSectionSvc.getCurrentByPartyIdAndSectionType(objParty, EFinStmtSectionType.EQUITY);
-		credFclty = currentBalSheetSectionEquity.getQty();
+		ObjFinStmtSection currentBalSheetSectionLiabilities = finStmtSectionSvc.getCurrentByPartyIdAndSectionType(objParty, EFinStmtSectionType.LIABILITIES);
+		
+		if(currentBalSheetSectionEquity == null) {
+			currentBalSheetSectionEquity = finStmtSectionSvc.getByPartyIdAndSectionTypeAndFinYear(objParty, EFinStmtSectionType.EQUITY, controlSvc.getFinYear() - 1);
+			currentBalSheetSectionLiabilities = finStmtSectionSvc.getByPartyIdAndSectionTypeAndFinYear(objParty, EFinStmtSectionType.LIABILITIES, controlSvc.getFinYear() - 1);
+		}
+		credFclty = currentBalSheetSectionEquity.getQty() - currentBalSheetSectionLiabilities.getQty();
+		credFclty = credFclty > 0 ? credFclty : 0;
 		return credFclty;
 	}
 }

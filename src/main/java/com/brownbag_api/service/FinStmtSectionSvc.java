@@ -43,17 +43,20 @@ public class FinStmtSectionSvc {
 	}
 
 	public ObjFinStmtSection createFinStmtSection(ObjFinStmt balSheet, EFinStmtSectionType eBalSheetSection,
-			EFinStmtType finStmtType) {
+			EFinStmtType finStmtType, int finYear, ObjParty party) {
 
 		double qty = 0;
 
 		// IF BALANCE SHEET: GET LAST YEARS BALANCE SHEET
 		if (finStmtType == EFinStmtType.BAL_SHEET) {
 
-			ObjFinStmt balSheetPrevYear = balSheetSvc.getFinStmt(balSheet.getParty(), controlSvc.getFinYear() - 1,
-					finStmtType);
+			ObjFinStmt balSheetPrevYear = null;
+			if (finYear > party.getFoundingDate().getYear()) {
+				balSheetPrevYear = balSheetSvc.getFinStmt(party, finYear - 1, finStmtType);
+			}
 			if (balSheetPrevYear != null) {
-				ObjFinStmtSection balSheetSectionPrevYear = getByBalSheetAndSectionType(balSheetPrevYear, eBalSheetSection);
+				ObjFinStmtSection balSheetSectionPrevYear = getByBalSheetAndSectionType(balSheetPrevYear,
+						eBalSheetSection);
 
 				if (balSheetSectionPrevYear != null) {
 					qty = balSheetSectionPrevYear.getQty();
@@ -61,7 +64,8 @@ public class FinStmtSectionSvc {
 			}
 		}
 
-		ObjFinStmtSection balSheetSection = new ObjFinStmtSection(balSheet, eBalSheetSection, qty, finStmtType, balSheet.getParty());
+		ObjFinStmtSection balSheetSection = new ObjFinStmtSection(balSheet, eBalSheetSection, qty, finStmtType,
+				balSheet.getParty());
 		ObjFinStmtSection balSheetSectionDb = balSheetSectionRepo.save(balSheetSection);
 		List<EFinStmtItemType> items = getItemsBySection(eBalSheetSection);
 		items.forEach(eBalSheetItem -> {
@@ -81,14 +85,15 @@ public class FinStmtSectionSvc {
 		ObjFinStmtSection section = balSheetSectionRepo.findByFinStmtAndSection(balSheet, sectionType);
 		return section;
 	}
-	
+
 	public ObjFinStmtSection getCurrentByPartyIdAndSectionType(ObjParty objParty, EFinStmtSectionType sectionType) {
 		int finYear = controlSvc.getFinYear();
 		ObjFinStmtSection section = getByPartyIdAndSectionTypeAndFinYear(objParty, sectionType, finYear);
 		return section;
 	}
-	
-	public ObjFinStmtSection getByPartyIdAndSectionTypeAndFinYear(ObjParty objParty, EFinStmtSectionType sectionType, int finYear) {
+
+	public ObjFinStmtSection getByPartyIdAndSectionTypeAndFinYear(ObjParty objParty, EFinStmtSectionType sectionType,
+			int finYear) {
 		ObjFinStmtSection section = balSheetSectionRepo.findByPartyAndSectionAndFinYear(objParty, sectionType, finYear);
 		return section;
 	}
