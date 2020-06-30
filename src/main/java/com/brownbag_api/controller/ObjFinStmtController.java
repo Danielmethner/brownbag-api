@@ -22,6 +22,7 @@ import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.ControlSvc;
 import com.brownbag_api.service.FinStmtSectionSvc;
 import com.brownbag_api.service.FinStmtSvc;
+import com.brownbag_api.service.LogSvc;
 import com.brownbag_api.service.PartySvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -38,6 +39,9 @@ public class ObjFinStmtController {
 	@Autowired
 	PartySvc partySvc;
 
+
+	@Autowired
+	LogSvc logSvc;
 	@Autowired
 	AssetSvc assetSvc;
 	@Autowired
@@ -93,16 +97,59 @@ public class ObjFinStmtController {
 	}
 
 	@GetMapping("/type/{finStmtType}/finyear/{finYear}/party/{partyId}")
-	public ResponseEntity<?> getIncomeStmtByPartyId(@PathVariable EFinStmtType finStmtType, @PathVariable int finYear,
+	public ResponseEntity<?> getFinStmtByPartyId(@PathVariable EFinStmtType finStmtType, @PathVariable int finYear,
 			@PathVariable Long partyId) {
 		ObjParty party = partySvc.getById(partyId);
 		ObjFinStmt jpaBalSheet = finStmtSvc.getFinStmt(party, finYear, finStmtType);
 
 		if (jpaBalSheet == null) {
-			return ResponseEntity
-					.ok("Could not find Income Statement for year: '" + finYear + "' and Party ID: ' " + partyId + "'");
+			return ResponseEntity.ok("Could not find " + finStmtType.getName() + " for year: '" + finYear
+					+ "' and Party ID: ' " + partyId + "'");
 		} else {
 			return ResponseEntity.ok(jpaToJson(jpaBalSheet));
 		}
+	}
+
+	/**
+	 * GET last N FIN STMTs with N = histCnt
+	 * 
+	 * @param finStmtType
+	 * @param finYearBase
+	 * @param partyId
+	 * @param histCnt
+	 * @return
+	 */
+	@GetMapping("/type/{finStmtType}/finyear/{finYearBase}/party/{partyId}/hist-cnt/{histCnt}")
+	public ResponseEntity<?> getFinStmtList(@PathVariable EFinStmtType finStmtType, @PathVariable int finYearBase,
+			@PathVariable Long partyId, @PathVariable Integer histCnt) {
+		ObjParty party = partySvc.getById(partyId);
+		int partyFoundingYear = party.getFoundingDate().getYear();
+		ObjFinStmt jpaBalSheet = null;
+		
+		System.err.println(histCnt);
+		if (histCnt == 0) {
+			return null;
+		}
+
+		
+		if(finYearBase - histCnt < partyFoundingYear) {
+			logSvc.write("Trying to retrieve Fin Stmt from before founding date of the company");
+		}
+		List<ObjFinStmt> jpaFinStmtList = new ArrayList<ObjFinStmt>();
+		for (Integer histDecr = 0; histDecr < histCnt; histDecr++) {
+			int finYear = finYearBase - histDecr;
+			if (finYear >= partyFoundingYear) {
+				jpaBalSheet = finStmtSvc.getFinStmt(party, finYear, finStmtType);
+				if (jpaBalSheet == null) {
+					return ResponseEntity.ok("Could not find " + finStmtType.getName() + " for year: '" + finYear
+							+ "' and Party ID: ' " + partyId + "'");
+				} else {
+					jpaFinStmtList.add(jpaBalSheet);
+				}
+			}
+		}
+
+		return ResponseEntity.ok(jpaToJson(jpaFinStmtList));
+
 	}
 }

@@ -37,9 +37,9 @@ public class FinStmtSvc {
 	public ObjFinStmt getFinStmt(ObjParty party, int finYear, EFinStmtType finStmtType) {
 		ObjFinStmt balSheet = finStmtRepo.findByPartyAndFinYearAndFinStmtType(party, finYear, finStmtType);
 		int foundingYear = party.getFoundingDate().getYear();
-		System.err.println("founding year: " + foundingYear);
+//		System.err.println("founding year: " + foundingYear);
 		int balSheetYear = finYear;
-		System.err.println("finYear: " + finYear);
+//		System.err.println("finYear: " + finYear);
 
 		if (balSheet == null) {
 			// TODO: iterate over past balance sheets until either year of foundation or the
@@ -49,12 +49,12 @@ public class FinStmtSvc {
 				balSheetYear--;
 				balSheet = finStmtRepo.findByPartyAndFinYearAndFinStmtType(party, balSheetYear, finStmtType);
 				if (balSheet != null) {
-					System.err.println("found bal sheet: " + balSheet.getFinYear());
+//					System.err.println("found bal sheet: " + balSheet.getFinYear());
 					balSheetYear++;
 					break;
 				}
 			}
-			System.err.println("bal sheet to create: " + balSheetYear);
+//			System.err.println("bal sheet to create: " + balSheetYear);
 			while (balSheetYear <= finYear) {
 				balSheet = createFinStmt(party, balSheetYear, finStmtType);
 				balSheetYear = balSheetYear + 1;
