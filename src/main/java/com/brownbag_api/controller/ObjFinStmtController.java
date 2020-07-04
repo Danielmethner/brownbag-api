@@ -126,7 +126,6 @@ public class ObjFinStmtController {
 		int partyFoundingYear = party.getFoundingDate().getYear();
 		ObjFinStmt jpaBalSheet = null;
 		
-		System.err.println(histCnt);
 		if (histCnt == 0) {
 			return null;
 		}
@@ -136,7 +135,7 @@ public class ObjFinStmtController {
 			logSvc.write("Trying to retrieve Fin Stmt from before founding date of the company");
 		}
 		List<ObjFinStmt> jpaFinStmtList = new ArrayList<ObjFinStmt>();
-		for (Integer histDecr = 0; histDecr < histCnt; histDecr++) {
+		for (Integer histDecr = histCnt - 1; histDecr >= 0; histDecr--) {
 			int finYear = finYearBase - histDecr;
 			if (finYear >= partyFoundingYear) {
 				jpaBalSheet = finStmtSvc.getFinStmt(party, finYear, finStmtType);
