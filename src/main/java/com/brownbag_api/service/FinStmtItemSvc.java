@@ -5,12 +5,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.brownbag_api.model.enums.EBookingDir;
 import com.brownbag_api.model.enums.EFinStmtItemType;
 import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.jpa.ObjFinStmtItem;
 import com.brownbag_api.model.jpa.ObjFinStmtSection;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
+import com.brownbag_api.model.trans.FinStmtTrxTrans;
 import com.brownbag_api.repo.FinStmtItemRepo;
 
 @Service
@@ -39,8 +41,8 @@ public class FinStmtItemSvc {
 		return balSheetItem;
 	}
 
-	public void save(ObjFinStmtItem bsi) {
-		balSheetItemRepo.save(bsi);
+	public ObjFinStmtItem save(ObjFinStmtItem bsi) {
+		return balSheetItemRepo.save(bsi);
 
 	}
 
@@ -58,5 +60,15 @@ public class FinStmtItemSvc {
 	public List<ObjFinStmtItem> getByBalSheetSection(ObjFinStmtSection section) {
 		return balSheetItemRepo.findByFinStmtSection(section);
 
+	}
+
+	public ObjFinStmtItem bookTrx(FinStmtTrxTrans finStmtTrxTransient, int finYear) {
+		double finStmtTrxQty = finStmtTrxTransient.isCredBook() ? finStmtTrxTransient.getQty()
+				: (-1) * finStmtTrxTransient.getQty();
+		ObjFinStmtItem finStmtItem = getByPartyAndFinYearAndItemType(finStmtTrxTransient.getParty(), finYear,
+				finStmtTrxTransient.getItemType());
+		finStmtItem.setQty(finStmtItem.getQty() + finStmtTrxQty);
+		// TODO: Update elements of higher hierarchy!
+		return save(finStmtItem);
 	}
 }

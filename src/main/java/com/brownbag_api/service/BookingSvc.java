@@ -72,24 +72,17 @@ public class BookingSvc {
 		// GENERATE FINANCIAL STATEMENT BOOKINGS
 		for (FinStmtTrxTrans finStmtTrxTransient : finStmtTrxTransientList) {
 
-			double finStmtTrxQty = finStmtTrxTransient.getBookingDir() == EBookingDir.CREDIT
-					? finStmtTrxTransient.getQty()
-					: (-1) * finStmtTrxTransient.getQty();
+			// deduct amount if debit
+			double finStmtTrxQty = finStmtTrxTransient.getBookQty();
 
-			// ENSURE DEBIT = CREDIT
-			balTrxAssets = finStmtTrxTransient.getItemType().getSection() == EFinStmtSectionType.ASSETS
-					? balTrxAssets + finStmtTrxQty
-					: balTrxAssets;
+			// AGGREGATE ASSET TRX AMOUNTS
+			balTrxAssets = finStmtTrxTransient.isAsset() ? balTrxAssets + finStmtTrxQty : balTrxAssets;
 
-			balTrxLiabEquity = Arrays.asList(EFinStmtSectionType.LIABILITIES, EFinStmtSectionType.EQUITY)
-					.contains(finStmtTrxTransient.getItemType().getSection()) ? balTrxLiabEquity + finStmtTrxQty
-							: balTrxLiabEquity;
+			balTrxLiabEquity = finStmtTrxTransient.isLiabOrEquity() ? balTrxLiabEquity + finStmtTrxQty
+					: balTrxLiabEquity;
 
 			// UPDATE BALANCE SHEET ITEM
-			ObjFinStmtItem finStmtItem = finStmtItemSvc.getByPartyAndFinYearAndItemType(finStmtTrxTransient.getParty(),
-					finYear, finStmtTrxTransient.getItemType());
-			finStmtItem.setQty(finStmtItem.getQty() + finStmtTrxQty);
-			finStmtItemSvc.save(finStmtItem);
+			ObjFinStmtItem finStmtItem = finStmtItemSvc.bookTrx(finStmtTrxTransient, finYear);
 
 			// UPDATE BALANCE SHEET SECTION
 			ObjFinStmtSection finStmtSection = finStmtItem.getFinStmtSection();
