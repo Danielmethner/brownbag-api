@@ -99,6 +99,9 @@ public class ObjFinStmtController {
 	@GetMapping("/type/{finStmtType}/finyear/{finYear}/party/{partyId}")
 	public ResponseEntity<?> getFinStmtByPartyId(@PathVariable EFinStmtType finStmtType, @PathVariable int finYear,
 			@PathVariable Long partyId) {
+		if (finYear > controlSvc.getFinYear()) {
+			return null;
+		}
 		ObjParty party = partySvc.getById(partyId);
 		ObjFinStmt jpaBalSheet = finStmtSvc.getFinStmt(party, finYear, finStmtType);
 
@@ -122,6 +125,9 @@ public class ObjFinStmtController {
 	@GetMapping("/type/{finStmtType}/finyear/{finYearBase}/party/{partyId}/hist-cnt/{histCnt}")
 	public ResponseEntity<?> getFinStmtList(@PathVariable EFinStmtType finStmtType, @PathVariable int finYearBase,
 			@PathVariable Long partyId, @PathVariable Integer histCnt) {
+		if (finYearBase > controlSvc.getFinYear()) {
+			return null;
+		}
 		ObjParty party = partySvc.getById(partyId);
 		int partyFoundingYear = party.getFoundingDate().getYear();
 		ObjFinStmt jpaBalSheet = null;

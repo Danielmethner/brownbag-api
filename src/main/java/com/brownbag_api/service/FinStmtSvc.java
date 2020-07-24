@@ -19,7 +19,7 @@ public class FinStmtSvc {
 	private FinStmtSectionSvc finStmtSectionSvc;
 
 	@Autowired
-	private ControlSvc ctrlVarSvc;
+	private ControlSvc controlSvc;
 
 	private ObjFinStmt createFinStmt(ObjParty party, int finYear, EFinStmtType finStmtType) {
 		ObjFinStmt finStmt = new ObjFinStmt(party, finYear, finStmtType);
@@ -36,6 +36,9 @@ public class FinStmtSvc {
 
 	public ObjFinStmt getFinStmt(ObjParty party, int finYear, EFinStmtType finStmtType) {
 		ObjFinStmt balSheet = finStmtRepo.findByPartyAndFinYearAndFinStmtType(party, finYear, finStmtType);
+		if (finYear > controlSvc.getFinYear()) {
+			return null;
+		}
 		int foundingYear = party.getFoundingDate().getYear();
 //		System.err.println("founding year: " + foundingYear);
 		int balSheetYear = finYear;
@@ -64,7 +67,7 @@ public class FinStmtSvc {
 	}
 
 	public ObjFinStmt getFinStmtCurrent(ObjParty party, EFinStmtType finStmtType) {
-		int finYear = ctrlVarSvc.getFinYear();
+		int finYear = controlSvc.getFinYear();
 		ObjFinStmt balSheet = getFinStmt(party, finYear, finStmtType);
 		return balSheet;
 	}

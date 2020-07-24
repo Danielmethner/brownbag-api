@@ -21,6 +21,9 @@ public class FinStmtItemSvc {
 	@Autowired
 	private FinStmtItemRepo balSheetItemRepo;
 
+	@Autowired
+	private FinStmtSectionSvc finStmtSectionSvc;
+
 	public ObjFinStmtItem createItem(EFinStmtItemType eBalSheetItemType, ObjFinStmtSection balSheetSectionType,
 			int finYear, ObjParty party, EFinStmtType finStmtType) {
 		double qty = 0;
@@ -63,12 +66,16 @@ public class FinStmtItemSvc {
 	}
 
 	public ObjFinStmtItem bookTrx(FinStmtTrxTrans finStmtTrxTransient, int finYear) {
-		double finStmtTrxQty = finStmtTrxTransient.isCredBook() ? finStmtTrxTransient.getQty()
-				: (-1) * finStmtTrxTransient.getQty();
+		double finStmtTrxQty = finStmtTrxTransient.getBookQty();
 		ObjFinStmtItem finStmtItem = getByPartyAndFinYearAndItemType(finStmtTrxTransient.getParty(), finYear,
 				finStmtTrxTransient.getItemType());
 		finStmtItem.setQty(finStmtItem.getQty() + finStmtTrxQty);
-		// TODO: Update elements of higher hierarchy!
+
+		// UPDATE BALANCE SHEET SECTION
+		ObjFinStmtSection finStmtSection = finStmtItem.getFinStmtSection();
+		finStmtSection.increaseQty(finStmtTrxQty);
+		finStmtSectionSvc.save(finStmtSection);
+
 		return save(finStmtItem);
 	}
 }

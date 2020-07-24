@@ -36,8 +36,6 @@ public class BookingSvc {
 	@Autowired
 	private FinStmtSvc finStmtSvc;
 
-	@Autowired
-	private FinStmtSectionSvc finStmtSectionSvc;
 
 	@Autowired
 	private FinStmtItemSvc finStmtItemSvc;
@@ -75,19 +73,14 @@ public class BookingSvc {
 			// deduct amount if debit
 			double finStmtTrxQty = finStmtTrxTransient.getBookQty();
 
-			// AGGREGATE ASSET TRX AMOUNTS
+			// AGGREGATE ASSET TRX AMOUNTS TO ENSURE DEBIT = CREDIT
 			balTrxAssets = finStmtTrxTransient.isAsset() ? balTrxAssets + finStmtTrxQty : balTrxAssets;
 
 			balTrxLiabEquity = finStmtTrxTransient.isLiabOrEquity() ? balTrxLiabEquity + finStmtTrxQty
 					: balTrxLiabEquity;
 
-			// UPDATE BALANCE SHEET ITEM
+			// UPDATE BALANCE SHEET ITEMS
 			ObjFinStmtItem finStmtItem = finStmtItemSvc.bookTrx(finStmtTrxTransient, finYear);
-
-			// UPDATE BALANCE SHEET SECTION
-			ObjFinStmtSection finStmtSection = finStmtItem.getFinStmtSection();
-			finStmtSection.increaseQty(finStmtTrxQty);
-			finStmtSectionSvc.save(finStmtSection);
 
 			// BALANCE SHEET TRANSACTION
 			FinStmtTrx finStmtTrx = new FinStmtTrx(order, finStmtItem, booking, finStmtTrxQty);
