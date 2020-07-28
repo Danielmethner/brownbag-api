@@ -9,6 +9,7 @@ public class JsonObjPos {
 	private double qty;
 	private double qtyBlocked;
 	public String assetName;
+	private Long partyId;
 	private String partyName;
 	private double priceAvg;
 	private double priceLast;
@@ -21,6 +22,7 @@ public class JsonObjPos {
 		this.qty = jpaPos.getQty();
 		this.qtyBlocked = jpaPos.getQtyBlocked();
 		this.assetName = jpaPos.getAsset().getName();
+		this.setPartyId(jpaPos.getParty().getId());
 		this.partyName = jpaPos.getParty().getName();
 		this.priceAvg = jpaPos.getPriceAvg();
 	}
@@ -95,6 +97,14 @@ public class JsonObjPos {
 
 	public void setProfitLoss(double profitLoss) {
 		this.profitLoss = profitLoss;
+	}
+
+	public Long getPartyId() {
+		return partyId;
+	}
+
+	public void setPartyId(Long partyId) {
+		this.partyId = partyId;
 	}
 
 }
