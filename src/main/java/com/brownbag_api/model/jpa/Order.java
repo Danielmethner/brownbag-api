@@ -52,7 +52,6 @@ public class Order implements Serializable {
 	@Column(name = "ADV_TEXT")
 	private String advText;
 
-	@NotNull
 	@ManyToOne(targetEntity = ObjAsset.class)
 	@JoinColumn(name = "ASSET_ID")
 	private ObjAsset asset;

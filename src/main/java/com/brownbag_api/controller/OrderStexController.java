@@ -38,7 +38,7 @@ import com.brownbag_api.service.UserSvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/order/stex")
+@RequestMapping("/api/order/ORDER_STEX")
 public class OrderStexController {
 
 	@Autowired
@@ -96,6 +96,19 @@ public class OrderStexController {
 	public List<JsonOrderStex> getAllStex() {
 		List<OrderStex> jpaOrderStexList = orderStexRepo.findAll();
 		return jpaToJson(jpaOrderStexList);
+	}
+	
+	/**
+	 * 
+	 * @return New STEX Order and STEX Order form
+	 */
+	@GetMapping("/new/{orderType}")
+	public ResponseEntity<?> createNewOrder(Authentication authentication, @PathVariable EOrderType orderType) {
+		ObjUser objUser = getByAuthentication(authentication);
+		OrderStex orderStex = orderStexSvc.createOrder(objUser, orderType);
+		// TODO: Add GUI form
+		JsonOrderStex jsonOrderStex = new JsonOrderStex(orderStex);
+		return ResponseEntity.ok(jsonOrderStex);
 	}
 
 	@GetMapping("/user")

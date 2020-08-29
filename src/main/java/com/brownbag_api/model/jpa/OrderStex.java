@@ -23,11 +23,9 @@ public class OrderStex extends Order implements Serializable {
 	@Column(name = "PRICE_LIMIT")
 	private double priceLimit;
 
-	@NotNull
 	@Column(name = "DIRECTION")
 	private EOrderDir orderDir;
 
-	@NotNull
 	@ManyToOne(targetEntity = ObjParty.class)
 	@JoinColumn(name = "PARTY_ID")
 	private ObjParty party;
@@ -52,6 +50,10 @@ public class OrderStex extends Order implements Serializable {
 		this.priceLimit = price;
 		this.party = party;
 		this.qtyExec = qtyExec;
+	}
+
+	public OrderStex(@NotNull ObjUser user, EOrderType orderType) {
+		super(0, null, orderType, EOrderStatus.NEW, user, orderType.getName() + "'; User: '" + user.getName() + ". Order generated via API");
 	}
 
 	public static long getSerialversionuid() {

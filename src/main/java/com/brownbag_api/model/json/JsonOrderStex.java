@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
+import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.OrderStex;
 
 public class JsonOrderStex extends JsonOrder {
@@ -23,13 +24,17 @@ public class JsonOrderStex extends JsonOrder {
 
 	private LocalDateTime matDate;
 	private double nomVal;
-	
+
 	public JsonOrderStex(OrderStex orderStex) {
 		super(orderStex);
 		this.priceLimit = orderStex.getPriceLimit();
 		this.orderDir = orderStex.getOrderDir();
-		this.partyName = orderStex.getParty().getName();
-		this.partyId = orderStex.getParty().getId();
+		ObjParty objParty = orderStex.getParty();
+		if (objParty != null) {
+			this.partyName = orderStex.getParty().getName();
+			this.partyId = orderStex.getParty().getId();
+
+		}
 		this.qtyExec = orderStex.getQtyExec();
 	}
 

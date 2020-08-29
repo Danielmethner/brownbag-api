@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
+import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.Order;
 
 public class JsonOrder {
@@ -35,8 +36,9 @@ public class JsonOrder {
 		this.orderType = order.getOrderType();
 		this.orderStatus = order.getOrderStatus();
 		this.advText = order.getAdvText();
-		this.assetId = order.getAsset().getId();
-		this.assetName = order.getAsset().getName();
+		ObjAsset objAsset = order.getAsset();
+		this.assetId = objAsset != null ? objAsset.getId() : null;
+		this.assetName = objAsset != null ? objAsset.getName() : null;
 		this.timestampCreate = order.getTimestampCreate();
 		this.timestampModified = order.getTimestampModified();
 		this.userName = order.getUser().getName();

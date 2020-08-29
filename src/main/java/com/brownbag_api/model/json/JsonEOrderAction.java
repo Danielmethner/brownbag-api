@@ -1,9 +1,11 @@
 package com.brownbag_api.model.json;
 
 import com.brownbag_api.model.enums.EDataKind;
+import com.brownbag_api.model.enums.EEntityType;
 import com.brownbag_api.model.enums.EFormMenuCmd;
 import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.enums.EOrderStatus;
+import com.brownbag_api.model.enums.EOrderType;
 
 public class JsonEOrderAction {
 
@@ -14,9 +16,8 @@ public class JsonEOrderAction {
 	public EDataKind dataKind;
 	private EOrderStatus oldStatus;
 	private EOrderStatus newStatus;
-
-	public JsonEOrderAction() {
-	}
+	private EEntityType entityType;
+	private EOrderType orderType;
 
 	public JsonEOrderAction(EOrderAction orderAction) {
 		this.key = orderAction.toString();
@@ -25,6 +26,8 @@ public class JsonEOrderAction {
 		this.label = orderAction.getName();
 		this.oldStatus = orderAction.getOldStatus();
 		this.newStatus = orderAction.getNewStatus();
+		this.entityType = orderAction.getEntityType();
+		this.orderType = orderAction.getOrderType();
 	}
 
 	public String getKey() {
@@ -81,6 +84,22 @@ public class JsonEOrderAction {
 
 	public void setCommand(String command) {
 		this.command = command;
+	}
+
+	public EEntityType getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(EEntityType entityType) {
+		this.entityType = entityType;
+	}
+
+	public EOrderType getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(EOrderType orderType) {
+		this.orderType = orderType;
 	}
 
 }

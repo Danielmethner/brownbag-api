@@ -48,6 +48,11 @@ public class OrderStexSvc extends OrderSvc {
 	@Autowired
 	private LogSvc logSvc;
 
+	public OrderStex createOrder(ObjUser objUser, EOrderType orderType) {
+		OrderStex orderStex = new OrderStex(objUser, orderType);
+		orderStex = (OrderStex) execAction(orderStex, EOrderAction.CREATE);
+		return orderStex;		
+	}
 	public OrderStex placeOrder(OrderStex orderStex) {
 		if (orderStex.getId() == null) {
 			logSvc.write("OrderStexSvc.placeOrder: Order must be persisted before being placed.");
@@ -271,7 +276,6 @@ public class OrderStexSvc extends OrderSvc {
 	@Override
 	public OrderStex getById(Long orderId) {
 		return orderStexRepo.findById(orderId).orElse(null);
-//		return orderStexRepo.getOne(orderId);
 	}
 
 	public OrderStex discardOrder(OrderStex orderStex) {
