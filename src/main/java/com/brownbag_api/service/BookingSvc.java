@@ -1,19 +1,16 @@
 package com.brownbag_api.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.brownbag_api.model.enums.EBookingDir;
-import com.brownbag_api.model.enums.EFinStmtSectionType;
 import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.jpa.Booking;
 import com.brownbag_api.model.jpa.FinStmtTrx;
 import com.brownbag_api.model.jpa.ObjFinStmtItem;
-import com.brownbag_api.model.jpa.ObjFinStmtSection;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.Order;
 import com.brownbag_api.model.trans.FinStmtTrxTrans;

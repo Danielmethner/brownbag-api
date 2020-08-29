@@ -18,7 +18,6 @@ import javax.validation.constraints.Size;
 
 import com.brownbag_api.model.enums.EFinStmtSectionType;
 import com.brownbag_api.model.enums.EFinStmtType;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "OBJ_BAL_SHEET_SECTION")

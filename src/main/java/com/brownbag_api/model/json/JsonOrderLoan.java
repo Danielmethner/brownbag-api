@@ -2,19 +2,10 @@ package com.brownbag_api.model.json;
 
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.validation.constraints.NotNull;
-
-import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
-import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjPosLoan;
 import com.brownbag_api.model.jpa.ObjPosMacc;
-import com.brownbag_api.model.jpa.OrderLoan;
-import com.brownbag_api.model.jpa.OrderStex;
 
 public class JsonOrderLoan extends JsonOrder {
 

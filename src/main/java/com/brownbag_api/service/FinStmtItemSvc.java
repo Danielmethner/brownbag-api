@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.brownbag_api.model.enums.EBookingDir;
 import com.brownbag_api.model.enums.EFinStmtItemType;
 import com.brownbag_api.model.enums.EFinStmtType;
 import com.brownbag_api.model.jpa.ObjFinStmtItem;
