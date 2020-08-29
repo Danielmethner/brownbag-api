@@ -229,19 +229,19 @@ public class OrderStexSvc extends OrderSvc {
 		if (creditPos != null) {
 
 			if (orderBuy.getQty() == orderBuy.getQtyExec()) {
-				orderSvc.execAction(orderBuy, EOrderAction.EXECUTE_FULL);
+				orderSvc.execAction(orderBuy, EOrderAction.STEX_EXECUTE_FULL);
 			} else {
 				if (orderBuy.getOrderStatus() != EOrderStatus.EXEC_PART) {
-					orderSvc.execAction(orderBuy, EOrderAction.EXECUTE_PART);
+					orderSvc.execAction(orderBuy, EOrderAction.STEX_EXECUTE_PART);
 				}
 
 			}
 
 			if (orderSell.getQty() == orderSell.getQtyExec()) {
-				orderSvc.execAction(orderSell, EOrderAction.EXECUTE_FULL);
+				orderSvc.execAction(orderSell, EOrderAction.STEX_EXECUTE_FULL);
 			} else {
 				if (orderSell.getOrderStatus() != EOrderStatus.EXEC_PART) {
-					orderSvc.execAction(orderSell, EOrderAction.EXECUTE_PART);
+					orderSvc.execAction(orderSell, EOrderAction.STEX_EXECUTE_PART);
 				}
 			}
 		}

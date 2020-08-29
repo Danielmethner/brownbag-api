@@ -10,7 +10,9 @@ public enum EEntityType {
 	OBJ_PARTY("Party", EDataKind.MASTER_DATA), OBJ_ASSET("Asset", EDataKind.MASTER_DATA),
 	OBJ_FIN_STMT("Financial Statement", EDataKind.MASTER_DATA),
 	// TRANSACTION DATA
-	ORDER_LOAN("Loan", EDataKind.TRX_DATA);
+	ORDER_LOAN("Loan", EDataKind.TRX_DATA), ORDER_PAY("Payment", EDataKind.TRX_DATA),
+	ORDER_INTR("Interest", EDataKind.TRX_DATA), ORDER_STEX("Stocks", EDataKind.TRX_DATA),
+	ORDER_CREATE_MON("Money Creation", EDataKind.TRX_DATA);
 
 	public final String name;
 	public final EDataKind dataKind;

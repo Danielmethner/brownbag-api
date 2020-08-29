@@ -75,7 +75,7 @@ public class Order implements Serializable {
 	public Order() {
 	}
 
-	public Order(@NotNull double qty, @NotNull ObjAsset asset, EOrderType orderType, EOrderStatus orderStatus,
+	public Order( double qty, ObjAsset asset, @NotNull EOrderType orderType, EOrderStatus orderStatus,
 			@NotNull ObjUser user, String advText) {
 		super();
 		this.qty = qty;

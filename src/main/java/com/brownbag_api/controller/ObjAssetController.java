@@ -53,5 +53,7 @@ public class ObjAssetController {
 		List<ObjAsset> jpaAssets = assetRepo.findAllByAssetGrp(EAssetGrp.CURRY);
 		return jpaToJson(jpaAssets);
 	}
+	
+	
 
 }

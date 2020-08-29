@@ -1,6 +1,7 @@
 package com.brownbag_api.model.json;
 
 import com.brownbag_api.model.enums.EDataKind;
+import com.brownbag_api.model.enums.EFormMenuCmd;
 import com.brownbag_api.model.enums.EOrderAction;
 import com.brownbag_api.model.enums.EOrderStatus;
 
@@ -9,6 +10,7 @@ public class JsonEOrderAction {
 	private String key;
 	private String name;
 	private String label;
+	private String command;
 	public EDataKind dataKind;
 	private EOrderStatus oldStatus;
 	private EOrderStatus newStatus;
@@ -19,6 +21,7 @@ public class JsonEOrderAction {
 	public JsonEOrderAction(EOrderAction orderAction) {
 		this.key = orderAction.toString();
 		this.name = orderAction.getName();
+		this.command = orderAction.getCommand().getFunctionName();
 		this.label = orderAction.getName();
 		this.oldStatus = orderAction.getOldStatus();
 		this.newStatus = orderAction.getNewStatus();
@@ -70,6 +73,14 @@ public class JsonEOrderAction {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	public String getCommand() {
+		return command;
+	}
+
+	public void setCommand(String command) {
+		this.command = command;
 	}
 
 }

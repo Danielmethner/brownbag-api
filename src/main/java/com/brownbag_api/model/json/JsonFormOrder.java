@@ -6,26 +6,19 @@ import com.brownbag_api.model.enums.EDataKind;
 import com.brownbag_api.model.enums.EEntityType;
 import com.brownbag_api.model.enums.EOrderStatus;
 
-public class JsonMenuItem {
+public class JsonFormOrder {
 
+	
 	private String key;
 	private String name;
 	private String label;
 	public EDataKind dataKind;
 	private List<JsonEOrderAction> items;
 
-	public JsonMenuItem() {
+	public JsonFormOrder() {
 	}
 
-	public JsonMenuItem(EEntityType entityType) {
-		List<JsonEOrderAction> orderActions = entityType.getJsonEOrderActionListByOldOrderStatus(EOrderStatus.NEW);
-		this.key = entityType.toString();
-		this.name = entityType.getName();
-		this.label = entityType.getName();
-		this.dataKind = entityType.getDataKind();
-		if (orderActions.size() > 0) {
-			this.items = entityType.getJsonEOrderActionListByOldOrderStatus(EOrderStatus.NEW);
-		}
+	public JsonFormOrder(EEntityType entityType) {
 	}
 
 	public String getKey() {
