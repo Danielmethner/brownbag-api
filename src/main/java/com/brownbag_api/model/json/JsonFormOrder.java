@@ -4,16 +4,13 @@ import java.util.List;
 
 import com.brownbag_api.model.enums.EDataKind;
 import com.brownbag_api.model.enums.EEntityType;
+import com.brownbag_api.model.enums.EFormField;
 import com.brownbag_api.model.enums.EOrderStatus;
+import com.brownbag_api.model.trans.FinStmtTrxTrans;
 
 public class JsonFormOrder {
 
-	
-	private String key;
-	private String name;
-	private String label;
-	public EDataKind dataKind;
-	private List<JsonEOrderAction> items;
+	private List<JsonFormRow> formRows;
 
 	public JsonFormOrder() {
 	}
@@ -21,44 +18,24 @@ public class JsonFormOrder {
 	public JsonFormOrder(EEntityType entityType) {
 	}
 
-	public String getKey() {
-		return key;
+	public JsonFormOrder(EFormField enumeration) {
+		// TODO Auto-generated constructor stub
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public List<JsonFormRow> getFormRows() {
+		return formRows;
 	}
 
-	public String getName() {
-		return name;
+	public void setFormRows(List<JsonFormRow> formRows) {
+		this.formRows = formRows;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public JsonFormRow getJsonFormRowByRowNo(int rowNo) {
+		for (JsonFormRow jsonFormRow : this.formRows) {
+			if (jsonFormRow.getRowNo() == rowNo) {
+				return jsonFormRow;
+			}
+		}
+		return null;
 	}
-
-	public String getLabel() {
-		return label;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
-	}
-
-	public EDataKind getDataKind() {
-		return dataKind;
-	}
-
-	public void setDataKind(EDataKind dataKind) {
-		this.dataKind = dataKind;
-	}
-
-	public List<JsonEOrderAction> getItems() {
-		return items;
-	}
-
-	public void setItems(List<JsonEOrderAction> items) {
-		this.items = items;
-	}
-
 }

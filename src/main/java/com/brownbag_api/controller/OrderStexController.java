@@ -1,6 +1,7 @@
 package com.brownbag_api.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +15,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.enums.EEntityType;
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
+import com.brownbag_api.model.enums.EUser;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderStex;
+import com.brownbag_api.model.json.JsonFormOrder;
 import com.brownbag_api.model.json.JsonOrderStex;
 import com.brownbag_api.repo.OrderStexRepo;
 import com.brownbag_api.repo.PosRepo;
@@ -29,6 +33,7 @@ import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.payload.response.MsgResponse;
 import com.brownbag_api.security.svc.UserDetailsImpl;
 import com.brownbag_api.service.AssetSvc;
+import com.brownbag_api.service.GuiSvc;
 import com.brownbag_api.service.LogSvc;
 import com.brownbag_api.service.OrderStexSvc;
 import com.brownbag_api.service.OrderSvc;
@@ -46,6 +51,8 @@ public class OrderStexController {
 
 	@Autowired
 	PosSvc posSvc;
+	@Autowired
+	GuiSvc guiSvc;
 
 	@Autowired
 	OrderSvc orderSvc;
@@ -97,18 +104,60 @@ public class OrderStexController {
 		List<OrderStex> jpaOrderStexList = orderStexRepo.findAll();
 		return jpaToJson(jpaOrderStexList);
 	}
-	
+
 	/**
 	 * 
 	 * @return New STEX Order and STEX Order form
 	 */
-	@GetMapping("/new/{orderType}")
-	public ResponseEntity<?> createNewOrder(Authentication authentication, @PathVariable EOrderType orderType) {
+	@GetMapping("/new/newStatus/{newStatus}/orderType/{orderType}")
+	public ResponseEntity<?> createNewOrder(Authentication authentication, @PathVariable EOrderStatus newStatus,
+			@PathVariable EOrderType orderType) {
 		ObjUser objUser = getByAuthentication(authentication);
-		OrderStex orderStex = orderStexSvc.createOrder(objUser, orderType);
+		OrderStex orderStex = orderStexSvc.createOrder(objUser, EOrderType.STEX);
+		JsonOrderStex jsonOrderStex = new JsonOrderStex(orderStex);
+		JsonFormOrder jsonOrderForm = guiSvc.getFormByEntityType(EEntityType.OBJ_ASSET);
+		class FormWithOrder {
+			JsonOrderStex jsonOrderStex;
+			JsonFormOrder jsonOrderForm;
+
+			public JsonOrderStex getJsonOrderStex() {
+				return jsonOrderStex;
+			}
+			public JsonFormOrder getOrderForm() {
+				return jsonOrderForm;
+			}
+
+		}
+		FormWithOrder formWithOrder = new FormWithOrder();
+		formWithOrder.jsonOrderStex = jsonOrderStex;
+		formWithOrder.jsonOrderForm = jsonOrderForm;
+		return ResponseEntity.ok(formWithOrder);
+	}
+
+	@GetMapping("/test")
+	public ResponseEntity<?> test() {
+
+		ObjUser objUser = userSvc.getByEnum(EUser.U_TRADER_1);
+		OrderStex orderStex = orderStexSvc.createOrder(objUser, EOrderType.STEX);
 		// TODO: Add GUI form
 		JsonOrderStex jsonOrderStex = new JsonOrderStex(orderStex);
-		return ResponseEntity.ok(jsonOrderStex);
+		JsonFormOrder jsonOrderForm = guiSvc.getFormByEntityType(EEntityType.OBJ_ASSET);
+		class FormWithOrder {
+			JsonOrderStex jsonOrderStex;
+			JsonFormOrder jsonOrderForm;
+
+			public JsonOrderStex getJsonOrderStex() {
+				return jsonOrderStex;
+			}
+			public JsonFormOrder getOrderForm() {
+				return jsonOrderForm;
+			}
+
+		}
+		FormWithOrder formWithOrder = new FormWithOrder();
+		formWithOrder.jsonOrderStex = jsonOrderStex;
+		formWithOrder.jsonOrderForm = jsonOrderForm;
+		return ResponseEntity.ok(formWithOrder);
 	}
 
 	@GetMapping("/user")
@@ -230,11 +279,12 @@ public class OrderStexController {
 			// TODO: Check for duplicates
 			asset = assetSvc.createAssetBond(party, user, (int) jsonOrderStex.getQty(), jsonOrderStex.getMatDate(),
 					jsonOrderStex.getNomVal(), jsonOrderStex.getIntrRate(), null, null);
-			
+
 			if (asset == null) {
-				return ResponseEntity.ok("ERROR API: Asset for Bond issuance could not be created. Check logs for more details");
+				return ResponseEntity
+						.ok("ERROR API: Asset for Bond issuance could not be created. Check logs for more details");
 			}
-			
+
 		} else {
 			if (assetId == null) {
 				return ResponseEntity.ok("ERROR API: Asset not found!");
