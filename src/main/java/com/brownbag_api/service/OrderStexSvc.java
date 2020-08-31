@@ -60,7 +60,7 @@ public class OrderStexSvc extends OrderSvc {
 			return null;
 		}
 
-		return (OrderStex) orderSvc.execAction(orderStex, EOrderAction.PLACE);
+		return (OrderStex) orderSvc.execAction(orderStex, EOrderAction.STEX_PLACE);
 	}
 
 	public OrderStex placeNewOrder(EOrderDir orderDir, EOrderType orderType, ObjAsset asset, int qty, double price,

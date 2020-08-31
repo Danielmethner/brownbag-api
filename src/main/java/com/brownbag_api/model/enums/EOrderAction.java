@@ -4,17 +4,16 @@ public enum EOrderAction {
 	// OBJ_ASSET
 	CREATE("Create Asset", EOrderStatus.NEW, EOrderStatus.OPEN, EEntityType.OBJ_ASSET, EFormMenuCmd.CREATE_ORDER, null),
 	HOLD("hold", null, EOrderStatus.HOLD, EEntityType.OBJ_ASSET, null, null),
-	PLACE("open_place", null, EOrderStatus.PLACED, EEntityType.OBJ_ASSET, null, null),
-	VERIFY("vfy", null, EOrderStatus.DONE, EEntityType.OBJ_ASSET, null, null),
+	OPN_VERIFY("vfy", EOrderStatus.OPEN, EOrderStatus.DONE, EEntityType.OBJ_ASSET, null, null),
+	HOLD_VERIFY("vfy", EOrderStatus.HOLD, EOrderStatus.DONE, EEntityType.OBJ_ASSET, null, null),
 	DISCARD("discard", null, EOrderStatus.DISC, EEntityType.OBJ_ASSET, null, null),
 	// ORDER_STEX
 	STEX_CREATE("New Order", EOrderStatus.NEW, EOrderStatus.OPEN, EEntityType.ORDER_STEX, EFormMenuCmd.CREATE_ORDER, EOrderType.STEX),
-	STEX_CREATE_IPO("New Order", EOrderStatus.NEW, EOrderStatus.OPEN, EEntityType.ORDER_STEX, EFormMenuCmd.CREATE_ORDER, EOrderType.STEX_IPO),
-	STEX_HOLD("hold", null, EOrderStatus.HOLD, EEntityType.ORDER_STEX, null, null),
+	STEX_CREATE_IPO("New Order IPO", EOrderStatus.NEW, EOrderStatus.OPEN, EEntityType.ORDER_STEX, EFormMenuCmd.CREATE_ORDER, EOrderType.STEX_IPO),
+	STEX_OPN_HOLD("hold", null, EOrderStatus.HOLD, EEntityType.ORDER_STEX, null, null),
 	STEX_PLACE("open_place", null, EOrderStatus.PLACED, EEntityType.ORDER_STEX, null, null),
 	STEX_EXECUTE_PART("partially execute", null, EOrderStatus.EXEC_PART, EEntityType.ORDER_STEX, null, null),
 	STEX_EXECUTE_FULL("fully execute", null, EOrderStatus.EXEC_FULL, EEntityType.ORDER_STEX, null, null),
-	STEX_VERIFY("vfy", null, EOrderStatus.DONE, EEntityType.ORDER_STEX, null, null),
 	STEX_DISCARD("discard", null, EOrderStatus.DISC, EEntityType.ORDER_STEX, null, null);
 
 	public final String name;

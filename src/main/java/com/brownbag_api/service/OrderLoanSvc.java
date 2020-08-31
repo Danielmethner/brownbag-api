@@ -100,7 +100,7 @@ public class OrderLoanSvc extends OrderSvc {
 		orderLoan.setPosLoanBorrower(posLoanBorrower);
 		posLoanBorrower = posLoanSvc.debitPosLoan(orderLoan);
 
-		return (OrderLoan) orderSvc.execAction(orderLoan, EOrderAction.VERIFY);
+		return (OrderLoan) orderSvc.execAction(orderLoan, EOrderAction.OPN_VERIFY);
 	}
 
 }

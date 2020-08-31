@@ -9,6 +9,8 @@ import com.brownbag_api.model.enums.EFormField;
 import com.brownbag_api.model.enums.EFormFieldEditable;
 import com.brownbag_api.model.enums.EOrderStatus;
 
+import net.bytebuddy.description.modifier.EnumerationState;
+
 public class JsonFormField {
 
 	private String label;
@@ -17,6 +19,7 @@ public class JsonFormField {
 	private int row;
 	private String colSpan;
 	private String val;
+	private EDataType dataType;
 
 	public JsonFormField() {
 	}
@@ -27,6 +30,8 @@ public class JsonFormField {
 		this.col = enumeration.getCol();
 		this.row = enumeration.getRow();
 		this.val = enumeration.getField();
+		this.dataType = enumeration.getDataType();
+		this.colSpan = enumeration.getColWidth();
 	}
 
 	public String getLabel() {
@@ -75,6 +80,14 @@ public class JsonFormField {
 
 	public void setVal(String val) {
 		this.val = val;
+	}
+
+	public EDataType getDataType() {
+		return dataType;
+	}
+
+	public void setDataType(EDataType dataType) {
+		this.dataType = dataType;
 	}
 
 	

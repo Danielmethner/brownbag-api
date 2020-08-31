@@ -53,7 +53,7 @@ public class OrderIntrSvc extends OrderSvc {
 		orderIntr.setMaccDebtor(posLoanSvc.debitPosMacc(orderIntr));
 		orderIntr.setMaccLender(posLoanSvc.creditPosMacc(orderIntr));
 
-		return (OrderIntr) orderSvc.execAction(orderIntr, EOrderAction.VERIFY);
+		return (OrderIntr) orderSvc.execAction(orderIntr, EOrderAction.OPN_VERIFY);
 
 	}
 

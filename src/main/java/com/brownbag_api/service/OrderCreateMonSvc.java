@@ -77,7 +77,7 @@ public class OrderCreateMonSvc extends OrderSvc {
 		posSvc.debitPos(orderPay);
 //		posSvc.crebitPos(orderPay);
 
-		return (OrderPay) orderSvc.execAction(orderPay, EOrderAction.VERIFY);
+		return (OrderPay) orderSvc.execAction(orderPay, EOrderAction.OPN_VERIFY);
 	}
 
 	@Transactional
@@ -90,7 +90,7 @@ public class OrderCreateMonSvc extends OrderSvc {
 		ObjAsset curry = maccCentralBank.getAsset();
 		curry.raiseTotalShares((@NotNull int) amount);
 
-		return (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.VERIFY);
+		return (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.OPN_VERIFY);
 	}
 
 	/**

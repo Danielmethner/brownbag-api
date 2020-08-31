@@ -80,7 +80,7 @@ public class OrderPaySvc extends OrderSvc {
 		orderPay.setPosSend(posSvc.debitPos(orderPay));
 		orderPay.setPosRcv(posSvc.creditPos(orderPay));
 
-		return (OrderPay) orderSvc.execAction(orderPay, EOrderAction.VERIFY);
+		return (OrderPay) orderSvc.execAction(orderPay, EOrderAction.OPN_VERIFY);
 	}
 
 }
