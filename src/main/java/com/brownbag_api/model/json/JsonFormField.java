@@ -19,7 +19,9 @@ public class JsonFormField {
 	private int row;
 	private String colSpan;
 	private String val;
+	private String objId;
 	private EDataType dataType;
+	private EEntityType entityType;
 
 	public JsonFormField() {
 	}
@@ -32,6 +34,8 @@ public class JsonFormField {
 		this.val = enumeration.getField();
 		this.dataType = enumeration.getDataType();
 		this.colSpan = enumeration.getColWidth();
+		this.objId = enumeration.getObjId();
+		this.entityType = enumeration.getEntityType();
 	}
 
 	public String getLabel() {
@@ -90,5 +94,20 @@ public class JsonFormField {
 		this.dataType = dataType;
 	}
 
-	
+	public String getObjId() {
+		return objId;
+	}
+
+	public void setObjId(String objId) {
+		this.objId = objId;
+	}
+
+	public EEntityType getEntityType() {
+		return entityType;
+	}
+
+	public void setEntityType(EEntityType entityType) {
+		this.entityType = entityType;
+	}
+
 }
