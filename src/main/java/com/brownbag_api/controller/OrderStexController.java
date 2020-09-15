@@ -3,6 +3,7 @@ package com.brownbag_api.controller;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +45,7 @@ import com.brownbag_api.service.UserSvc;
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api/order/ORDER_STEX")
-public class OrderStexController {
+public class OrderStexController extends OrderController {
 
 	@Autowired
 	PosRepo posRepo;
@@ -89,18 +90,7 @@ public class OrderStexController {
 		return jsonOrderStexList;
 	}
 
-	/*
-	 * GET OBJ_USER BY AUTH OBJ
-	 */
-	private ObjUser getByAuthentication(Authentication authentication) {
-		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-		ObjUser objUser = userRepo.findById(userDetailsImpl.getId()).orElseThrow(
-				() -> new RuntimeException("ERROR API: User not found. USER.ID: " + userDetailsImpl.getId()));
-		return objUser;
-	}
-
-	@GetMapping("/all")
-	public List<JsonOrderStex> getAllStex() {
+	public List<JsonOrderStex> getAll() {
 		List<OrderStex> jpaOrderStexList = orderStexRepo.findAll();
 		return jpaToJson(jpaOrderStexList);
 	}
@@ -109,11 +99,11 @@ public class OrderStexController {
 	 * 
 	 * @return New STEX Order and STEX Order form
 	 */
-	@GetMapping("/new/newStatus/{newStatus}/orderType/{orderType}")
 	public ResponseEntity<?> createNewOrder(Authentication authentication, @PathVariable EOrderStatus newStatus,
 			@PathVariable EOrderType orderType) {
+		System.out.println("New STEX");
 		ObjUser objUser = getByAuthentication(authentication);
-		OrderStex orderStex = orderStexSvc.createOrder(objUser, EOrderType.STEX);
+		OrderStex orderStex = orderStexSvc.createOrder(objUser, orderType);
 		JsonOrderStex jsonOrderStex = new JsonOrderStex(orderStex);
 		JsonFormOrder jsonOrderForm = guiSvc.getFormByEntityType(EEntityType.OBJ_ASSET);
 		class FormWithOrder {
@@ -123,32 +113,7 @@ public class OrderStexController {
 			public JsonOrderStex getJsonOrderStex() {
 				return jsonOrderStex;
 			}
-			public JsonFormOrder getOrderForm() {
-				return jsonOrderForm;
-			}
 
-		}
-		FormWithOrder formWithOrder = new FormWithOrder();
-		formWithOrder.jsonOrderStex = jsonOrderStex;
-		formWithOrder.jsonOrderForm = jsonOrderForm;
-		return ResponseEntity.ok(formWithOrder);
-	}
-
-	@GetMapping("/test")
-	public ResponseEntity<?> test() {
-
-		ObjUser objUser = userSvc.getByEnum(EUser.U_TRADER_1);
-		OrderStex orderStex = orderStexSvc.createOrder(objUser, EOrderType.STEX);
-		// TODO: Add GUI form
-		JsonOrderStex jsonOrderStex = new JsonOrderStex(orderStex);
-		JsonFormOrder jsonOrderForm = guiSvc.getFormByEntityType(EEntityType.OBJ_ASSET);
-		class FormWithOrder {
-			JsonOrderStex jsonOrderStex;
-			JsonFormOrder jsonOrderForm;
-
-			public JsonOrderStex getJsonOrderStex() {
-				return jsonOrderStex;
-			}
 			public JsonFormOrder getOrderForm() {
 				return jsonOrderForm;
 			}

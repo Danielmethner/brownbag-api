@@ -6,6 +6,7 @@ import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.jpa.ObjPosLoan;
 import com.brownbag_api.model.jpa.ObjPosMacc;
+import com.brownbag_api.model.jpa.OrderLoan;
 
 public class JsonOrderLoan extends JsonOrder {
 
@@ -33,6 +34,10 @@ public class JsonOrderLoan extends JsonOrder {
 		this.matDate = matDate;
 		this.partyId = partyId;
 		this.intrRate = intrRate;
+	}
+
+	public JsonOrderLoan(OrderLoan orderLoan) {
+		super(orderLoan);
 	}
 
 	public Long getPartyId() {
@@ -90,5 +95,7 @@ public class JsonOrderLoan extends JsonOrder {
 	public void setIntrRate(double intrRate) {
 		this.intrRate = intrRate;
 	}
+	
+	
 
 }

@@ -2,11 +2,11 @@ package com.brownbag_api.model.enums;
 
 public enum EOrderAction {
 	// OBJ_ASSET
-	CREATE("Create Asset", EOrderStatus.NEW, EOrderStatus.OPEN, EEntityType.OBJ_ASSET, EFormMenuCmd.CREATE_ORDER, null),
-	HOLD("hold", null, EOrderStatus.HOLD, EEntityType.OBJ_ASSET, null, null),
-	OPN_VERIFY("vfy", EOrderStatus.OPEN, EOrderStatus.DONE, EEntityType.OBJ_ASSET, null, null),
-	HOLD_VERIFY("vfy", EOrderStatus.HOLD, EOrderStatus.DONE, EEntityType.OBJ_ASSET, null, null),
-	DISCARD("discard", null, EOrderStatus.DISC, EEntityType.OBJ_ASSET, null, null),
+	ASSET_CREATE("Create Asset", EOrderStatus.NEW, EOrderStatus.OPEN, EEntityType.OBJ_ASSET, EFormMenuCmd.CREATE_ORDER, null),
+	ASSET_HOLD("hold", null, EOrderStatus.HOLD, EEntityType.OBJ_ASSET, null, null),
+	ASSET_OPN_VERIFY("vfy", EOrderStatus.OPEN, EOrderStatus.DONE, EEntityType.OBJ_ASSET, null, null),
+	ASSET_HOLD_VERIFY("vfy", EOrderStatus.HOLD, EOrderStatus.DONE, EEntityType.OBJ_ASSET, null, null),
+	ASSET_DISCARD("discard", null, EOrderStatus.DISC, EEntityType.OBJ_ASSET, null, null),
 
 	// ORDER_LOAN
 	LOAN_CREATE("New Loan", EOrderStatus.NEW, EOrderStatus.OPEN, EEntityType.ORDER_LOAN, EFormMenuCmd.CREATE_ORDER, EOrderType.LOAN),

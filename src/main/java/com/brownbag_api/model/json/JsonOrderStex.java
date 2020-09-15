@@ -1,7 +1,7 @@
 package com.brownbag_api.model.json;
 
 import java.time.LocalDateTime;
-
+import java.util.List;
 import com.brownbag_api.model.enums.EOrderDir;
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
@@ -24,7 +24,7 @@ public class JsonOrderStex extends JsonOrder {
 
 	private LocalDateTime matDate;
 	private double nomVal;
-
+	
 	public JsonOrderStex(OrderStex orderStex) {
 		super(orderStex);
 		this.priceLimit = orderStex.getPriceLimit();

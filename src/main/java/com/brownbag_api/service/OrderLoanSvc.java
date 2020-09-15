@@ -19,6 +19,7 @@ import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderLoan;
 import com.brownbag_api.model.jpa.OrderPay;
+import com.brownbag_api.model.jpa.OrderStex;
 
 @Service
 public class OrderLoanSvc extends OrderSvc {
@@ -59,7 +60,7 @@ public class OrderLoanSvc extends OrderSvc {
 		OrderLoan orderLoan = new OrderLoan(qty, assetLoan, EOrderType.LOAN, EOrderStatus.NEW, user, bookText,
 				maccGrant, maccRcv, null, null, matDate, intrRate);
 
-		orderSvc.execAction(orderLoan, EOrderAction.HOLD);
+		orderSvc.execAction(orderLoan, EOrderAction.ASSET_HOLD);
 
 		return orderLoan;
 	}
@@ -100,7 +101,13 @@ public class OrderLoanSvc extends OrderSvc {
 		orderLoan.setPosLoanBorrower(posLoanBorrower);
 		posLoanBorrower = posLoanSvc.debitPosLoan(orderLoan);
 
-		return (OrderLoan) orderSvc.execAction(orderLoan, EOrderAction.OPN_VERIFY);
+		return (OrderLoan) orderSvc.execAction(orderLoan, EOrderAction.ASSET_OPN_VERIFY);
+	}
+
+	public OrderLoan createOrder(ObjUser objUser, EOrderType orderType) {
+		OrderLoan orderLoan = new OrderLoan(objUser, orderType);
+		orderLoan = (OrderLoan) execAction(orderLoan, EOrderAction.LOAN_CREATE);
+		return orderLoan;		
 	}
 
 }

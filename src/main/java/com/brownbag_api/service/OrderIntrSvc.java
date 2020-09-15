@@ -6,11 +6,15 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.brownbag_api.model.enums.EAsset;
 import com.brownbag_api.model.enums.EOrderAction;
+import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.enums.EUser;
+import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjPosLoan;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderIntr;
+import com.brownbag_api.model.jpa.OrderPay;
 import com.brownbag_api.repo.OrderIntrRepo;
 
 @Service
@@ -37,7 +41,7 @@ public class OrderIntrSvc extends OrderSvc {
 				+ currentFinDate.toLocalDate().toString() + "' Amount: '" + amount;
 		ObjUser uEOP = userSvc.getByEnum(EUser.U_EOP);
 		OrderIntr orderIntr = new OrderIntr(posLoan, uEOP, advText, amount);
-		orderSvc.execAction(orderIntr, EOrderAction.HOLD);
+		orderSvc.execAction(orderIntr, EOrderAction.ASSET_HOLD);
 		return orderIntr;
 	}
 
@@ -53,7 +57,7 @@ public class OrderIntrSvc extends OrderSvc {
 		orderIntr.setMaccDebtor(posLoanSvc.debitPosMacc(orderIntr));
 		orderIntr.setMaccLender(posLoanSvc.creditPosMacc(orderIntr));
 
-		return (OrderIntr) orderSvc.execAction(orderIntr, EOrderAction.OPN_VERIFY);
+		return (OrderIntr) orderSvc.execAction(orderIntr, EOrderAction.ASSET_OPN_VERIFY);
 
 	}
 
@@ -64,6 +68,12 @@ public class OrderIntrSvc extends OrderSvc {
 			orderIntr = execIntrPay(orderIntr);
 		}
 
+	}
+
+	public OrderIntr createOrder(ObjUser objUser, EOrderType orderType) {
+		OrderIntr orderIntr = new OrderIntr(objUser, orderType);
+		orderIntr = (OrderIntr) execAction(orderIntr, EOrderAction.INTR_CREATE);
+		return orderIntr;	
 	}
 
 }

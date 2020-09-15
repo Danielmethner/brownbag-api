@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import com.brownbag_api.model.enums.EOrderStatus;
 import com.brownbag_api.model.enums.EOrderType;
+import com.brownbag_api.service.AssetSvc;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
@@ -19,12 +20,10 @@ public class OrderPay extends Order implements Serializable {
 
 	private static final long serialVersionUID = 4643589803146964779L;
 
-	@NotNull
 	@OneToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "POS_SEND_ID")
 	private ObjPos posSend;
 
-	@NotNull
 	@OneToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "POS_RCV_ID")
 	private ObjPos posRcv;
@@ -40,6 +39,10 @@ public class OrderPay extends Order implements Serializable {
 		this.posSend = posSend;
 		this.posRcv = posRcv;
 
+	}
+
+	public OrderPay(ObjUser objUser, EOrderType orderType, ObjAsset objAsset) {
+		super(0, objAsset, orderType, EOrderStatus.NEW, objUser, "Payment order created via API");
 	}
 
 	public ObjPos getPosSend() {

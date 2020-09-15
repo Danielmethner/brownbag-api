@@ -13,6 +13,7 @@ import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.jpa.ObjAsset;
 import com.brownbag_api.model.jpa.ObjPos;
 import com.brownbag_api.model.jpa.ObjUser;
+import com.brownbag_api.model.jpa.OrderLoan;
 import com.brownbag_api.model.jpa.OrderPay;
 import com.brownbag_api.repo.AssetRepo;
 import com.brownbag_api.repo.OrderRepo;
@@ -23,6 +24,9 @@ public class OrderPaySvc extends OrderSvc {
 	@Autowired
 	private AssetRepo assetRepo;
 
+	@Autowired
+	private AssetSvc assetSvc;
+	
 	@Autowired
 	private OrderSvc orderSvc;
 
@@ -80,7 +84,15 @@ public class OrderPaySvc extends OrderSvc {
 		orderPay.setPosSend(posSvc.debitPos(orderPay));
 		orderPay.setPosRcv(posSvc.creditPos(orderPay));
 
-		return (OrderPay) orderSvc.execAction(orderPay, EOrderAction.OPN_VERIFY);
+		return (OrderPay) orderSvc.execAction(orderPay, EOrderAction.ASSET_OPN_VERIFY);
 	}
+
+	public OrderPay createOrder(ObjUser objUser, EOrderType orderType) {
+		ObjAsset objAsset = assetSvc.getByEnum(EAsset.EUR);
+		OrderPay orderPay = new OrderPay(objUser, orderType, objAsset);
+		orderPay = (OrderPay) execAction(orderPay, EOrderAction.PAY_CREATE);
+		return orderPay;	
+	}
+	
 
 }

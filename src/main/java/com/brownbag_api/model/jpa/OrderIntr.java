@@ -17,12 +17,11 @@ public class OrderIntr extends Order implements Serializable {
 
 	private static final long serialVersionUID = 4643589803146964779L;
 
-	@NotNull
+
 	@OneToOne(targetEntity = ObjPosMacc.class)
 	@JoinColumn(name = "POS_LENDER_ID")
 	private ObjPosMacc maccLender;
 
-	@NotNull
 	@OneToOne(targetEntity = ObjPosMacc.class)
 	@JoinColumn(name = "POS_DEBTOR_ID")
 	private ObjPosMacc maccDebtor;
@@ -52,6 +51,10 @@ public class OrderIntr extends Order implements Serializable {
 		super(amount, posLoan.getAsset(), EOrderType.INTR, EOrderStatus.NEW, user, advText);
 		this.maccLender = posLoan.getMaccLender();
 		this.maccDebtor = posLoan.getMaccDebtor();
+	}
+
+	public OrderIntr(ObjUser objUser, EOrderType orderType) {
+		super(0, null, EOrderType.INTR, EOrderStatus.NEW, objUser, "Intr Payment Order created via API");
 	}
 
 	public static long getSerialversionuid() {

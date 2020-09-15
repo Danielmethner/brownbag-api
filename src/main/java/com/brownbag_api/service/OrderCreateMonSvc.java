@@ -77,7 +77,7 @@ public class OrderCreateMonSvc extends OrderSvc {
 		posSvc.debitPos(orderPay);
 //		posSvc.crebitPos(orderPay);
 
-		return (OrderPay) orderSvc.execAction(orderPay, EOrderAction.OPN_VERIFY);
+		return (OrderPay) orderSvc.execAction(orderPay, EOrderAction.ASSET_OPN_VERIFY);
 	}
 
 	@Transactional
@@ -85,12 +85,12 @@ public class OrderCreateMonSvc extends OrderSvc {
 		ObjPos maccCentralBank = partySvc.getMacc(partySend);
 		OrderCreateMon orderCreateMon = new OrderCreateMon(amount, maccCentralBank.getAsset(), EOrderType.CREATE_MONEY,
 				EOrderStatus.NEW, partySend.getUser(), maccCentralBank, "Money Creation: " + partySend.getName());
-		orderCreateMon = (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.HOLD);
+		orderCreateMon = (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.ASSET_HOLD);
 		orderCreateMon.setPosRcv(posSvc.creditPos(orderCreateMon));
 		ObjAsset curry = maccCentralBank.getAsset();
 		curry.raiseTotalShares((@NotNull int) amount);
 
-		return (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.OPN_VERIFY);
+		return (OrderCreateMon) orderSvc.execAction(orderCreateMon, EOrderAction.ASSET_OPN_VERIFY);
 	}
 
 	/**
@@ -102,6 +102,11 @@ public class OrderCreateMonSvc extends OrderSvc {
 	public void createMon(EParty eParty, @NotNull int amount) {
 		ObjParty partySend = partyRepo.findByName(EParty.ECB.toString());
 		createMon(partySend, amount);
+	}
+
+	public OrderCreateMon createOrder(ObjUser objUser, EOrderType orderType) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

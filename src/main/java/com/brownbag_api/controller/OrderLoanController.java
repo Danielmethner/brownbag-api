@@ -1,25 +1,36 @@
 package com.brownbag_api.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.brownbag_api.model.enums.EEntityType;
+import com.brownbag_api.model.enums.EOrderStatus;
+import com.brownbag_api.model.enums.EOrderType;
 import com.brownbag_api.model.enums.EParty;
 import com.brownbag_api.model.jpa.ObjParty;
 import com.brownbag_api.model.jpa.ObjPosMacc;
 import com.brownbag_api.model.jpa.ObjUser;
 import com.brownbag_api.model.jpa.OrderLoan;
+import com.brownbag_api.model.jpa.OrderStex;
+import com.brownbag_api.model.json.JsonFormOrder;
 import com.brownbag_api.model.json.JsonOrderLoan;
+import com.brownbag_api.model.json.JsonOrderStex;
 import com.brownbag_api.repo.PosRepo;
 import com.brownbag_api.repo.UserRepo;
 import com.brownbag_api.security.svc.UserDetailsImpl;
 import com.brownbag_api.service.AssetSvc;
 import com.brownbag_api.service.ControlSvc;
+import com.brownbag_api.service.GuiSvc;
 import com.brownbag_api.service.LogSvc;
 import com.brownbag_api.service.OrderLoanSvc;
 import com.brownbag_api.service.OrderSvc;
@@ -29,8 +40,8 @@ import com.brownbag_api.service.UserSvc;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/order/loan")
-public class OrderLoanController {
+@RequestMapping("/api/order/ORDER_LOAN")
+public class OrderLoanController  extends OrderController {
 
 	@Autowired
 	PosRepo posRepo;
@@ -58,30 +69,35 @@ public class OrderLoanController {
 
 	@Autowired
 	PartySvc partySvc;
-
+	@Autowired
+	GuiSvc guiSvc;
 	@Autowired
 	LogSvc logSvc;
 
-	/*
-	 * CONVERT JPA TO JSON
-	 */
-//	private List<JsonOrderLoan> jpaToJson(List<OrderLoan> jpaOrderLoanList) {
-//		List<JsonOrderLoan> jsonOrderLoanList = new ArrayList<JsonOrderLoan>();
-//		for (OrderLoan jpaOrderLoan : jpaOrderLoanList) {
-//			JsonOrderLoan jsonOrderLoan = new JsonOrderLoan(jpaOrderLoan);
-//			jsonOrderLoanList.add(jsonOrderLoan);
-//		}
-//		return jsonOrderLoanList;
-//	}
+	public ResponseEntity<?> createNewOrder(Authentication authentication, @PathVariable EOrderStatus newStatus,
+			@PathVariable EOrderType orderType) {
+		System.out.println("New Loan");
+		ObjUser objUser = getByAuthentication(authentication);
+		OrderLoan orderLoan = orderLoanSvc.createOrder(objUser, orderType);
+		JsonOrderLoan jsonOrderLoan = new JsonOrderLoan(orderLoan);
+		JsonFormOrder jsonOrderForm = guiSvc.getFormByEntityType(EEntityType.ORDER_LOAN);
+		class FormWithOrder {
+			JsonOrderLoan jsonOrderLoan;
+			JsonFormOrder jsonOrderForm;
 
-	/*
-	 * GET OBJ_USER BY AUTH OBJ
-	 */
-	private ObjUser getByAuthentication(Authentication authentication) {
-		UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authentication.getPrincipal();
-		ObjUser objUser = userRepo.findById(userDetailsImpl.getId()).orElseThrow(
-				() -> new RuntimeException("ERROR API: User not found. USER.ID: " + userDetailsImpl.getId()));
-		return objUser;
+			public JsonOrderLoan getJsonOrderLoan() {
+				return jsonOrderLoan;
+			}
+
+			public JsonFormOrder getOrderForm() {
+				return jsonOrderForm;
+			}
+
+		}
+		FormWithOrder formWithOrder = new FormWithOrder();
+		formWithOrder.jsonOrderLoan = jsonOrderLoan;
+		formWithOrder.jsonOrderForm = jsonOrderForm;
+		return ResponseEntity.ok(formWithOrder);
 	}
 
 	// ----------------------------------------------------------------------
@@ -108,7 +124,7 @@ public class OrderLoanController {
 			maccRcv = (ObjPosMacc) posSvc.getByParty(partyDebtor).get(0);
 		}
 
-		double intrRate = jsonOrderLoan.getIntrRate() > 0 ?  jsonOrderLoan.getIntrRate() : controlSvc.getIntrRate();
+		double intrRate = jsonOrderLoan.getIntrRate() > 0 ? jsonOrderLoan.getIntrRate() : controlSvc.getIntrRate();
 		OrderLoan orderLoan = orderLoanSvc.createLoan(jsonOrderLoan.getQty(), user, maccGrant, maccRcv,
 				jsonOrderLoan.getMatDate(), intrRate);
 

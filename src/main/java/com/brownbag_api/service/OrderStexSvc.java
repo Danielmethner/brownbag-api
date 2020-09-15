@@ -50,13 +50,13 @@ public class OrderStexSvc extends OrderSvc {
 
 	public OrderStex createOrder(ObjUser objUser, EOrderType orderType) {
 		OrderStex orderStex = new OrderStex(objUser, orderType);
-		orderStex = (OrderStex) execAction(orderStex, EOrderAction.CREATE);
+		orderStex = (OrderStex) execAction(orderStex, EOrderAction.ASSET_CREATE);
 		return orderStex;		
 	}
 	public OrderStex placeOrder(OrderStex orderStex) {
 		if (orderStex.getId() == null) {
 			logSvc.write("OrderStexSvc.placeOrder: Order must be persisted before being placed.");
-			orderSvc.execAction(orderStex, EOrderAction.DISCARD);
+			orderSvc.execAction(orderStex, EOrderAction.ASSET_DISCARD);
 			return null;
 		}
 
@@ -72,7 +72,7 @@ public class OrderStexSvc extends OrderSvc {
 		if (orderStex.getQty() <= 0 || orderStex.getPriceLimit() <= 0) {
 			logSvc.write("OrderStexSvc.placeNewOrder: Order with ID: " + orderStex.getId()
 					+ " must have a qty and price greater 0.");
-			orderSvc.execAction(orderStex, EOrderAction.DISCARD);
+			orderSvc.execAction(orderStex, EOrderAction.ASSET_DISCARD);
 			return null;
 		}
 
@@ -84,7 +84,7 @@ public class OrderStexSvc extends OrderSvc {
 			if (qtyAvbl < orderVol) {
 				logSvc.write("OrderStexSvc.placeNewOrder: Insufficient Funds! Party: " + party.getName() + " Asset: "
 						+ asset.getName() + " Order Volume: " + orderVol + " Available Funds: " + qtyAvbl);
-				orderSvc.execAction(orderStex, EOrderAction.DISCARD);
+				orderSvc.execAction(orderStex, EOrderAction.ASSET_DISCARD);
 				return null;
 			}
 			posMacc.raiseQtyBlocked(orderVol);
@@ -99,7 +99,7 @@ public class OrderStexSvc extends OrderSvc {
 				if (posStex == null) {
 					logSvc.write("OrderStexSvc.placeNewOrder: No Position with Asset: '" + asset.getName()
 							+ " exists for Party: '" + party.getName());
-					orderSvc.execAction(orderStex, EOrderAction.DISCARD);
+					orderSvc.execAction(orderStex, EOrderAction.ASSET_DISCARD);
 					return null;
 				}
 				double qtyAvbl = posSvc.getQtyAvbl(posStex);
@@ -107,7 +107,7 @@ public class OrderStexSvc extends OrderSvc {
 					logSvc.write(
 							"OrderStexSvc.placeNewOrder: Not enough Shares! Party: '" + party.getName() + "' Asset: '"
 									+ asset.getName() + "' Order Quantity: " + qty + " Available Shares: " + qtyAvbl);
-					orderSvc.execAction(orderStex, EOrderAction.DISCARD);
+					orderSvc.execAction(orderStex, EOrderAction.ASSET_DISCARD);
 					return null;
 				}
 				posSvc.save(posStex.raiseQtyBlocked(qty));
@@ -297,7 +297,7 @@ public class OrderStexSvc extends OrderSvc {
 				posSvc.save(objPos);
 			}
 		}
-		orderStex = (OrderStex) execAction(orderStex, EOrderAction.DISCARD);
+		orderStex = (OrderStex) execAction(orderStex, EOrderAction.ASSET_DISCARD);
 		return orderStex;
 	}
 }

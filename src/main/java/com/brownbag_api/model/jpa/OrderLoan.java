@@ -19,12 +19,10 @@ public class OrderLoan extends Order implements Serializable {
 
 	private static final long serialVersionUID = 4643589803146964779L;
 
-	@NotNull
 	@OneToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "POS_LENDER_ID")
 	private ObjPosMacc maccLender;
 
-	@NotNull
 	@OneToOne(targetEntity = ObjPos.class)
 	@JoinColumn(name = "POS_DEBTOR_ID")
 	private ObjPosMacc maccDebtor;
@@ -57,6 +55,10 @@ public class OrderLoan extends Order implements Serializable {
 		this.posLoanBorrower = posLoanBorrower;
 		this.matDate = matDate;
 		this.intrRate = intrRate;
+	}
+
+	public OrderLoan(ObjUser objUser, EOrderType orderType) {
+		super(0, null, orderType, EOrderStatus.NEW, objUser, "Order Created via API by User: " + objUser.getName());
 	}
 
 	public static long getSerialversionuid() {
